@@ -27,4 +27,8 @@ build 18a-sheets.js "$D/kaijukaki.html" 18c-noreal.js
 build 18a-files.js "$ROOT/desktop/app/index.html" 18c-noreal.js
 # a build "local" do dono: le os PNGs de 300px do disco, ao lado da colecao.
 # Neste pacote 18c-real.js esta vazio, entao ela sai igual a publica sem arte.
-build 18a-nosheets.js "$D/kaijukaki-local.html" 18c-real.js
+# 18c-real.js NUNCA entra no repositorio (.gitignore). Sem ele, a build local
+# sai igual a publica sem arte — o que e o comportamento certo fora da maquina
+# do dono.
+if [ -f "$S/18c-real.js" ]; then MAPA=18c-real.js; else MAPA=18c-noreal.js; fi
+build 18a-nosheets.js "$D/kaijukaki-local.html" $MAPA
