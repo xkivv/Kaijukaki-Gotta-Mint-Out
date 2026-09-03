@@ -1,0 +1,250 @@
+/* ==========================================================================
+   KAIJU SHOP — um banner de verdade pra cada perk
+   O que existia era um gradiente diagonal por item: bonito de passar o olho,
+   mas dois itens quaisquer eram a mesma coisa em outra cor, e a escada
+   (contrato, gás, lote, carteira...) nem tinha banner. Aqui cada upgrade
+   ganha um DESENHO que diz o que ele faz — tudo em CSS puro, sem imagem.
+   Regra da casa: todo px que precisa crescer vai em calc(px * var(--ui)).
+   ========================================================================== */
+
+/* a placa branca que segura o texto continua sendo a lei: o desenho vive na
+   direita do card, o texto na esquerda, e nunca se encostam */
+.shop-item .si-bg::after{background:linear-gradient(90deg,
+  rgba(255,255,255,0) 0 calc(6px * var(--ui)),
+  rgba(255,255,255,.95) calc(6px * var(--ui)),
+  rgba(255,255,255,.92) 44%,
+  rgba(255,255,255,.46) 68%,
+  rgba(255,255,255,.04) 100%)}
+/* varredura de CRT por cima do desenho inteiro, pra ele pertencer ao jogo */
+.shop-item .si-bg::before{
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 3px)}
+.shop-item{position:relative;overflow:hidden}
+.shop-item > *:not(.si-bg){position:relative;z-index:2}
+/* o banner da escada existe agora — era display:none */
+.contract-item .si-bg,.gas-item .si-bg,.bulk-item .si-bg,.sec-item .si-bg,
+.list-item .si-bg,.slot-item .si-bg,.cap-item .si-bg{display:block}
+
+/* ---------- estados ----------
+   comprado = arquivado, carimbado. trancado = atrás de uma grade. */
+.shop-item.owned .si-bg{filter:grayscale(.85) opacity(.5)}
+.shop-item.owned .si-bg::after{background:linear-gradient(90deg,
+  rgba(255,255,255,0) 0 calc(6px * var(--ui)),
+  rgba(255,255,255,.97) calc(6px * var(--ui)),
+  rgba(255,255,255,.95) 60%,
+  rgba(255,255,255,.80) 100%)}
+.shop-item.locked .si-bg{filter:grayscale(1) brightness(1.06) opacity(.45)}
+.shop-item.locked .si-bg::before{
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.07) 0 1px,transparent 1px 3px),
+             repeating-linear-gradient(45deg,rgba(0,0,0,.16) 0 calc(5px * var(--ui)),transparent calc(5px * var(--ui)) calc(10px * var(--ui)))}
+/* nada se mexe parado. Só o item sob o cursor respira. */
+.shop-item:not(.owned):not(.locked):hover .si-bg{filter:contrast(1.18) saturate(1.35) brightness(1.10)}
+/* os padroes sao finos de proposito; sem um empurrao de contraste eles
+   somem debaixo da placa branca */
+.shop-item .si-bg{transition:filter .18s ease-out;filter:contrast(1.18) saturate(1.2)}
+
+.shop-item .si-ico{border:1px solid rgba(0,0,0,.45);padding:calc(3px * var(--ui));
+  background:rgba(255,255,255,.86);box-shadow:calc(2px * var(--ui)) calc(2px * var(--ui)) 0 rgba(0,0,0,.30)}
+
+/* ==========================================================================
+   FAMÍLIA 1 — RUÍDO E MULTIDÃO (hype)
+   Sinal saindo de uma antena: arcos concêntricos e uma grade de cabeças.
+   ========================================================================== */
+.shop-item.perk-shill .si-bg{
+  background:
+    repeating-radial-gradient(circle at 118% 50%,
+      rgba(255,255,255,.22) 0 calc(3px * var(--ui)),
+      transparent calc(3px * var(--ui)) calc(13px * var(--ui))),
+    radial-gradient(circle at 88% 50%, #8fd8ff 0 calc(5px * var(--ui)), transparent calc(6px * var(--ui))),
+    linear-gradient(135deg,#0d2247 0%,#1e4a86 52%,#3f86cc 100%)}
+
+/* mods: uma fileira de crachás de moderador, lado a lado */
+.shop-item.perk-mods .si-bg{
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.20) 0 calc(4px * var(--ui)),
+      transparent calc(4px * var(--ui)) calc(9px * var(--ui)),
+      rgba(0,0,0,.22) calc(9px * var(--ui)) calc(11px * var(--ui)),
+      transparent calc(11px * var(--ui)) calc(22px * var(--ui))),
+    linear-gradient(135deg,#0e2f2b 0%,#1f6b57 55%,#4fc39a 100%)}
+
+/* influencer: holofotes cruzando um palco */
+.shop-item.perk-infl .si-bg{
+  background:
+    repeating-conic-gradient(from 200deg at 96% 118%,
+      rgba(255,255,255,.20) 0 4deg, transparent 4deg 13deg),
+    radial-gradient(circle at 96% 118%, #ffe08a 0 calc(9px * var(--ui)), transparent calc(11px * var(--ui))),
+    linear-gradient(135deg,#3a0f2a 0%,#8f2350 55%,#d4587f 100%)}
+
+/* ==========================================================================
+   FAMÍLIA 2 — DINHEIRO E PAPELADA
+   Livro-caixa: linhas pautadas, uma coluna, e moedas empilhadas.
+   ========================================================================== */
+.shop-item.perk-lister .si-bg,
+.shop-item.perk-listall .si-bg,
+.list-item .si-bg{
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(0,0,0,.16) 0 1px, transparent 1px calc(7px * var(--ui))),
+    linear-gradient(90deg, transparent 0 62%, rgba(0,0,0,.20) 62% calc(62% + 1px), transparent calc(62% + 1px)),
+    linear-gradient(135deg,#0d3324 0%,#1c6f4c 52%,#63c79a 100%)}
+.shop-item.perk-listall .si-bg{
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(0,0,0,.16) 0 1px, transparent 1px calc(5px * var(--ui))),
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.14) 0 1px, transparent 1px calc(11px * var(--ui))),
+    linear-gradient(135deg,#123219 0%,#3d7a1e 52%,#8fd44a 100%)}
+
+/* offshore: uma pilha de moedas numa ilha, e o mar em faixas */
+.shop-item.perk-offsh .si-bg{
+  background:
+    radial-gradient(ellipse at 86% 88%, #f0d488 0 calc(16px * var(--ui)), transparent calc(17px * var(--ui))),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.16) 0 calc(2px * var(--ui)),
+      transparent calc(2px * var(--ui)) calc(8px * var(--ui))),
+    linear-gradient(180deg,#06333f 0%,#0f6a7a 62%,#2ba4b0 100%)}
+
+/* antivírus: cadeados e uma grade de escudo */
+.sec-item .si-bg{
+  background:
+    repeating-conic-gradient(from 45deg at 88% 50%,
+      rgba(255,255,255,.14) 0 25%, transparent 0 50%),
+    linear-gradient(135deg,#2a0d0d 0%,#7a2118 52%,#c9583f 100%);
+  background-size:calc(9px * var(--ui)) calc(9px * var(--ui)), 100% 100%}
+.sec-item.owned .si-bg{
+  background:
+    repeating-conic-gradient(from 45deg at 88% 50%,
+      rgba(255,255,255,.14) 0 25%, transparent 0 50%),
+    linear-gradient(135deg,#0d2a16 0%,#1e6b32 52%,#5fc47a 100%);
+  background-size:calc(9px * var(--ui)) calc(9px * var(--ui)), 100% 100%}
+
+/* ==========================================================================
+   FAMÍLIA 3 — A MÁQUINA DE MINTAR
+   Esteira: dentes de engrenagem embaixo, cartas em fila em cima.
+   ========================================================================== */
+.bulk-item .si-bg{
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(255,255,255,.24) 0 calc(9px * var(--ui)),
+      transparent calc(9px * var(--ui)) calc(13px * var(--ui))),
+    repeating-linear-gradient(0deg,
+      rgba(0,0,0,.24) 0 calc(4px * var(--ui)),
+      transparent calc(4px * var(--ui)) calc(20px * var(--ui))),
+    linear-gradient(135deg,#3a1c05 0%,#96500e 52%,#e2a24a 100%)}
+/* scanner da fila: um osciloscópio verde */
+.shop-item.perk-sniff .si-bg{
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(120,255,170,.16) 0 1px, transparent 1px calc(6px * var(--ui))),
+    repeating-linear-gradient(90deg,
+      rgba(120,255,170,.16) 0 1px, transparent 1px calc(6px * var(--ui))),
+    radial-gradient(ellipse at 84% 46%, rgba(140,255,190,.55) 0 calc(3px * var(--ui)), transparent calc(4px * var(--ui))),
+    linear-gradient(135deg,#04160d 0%,#0d4a26 55%,#2f9c52 100%)}
+/* mint again: setas de repetição */
+.shop-item.perk-again .si-bg{
+  background:
+    repeating-linear-gradient(115deg,
+      rgba(255,255,255,.22) 0 calc(3px * var(--ui)),
+      transparent calc(3px * var(--ui)) calc(9px * var(--ui))),
+    linear-gradient(135deg,#5c1c06 0%,#bd5c12 52%,#f0a83e 100%)}
+/* contrato: um documento com carimbo e linhas de assinatura */
+.contract-item .si-bg{
+  background:
+    radial-gradient(circle at 87% 34%, rgba(255,255,255,.35) 0 calc(9px * var(--ui)), transparent calc(10px * var(--ui))),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.16) 0 1px, transparent 1px calc(9px * var(--ui))),
+    linear-gradient(135deg,#151a3c 0%,#2f3f8c 55%,#6d80d8 100%)}
+/* gás: chamas em faixas quentes subindo */
+.gas-item .si-bg{
+  background:
+    repeating-linear-gradient(78deg,
+      rgba(255,190,90,.30) 0 calc(4px * var(--ui)),
+      transparent calc(4px * var(--ui)) calc(12px * var(--ui))),
+    linear-gradient(0deg,#4a1405 0%,#a83c0c 48%,#e88a1e 78%,#f5c85a 100%)}
+
+/* ==========================================================================
+   FAMÍLIA 4 — ARMAZENAMENTO
+   Prateleiras e gavetas: linhas horizontais grossas com divisórias.
+   ========================================================================== */
+.cap-item .si-bg,
+.shop-item.perk-cap1 .si-bg,.shop-item.perk-cap2 .si-bg,.shop-item.perk-cap3 .si-bg,
+.shop-item.perk-cap4 .si-bg,.shop-item.perk-cap5 .si-bg{
+  background:
+    repeating-linear-gradient(0deg,
+      rgba(0,0,0,.26) 0 calc(2px * var(--ui)),
+      transparent calc(2px * var(--ui)) calc(15px * var(--ui))),
+    repeating-linear-gradient(90deg,
+      rgba(0,0,0,.20) 0 calc(2px * var(--ui)),
+      transparent calc(2px * var(--ui)) calc(24px * var(--ui))),
+    linear-gradient(135deg,#3d2a10 0%,#8a5e26 48%,#d6a862 100%)}
+/* cofre: porta de aço com rebites */
+.shop-item.perk-vault .si-bg,
+.slot-item .si-bg{
+  background:
+    radial-gradient(circle, rgba(255,255,255,.30) calc(1.4px * var(--ui)), transparent calc(2px * var(--ui))),
+    radial-gradient(circle at 84% 50%, rgba(255,255,255,.22) 0 calc(15px * var(--ui)), transparent calc(16px * var(--ui))),
+    linear-gradient(135deg,#1a1c22 0%,#4c525f 48%,#98a2b4 100%);
+  background-size:calc(11px * var(--ui)) calc(11px * var(--ui)), 100% 100%, 100% 100%}
+
+/* ==========================================================================
+   FAMÍLIA 5 — AS ESQUISITAS
+   ========================================================================== */
+/* cafeteira: vapor subindo e um azulejo de cozinha de escritório */
+.shop-item.perk-coffee .si-bg{
+  background:
+    repeating-linear-gradient(100deg,
+      rgba(255,255,255,.16) 0 calc(2px * var(--ui)),
+      transparent calc(2px * var(--ui)) calc(10px * var(--ui))),
+    repeating-conic-gradient(rgba(0,0,0,.10) 0 25%, transparent 0 50%),
+    linear-gradient(135deg,#241305 0%,#5c3a1c 46%,#b9906a 100%);
+  background-size:100% 100%, calc(14px * var(--ui)) calc(14px * var(--ui)), 100% 100%}
+/* OC Star: um céu com uma estrela caindo e um rastro */
+.shop-item.perk-ocstar .si-bg{
+  background:
+    radial-gradient(circle at 84% 30%, #fff6c8 0 calc(4px * var(--ui)), transparent calc(5px * var(--ui))),
+    repeating-conic-gradient(from 0deg at 84% 30%,
+      rgba(255,240,170,.24) 0 3deg, transparent 3deg 16deg),
+    radial-gradient(circle, rgba(255,255,255,.75) .9px, transparent 1.2px),
+    linear-gradient(180deg,#0a0f2c 0%,#1a2560 58%,#3a4aa0 100%);
+  background-size:100% 100%, 100% 100%, calc(21px * var(--ui)) calc(17px * var(--ui)), 100% 100%}
+/* baleia: mar fundo em camadas, e o vulto grande embaixo */
+.shop-item.perk-whale .si-bg{
+  background:
+    radial-gradient(ellipse at 84% 92%, rgba(0,0,0,.42) 0 calc(26px * var(--ui)), transparent calc(27px * var(--ui))),
+    repeating-linear-gradient(0deg,
+      rgba(255,255,255,.09) 0 calc(2px * var(--ui)),
+      transparent calc(2px * var(--ui)) calc(13px * var(--ui))),
+    linear-gradient(180deg,#04122e 0%,#0d2a5c 42%,#1a4a8c 74%,#04122e 100%)}
+
+/* ---------- celular: o desenho encolhe, o texto manda ---------- */
+body.mob .shop-item .si-bg::after{background:linear-gradient(90deg,
+  rgba(255,255,255,0) 0 calc(5px * var(--ui)),
+  rgba(255,255,255,.97) calc(5px * var(--ui)),
+  rgba(255,255,255,.95) 66%,
+  rgba(255,255,255,.72) 100%)}
+
+@media (prefers-reduced-motion: reduce){
+  .shop-item .si-bg{transition:none}
+}
+
+/* ==========================================================================
+   MR. KAIJU — os botoes nao podem sair da tela
+   Com a interface em Large a janela cresce e o PAY caia pra baixo do monitor.
+   A fatura rola; os dois botoes ficam colados no rodape da janela.
+   ========================================================================== */
+.win[data-app="tax"] .wbody{display:flex;flex-direction:column;min-height:0}
+.win[data-app="tax"] .txroot{flex:1;min-height:0;overflow:auto}
+.txacts{position:sticky;bottom:calc(-9px * var(--ui));z-index:5;
+  margin:calc(7px * var(--ui)) calc(-9px * var(--ui)) calc(-9px * var(--ui));
+  padding:calc(8px * var(--ui)) calc(9px * var(--ui));background:var(--face);
+  box-shadow:inset 0 1px 0 #fff,0 calc(-3px * var(--ui)) calc(7px * var(--ui)) rgba(0,0,0,.22)}
+body.mob .txacts{position:static;margin:calc(7px * var(--ui)) 0 0;box-shadow:none;padding:0}
+
+/* ==========================================================================
+   LOJA GRADUAL — o rodape "as prateleiras enchem"
+   Aparece so enquanto shop_all esta trancado (33-app-vault.js). E uma linha
+   de leitura, entao obedece a regua de 15px; centrada e sem borda, pra nao
+   virar um "card vazio" embaixo do antivirus.
+   ========================================================================== */
+.shop-soon{text-align:center;padding:calc(6px * var(--ui)) 0 calc(2px * var(--ui));
+  font-size:calc(15px * var(--fs));line-height:1.5}

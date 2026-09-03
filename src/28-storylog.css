@@ -1,0 +1,191 @@
+/* ==========================================================================
+   KAIJU LOG — o caderno da historia (59-story-log.js)
+
+   Win98 de verdade: barra de abas em cima, UMA caixa afundada embaixo, papel
+   branco pra ler. Tudo aqui e prosa, entao tudo aqui e Tahoma (--uif) e nada
+   desce abaixo de calc(15px * var(--fs)).
+
+   A REGRA DESTA TELA E ESPACO. Com 15 dias de historia guardada sao 48
+   conversas; se cada uma trouxer moldura, selo de dia, botao proprio e o
+   texto inteiro aberto, viram 11.500px de conteudo numa area de 485px — 23
+   telas de rolagem, que foi exatamente a reclamacao. Entao: dois tamanhos de
+   letra no arquivo todo (16 pro titulo, 15 pro resto), UM nivel de caixa, e
+   linha separada por fio de cabelo, nao por borda. Ornamento sai antes de
+   informacao sair.
+   ========================================================================== */
+
+/* A janela inteira NAO rola: quem rola e a lista. Sem isto a barra de abas
+   subia junto com o texto e o jogador perdia o "onde estou" na segunda tela. */
+.win .wbody:has(> .klroot){overflow:hidden;display:flex}
+.klroot{flex:1;min-height:0;display:flex;flex-direction:column;
+  padding:calc(6px * var(--ui)) calc(7px * var(--ui)) calc(7px * var(--ui));
+  font-family:var(--uif)}
+.klroot .tabs .tab{font-size:calc(15px * var(--fs))}
+.klroot .btn{font-size:calc(15px * var(--fs))}
+.kl-body{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;
+  padding:calc(7px * var(--ui)) 0 0}
+
+/* o ponto verde na aba que tem coisa nao lida */
+.kl-dot{display:inline-block;width:calc(8px * var(--ui));height:calc(8px * var(--ui));
+  margin-left:calc(5px * var(--ui));background:#d4ff6b;border:1px solid #000;
+  border-radius:50%;vertical-align:middle}
+
+/* ---------- o papel ----------
+   Caixa afundada, fundo branco: e onde o Windows 98 poe qualquer coisa que
+   se le. E e a UNICA caixa da tela — nada de caixa dentro de caixa. */
+.kl-list,.kl-people{flex:1;min-height:0;overflow:auto;background:#fff;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,
+             inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+
+/* ==========================================================================
+   ABA 1: REGISTRO
+   ========================================================================== */
+
+/* ---------- o cabecalho de dia ----------
+   A unica divisao que o jogador ja tem na cabeca. Fica grudado no topo
+   enquanto rola (position:sticky) porque numa lista de 48 a pergunta que
+   volta e sempre "de quando e isto?". Barra de relevo, como cabecalho de
+   coluna do Explorer — nao e enfeite novo, e peca de Win98. */
+.kl-day{position:sticky;top:0;z-index:2;
+  padding:calc(4px * var(--ui)) calc(9px * var(--ui));
+  background:var(--face);color:#141414;font-weight:bold;
+  font-size:calc(15px * var(--fs));line-height:1.35;
+  box-shadow:inset -1px -1px 0 var(--shadow),inset 1px 1px 0 #fff;
+  border-bottom:1px solid #6f6f6f}
+
+/* ---------- a linha da conversa ----------
+   Uma conversa = uma linha. Fio de cabelo entre elas, nao borda: 48 bordas
+   fortes viram uma grade, e grade cansa. */
+.kl-r{border-bottom:1px solid #dedede;
+  border-left:calc(3px * var(--ui)) solid transparent}
+.kl-r:last-child{border-bottom:0}
+/* conversa nao lida: SO a barrinha verde na lateral. O fundo esverdeado
+   tambem estava marcando "novo", e num save que ficou dez dias sem abrir o
+   caderno isso pintava a lista inteira de verde — tres avisos dizendo a
+   mesma coisa. Ficou um: a barra. (O selo NOVO e do titulo, nao da linha.) */
+.kl-r.fresh{border-left-color:#a8e832}
+
+/* alinhado pelo TOPO, nao pelo centro: no celular o titulo quebra em duas ou
+   tres linhas e o [+] com o retrato boiavam no meio da linha, parecendo
+   soltos do titulo que eles pertencem. */
+.kl-h{display:flex;align-items:flex-start;gap:calc(8px * var(--ui));
+  padding:calc(5px * var(--ui)) calc(10px * var(--ui));cursor:pointer}
+.kl-h:hover{background:#e8eef8}
+/* O [+] / [−] do Windows 98. Nasce do CSS, nao do HTML: 48 linhas x um
+   elemento a mais e peso na tela e no DOM por um sinal de mais.
+   Medido em --fs (nao em --ui) pra caixa e glifo crescerem juntos. */
+.kl-h::before{content:'+';flex:0 0 auto;box-sizing:border-box;
+  min-width:calc(15px * var(--fs));padding:0 calc(3px * var(--fs));
+  border:1px solid #6f6f6f;background:#fff;color:#0a0a0a;
+  font-family:var(--uif);font-size:calc(15px * var(--fs));line-height:1.15;
+  text-align:center}
+.kl-r.open > .kl-h::before{content:'\2212'}
+
+/* titulo e quem falou dividem a mesma linha; no estreito o nome desce
+   sozinho e continua alinhado com o titulo, nao com o [+].
+   O selo NOVO viaja junto com o NOME, nao com o titulo: no celular ele
+   quebrava sozinho numa terceira linha e cada conversa nao lida custava uma
+   linha inteira de tela. Colado no nome ele cabe na linha que ja existe. */
+.kl-x{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:baseline;
+  justify-content:space-between;
+  gap:calc(1px * var(--ui)) calc(10px * var(--ui))}
+.kl-t{flex:1 1 auto;min-width:calc(130px * var(--ui));
+  font-size:calc(16px * var(--fs));font-weight:bold;color:#141414;
+  line-height:1.35}
+/* pode encolher (0 1 auto), senao o selo NOVO no fim do nome escorria pra
+   fora da janela no celular e ficava cortado pela metade */
+.kl-w{flex:0 1 auto;min-width:0;font-size:calc(15px * var(--fs));color:#4a4a4a;
+  line-height:1.35}
+.kl-new{display:inline-block;margin-left:calc(6px * var(--ui));
+  padding:0 calc(5px * var(--ui));background:#d4ff6b;color:#101a06;
+  border:1px solid #000;font-size:calc(15px * var(--fs));font-weight:bold;
+  vertical-align:baseline}
+
+/* ---------- o texto, quando o jogador pede ----------
+   Recolher nao e apagar: continua tudo aqui, a um clique. Recuado ate onde o
+   titulo comeca, pra a fala pertencer visivelmente aquela conversa. */
+.kl-b{padding:calc(1px * var(--ui)) calc(12px * var(--ui))
+      calc(11px * var(--ui)) calc(50px * var(--ui))}
+.kl-ln{margin:0 0 calc(8px * var(--ui));font-size:calc(15px * var(--fs));
+  line-height:1.55;color:#141414;max-width:calc(560px * var(--ui))}
+/* so aparece quando a conversa troca de boca no meio */
+.kl-sp{display:block;font-size:calc(15px * var(--fs));color:#1e5a28;
+  font-weight:bold;margin-bottom:calc(1px * var(--ui))}
+/* UM botao, dentro da conversa aberta — antes eram 48 na tela de saida */
+.kl-re{margin-top:calc(2px * var(--ui))}
+
+.kl-empty{padding:calc(34px * var(--ui)) calc(16px * var(--ui));text-align:center;
+  color:#141414}
+.kl-empty p{margin:calc(10px * var(--ui)) 0 calc(5px * var(--ui));
+  font-size:calc(17px * var(--fs));font-weight:bold}
+.kl-empty span{display:block;font-size:calc(15px * var(--fs));line-height:1.5;
+  color:#3d3d3d;max-width:calc(300px * var(--ui));margin:0 auto}
+
+/* ==========================================================================
+   ABA 2: GENTE — os seis numa tela so
+   ========================================================================== */
+.kl-people{padding:calc(9px * var(--ui));display:grid;align-content:start;
+  grid-template-columns:repeat(auto-fill,minmax(calc(215px * var(--ui)),1fr));
+  gap:calc(8px * var(--ui))}
+/* ficha em relevo, como icone de painel de controle */
+.kl-p{display:flex;gap:calc(9px * var(--ui));padding:calc(8px * var(--ui));
+  background:#f1f1f1;
+  box-shadow:inset -1px -1px 0 #8f8f8f,inset 1px 1px 0 #fff}
+.kl-pi{flex:1;min-width:0}
+.kl-pn{font-size:calc(16px * var(--fs));font-weight:bold;color:#141414;
+  line-height:1.3;word-break:break-word}
+.kl-ps{font-size:calc(15px * var(--fs));line-height:1.4;color:#3d3d3d;
+  margin-top:calc(2px * var(--ui))}
+.kl-pc{font-size:calc(15px * var(--fs));color:#2f2f2f;
+  margin-top:calc(5px * var(--ui))}
+/* o cobrador nao e da comunidade, e a ficha dele diz isso */
+.kl-boss{display:inline-block;margin-left:calc(6px * var(--ui));
+  padding:0 calc(6px * var(--ui));background:#a02020;color:#fff;
+  font-size:calc(15px * var(--fs));font-weight:normal;vertical-align:baseline}
+
+/* ==========================================================================
+   OS RETRATOS
+   A moldura tem o mesmo tamanho com ou sem imagem, entao o dia em que as
+   artes chegarem nada nesta tela se mexe. Ver o bloco RETRATOS no topo de
+   59-story-log.js.
+   ========================================================================== */
+.kl-por{position:relative;flex:0 0 auto;display:flex;align-items:center;
+  justify-content:center;overflow:hidden;background:#0d1a16;
+  box-shadow:inset 1px 1px 0 #000, inset -1px -1px 0 #4a6a5a, 0 0 0 1px #000}
+.kl-por .sb-img{width:100%;height:100%;object-fit:cover;display:block;
+  image-rendering:auto}
+/* SEM IMAGEM: o avatar pixelado ganha a mesma moldura, um brilho de fosforo e
+   as listras do CRT por tras. Fica parecendo um retrato de camera de
+   seguranca dos anos 90 — que e escolha, nao arquivo faltando. */
+.kl-por .sb-fallback{line-height:0;
+  filter:drop-shadow(0 0 calc(5px * var(--ui)) rgba(168,232,50,.45))
+         drop-shadow(2px 2px 0 rgba(0,0,0,.55))}
+.kl-por::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.22) 0 1px,rgba(0,0,0,0) 1px 3px)}
+/* A VERSAO PEQUENA DA LINHA DO REGISTRO. A 26px o brilho e as listras nao sao
+   mais retrato, sao sujeira — e sujeira 48 vezes na mesma coluna e
+   exatamente o cansaco que esta tela esta tentando tirar. */
+.kl-por.mini::before{display:none}
+.kl-por.mini .sb-fallback{filter:drop-shadow(1px 1px 0 rgba(0,0,0,.6))}
+/* quem ainda nao apareceu: o MESMO desenho pros seis, apagado. Um icone
+   proprio por personagem ja seria pista de quem esta faltando. */
+.kl-por.unknown{background:#0a1310}
+.kl-sil{line-height:0;filter:brightness(0) invert(1) opacity(.2)}
+.kl-p.unknown .kl-pn{color:#3d3d3d}
+
+/* ---------- a bolinha do icone da mesa ----------
+   Verde-limao, o mesmo do selo NOVO da historia: vermelho ja quer dizer
+   "resolve isso" e amarelo ja quer dizer "tem dinheiro na mesa". Conversa
+   nova nao e nenhum dos dois — e so uma coisa nova pra ler. */
+.dicon .ndot.log{background:#d4ff6b}
+
+/* ---------- celular ----------
+   393px de largura: o recuo da fala vira um recuo de cortesia, senao sobra
+   meia coluna pra frase, e a grade de fichas vira uma coluna so. */
+html body.mob .klroot .tabs .tab{font-size:calc(15px * var(--fs))}
+html body.mob .klroot .btn{font-size:calc(15px * var(--fs))}
+html body.mob .kl-h{padding:calc(6px * var(--ui)) calc(8px * var(--ui))}
+html body.mob .kl-b{padding:calc(1px * var(--ui)) calc(9px * var(--ui))
+      calc(11px * var(--ui)) calc(14px * var(--ui))}
+html body.mob .kl-re{width:100%}
+html body.mob .kl-people{grid-template-columns:1fr}

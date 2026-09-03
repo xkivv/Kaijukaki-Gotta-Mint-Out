@@ -1,0 +1,15 @@
+# produtos de build — o build.sh refaz em 1 segundo
+dist/
+desktop/app/index.html
+desktop/build/
+node_modules/
+*.log
+
+# ============================================================
+# NUNCA COMITAR: a permutacao jogo -> arquivo real da colecao.
+# Ver docs/03-SEGURANCA-ANTI-SPOILER.md. Se um destes aparecer
+# com dados de verdade, ele nao pode entrar em repositorio
+# nenhum, publico ou privado.
+# ============================================================
+kk-artmap.js
+src/18c-real.js

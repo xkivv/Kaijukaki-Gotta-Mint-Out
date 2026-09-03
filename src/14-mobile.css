@@ -1,0 +1,335 @@
+/* ================= MOBILE MODE — Win98 em tela cheia =================
+   Tudo aqui depende de body.mob, ligado por 43-mobile.js.
+   Nada disso toca o desktop. */
+
+body.mob{
+  --tbh:52px;              /* altura da barra de tarefas */
+  --tith:38px;             /* altura da titlebar em tela cheia */
+  --safeb:env(safe-area-inset-bottom,0px);
+}
+body.mob #screen{height:100svh;height:100dvh}
+body.mob #desktop{inset:0 0 calc(var(--tbh) + var(--safeb)) 0;overflow:hidden}
+
+/* ---------- não deixa nada com hover grudado no toque ---------- */
+@media (hover:none){
+  .dicon:hover .lbl,.tbtn:hover,.smi:hover,.menubar span:hover,.tab:hover:not(.on),
+  .mintbig:hover,.qbtn:hover,.lst tr:hover td,.offer:hover,.shop-item:hover,
+  .bcard:hover,.fold-h:hover,.ad-item:hover,.ctx-item:hover,#clock.sleepnow:hover{
+    background:inherit;filter:none}
+  .nftcard:hover{transform:none}
+  .bslot:hover .sleeve{opacity:inherit}
+}
+
+/* ---------- área de trabalho: grade de ícones ---------- */
+body.mob #desktop{display:grid;align-content:start;justify-items:center;
+  grid-template-columns:repeat(auto-fill,minmax(88px,1fr));
+  gap:2px;padding:10px 6px 6px}
+body.mob .dicon{position:static !important;width:100%;padding:8px 2px 6px;touch-action:pan-y;
+  left:auto !important;top:auto !important}
+body.mob .dicon .glyph{width:46px;height:46px}
+body.mob .dicon .lbl{font-size:calc(11px * var(--fs));line-height:1.15;word-break:break-word}
+body.mob .dicon .badge{top:2px;right:calc(50% - 30px)}
+body.mob .dicon .lock{top:28px;right:calc(50% - 26px)}
+body.mob .dicon:active .glyph{transform:scale(.9)}
+
+/* ---------- janelas em tela cheia ---------- */
+body.mob .win{padding:0;min-width:0}
+body.mob .win.maxed{box-shadow:none}
+body.mob .titlebar{height:var(--tith);flex:0 0 var(--tith);gap:8px;padding:0 4px 0 8px;
+  font-size:calc(13px * var(--fs))}
+body.mob .titlebar .tico{width:20px;height:20px;flex:0 0 20px}
+body.mob .rs{display:none !important}
+body.mob .wbody{margin:0;-webkit-overflow-scrolling:touch}
+body.mob .statusbar{flex:0 0 24px;font-size:calc(11px * var(--fs))}
+/* botão único de voltar, 44px */
+body.mob .tbtns{gap:4px}
+body.mob .tb{width:34px;height:30px}
+body.mob .tb svg{width:13px;height:13px}
+body.mob .tb.mobback{width:auto;min-width:62px;height:32px;gap:6px;font-weight:bold;color:#000;
+  font-size:calc(12px * var(--fs));padding:0 10px}
+body.mob .tb.mobback span{color:#000}
+body.mob .win .tb[data-a="min"],body.mob .win .tb[data-a="max"]{display:none}
+/* com o Voltar na titlebar, o X vira redundancia */
+body.mob .win .tbtns .mobback ~ .tb[data-a="close"]{display:none}
+
+/* ---------- alvos de toque ---------- */
+body.mob .btn{padding:11px 14px;min-width:76px;font-size:calc(12px * var(--fs))}
+body.mob .btn.big{padding:14px 16px;font-size:calc(13px * var(--fs))}
+body.mob .btn.tight{padding:10px 12px;min-width:44px}
+body.mob .sizebtns .btn.tight{min-width:40px;padding:10px 6px}
+body.mob .offer .btn.tight{padding:11px 12px}
+body.mob .qbtn{padding:13px 6px;min-width:60px;font-size:calc(18px * var(--fs))}
+body.mob .mintbig{padding:19px 12px;font-size:calc(14px * var(--fs))}
+body.mob .refbtn{padding:11px 14px}
+body.mob .fold-h{padding:14px 12px}
+body.mob .tab{padding:10px 14px 11px;font-size:calc(12px * var(--fs))}
+body.mob .tab.on{padding:11px 15px 12px}
+body.mob .tab.hubtab{padding:10px 13px 11px}
+body.mob .smi{padding:11px 10px}
+body.mob .ctx-item{padding:12px 18px 12px 8px}
+body.mob .lst.cal td{padding:9px 0}
+body.mob input[type=range]{width:100% !important;height:30px}
+/* nada de zoom automático no iOS: 16px em todo campo */
+body.mob select,body.mob input[type=text],body.mob input[type=number],body.mob textarea{
+  font-size:16px !important;padding:9px 8px}
+input,textarea,select{user-select:text;-webkit-user-select:text}
+
+/* ---------- barra de tarefas ---------- */
+body.mob #taskbar{height:calc(var(--tbh) + var(--safeb));padding:3px 5px var(--safeb);gap:6px}
+body.mob #startbtn{height:42px;padding:0 12px 0 9px;gap:7px;font-size:calc(13px * var(--fs))}
+body.mob #startbtn svg{width:22px;height:22px}
+body.mob #tasks{display:none}
+body.mob #tray{height:42px;flex:1;justify-content:space-around;gap:5px;padding:0 8px}
+body.mob #tray .money{font-size:calc(21px * var(--fs))}
+body.mob #tray .lvl{font-size:calc(11px * var(--fs));padding:3px 6px}
+body.mob #tray .artq{display:none}
+body.mob #m_hypewrap .cap{display:none}
+body.mob #m_hypebar{width:34px;height:11px}
+body.mob #clock{font-size:calc(12px * var(--fs));min-width:auto}
+body.mob #clock.sleepnow{padding:6px 9px}
+/* voltar pra área de trabalho */
+body.mob #mobhome{display:flex;align-items:center;justify-content:center;height:42px;width:46px;
+  background:var(--face);border:0;cursor:pointer;flex:0 0 46px;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+body.mob #mobhome:active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+body.mob #mobhome .n{position:absolute;margin:-22px 0 0 26px;background:var(--blood);color:#fff;
+  font-size:calc(9px * var(--fs));font-weight:bold;padding:0 4px;border:1px solid #000;line-height:13px}
+#mobhome{display:none}
+
+/* ---------- start menu vira bottom sheet ---------- */
+body.mob #startmenu{left:0;right:0;width:auto;bottom:calc(var(--tbh) + var(--safeb));
+  max-height:70svh;overflow:auto;display:none;flex-direction:row}
+body.mob #startmenu.on{display:flex}
+body.mob #smband{flex:0 0 26px}
+body.mob #smitems{flex:1}
+
+/* ---------- HUD fora do caminho ---------- */
+body.mob #hud{display:none !important}
+
+/* ---------- modais ---------- */
+body.mob #modalveil{align-items:start;justify-items:center;padding:8px 6px calc(var(--tbh) + 24px)}
+body.mob #modalveil > *{margin:auto 0}
+body.mob .reveal{width:min(calc(408px * var(--ui)),96vw)}
+body.mob .reveal .row{flex-direction:column;gap:8px}
+body.mob .reveal .row .btn{width:100%}
+body.mob .rv-rar{font-size:calc(11px * var(--fs));white-space:normal;text-align:center;line-height:1.5}
+body.mob .rv-traits{grid-template-columns:1fr}
+body.mob .dr-row span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.mob .dr-row{gap:10px}
+
+/* ---------- balões e toasts não brigam mais ---------- */
+body.mob #thoughts{bottom:calc(var(--tbh) + var(--safeb) + 6px)}
+body.mob #toasts{bottom:calc(var(--tbh) + var(--safeb) + 6px);left:6px;right:6px;align-items:stretch}
+body.mob .toast{max-width:none}
+body.mob .thought{max-width:none}
+body.mob #thoughts.hastoast{bottom:calc(var(--tbh) + var(--safeb) + 76px)}
+
+/* ---------- páginas ---------- */
+body.mob .keyrow{grid-template-columns:1fr}
+body.mob .keyrow > div{flex-direction:row;justify-content:space-between;align-items:baseline}
+body.mob .keyrow .v{font-size:calc(22px * var(--fs))}
+body.mob .iconstats{grid-template-columns:1fr}
+body.mob .pgwrap{padding:0 9px}
+body.mob .supsplit{font-size:calc(11px * var(--fs))}
+
+/* carteira */
+body.mob .nftgrid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr)) !important}
+body.mob .wtoolbar{gap:6px}
+body.mob .wtoolbar .btn{padding:9px 11px;min-width:0}
+body.mob .wtoolbar select{flex:1 1 42%}
+
+/* mercado */
+body.mob .lst td,body.mob .lst th{white-space:nowrap}
+body.mob .lst .hidem{display:none}
+body.mob .offer{flex-wrap:wrap}
+body.mob .offer .oact{flex:1 1 100%;flex-direction:row;justify-content:space-between;align-items:center;
+  margin-top:6px;gap:8px}
+body.mob .offer .oact .btn{flex:1}
+body.mob .shop-item .row{flex-wrap:wrap}
+body.mob .shop-item .btn{flex:1 1 100%}
+
+/* binder */
+body.mob .bwrap{flex-direction:column}
+body.mob .bleft{flex:0 0 auto;max-height:30svh;display:flex;flex-direction:column}
+body.mob .binder{overflow:auto;flex:1;min-height:0}
+body.mob .bwrap{height:100%;min-height:0}
+body.mob .bright{min-height:0;display:flex;flex-direction:column}
+body.mob .blist{grid-template-columns:repeat(auto-fill,minmax(84px,1fr))}
+body.mob .bcard,body.mob .bslot{touch-action:pan-y}
+body.mob .binder{padding:8px}
+body.mob .binder .rings{display:none}
+body.mob .bgrid{grid-template-columns:repeat(3,1fr)}
+body.mob .bright .bhead{padding-right:0;flex-wrap:wrap;gap:6px}
+body.mob .bhead .bnav{order:2;flex:0 0 auto;min-width:56px}
+body.mob .bhead .bpg{order:3;flex:1;text-align:center}
+body.mob .bhead .bnav[data-bnext]{order:4}
+body.mob .bname{order:1;flex:1 1 100%;min-width:0}
+body.mob .bactions{flex-wrap:wrap;gap:6px}
+body.mob .bactions .btn{flex:1 1 30%;min-width:0;padding:11px 4px;font-size:calc(11px * var(--fs))}
+body.mob .dragghost{width:86px}
+
+/* hub: o mercado precisa rolar */
+body.mob .hubbody.sub-market{overflow:auto !important}
+body.mob .hubbody{overflow:auto}
+
+/* doodle do Mr. Kaiju */
+body.mob .doodle-stage .speech{position:static;max-width:none;margin:8px 0 0}
+
+/* login / boot */
+body.mob #boot{display:flex;flex-direction:column;justify-content:flex-end;font-size:calc(13px * var(--fs));padding:14px}
+body.mob .loginbox{width:min(calc(360px * var(--ui)),94vw)}
+body.mob .slotrow{padding:10px}
+body.mob .slotdel{min-width:0;padding:9px 12px}
+
+/* popups e scams cabem na tela */
+body.mob .win.popspam,body.mob .win.scamwin,.dmpop{width:min(calc(300px * var(--ui)),94vw) !important;left:2vw !important}
+
+/* o nome do nivel nao pode virar tres linhas na barra */
+body.mob #tray .lvl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:96px}
+body.mob #tray{gap:7px}
+body.mob #clock{white-space:nowrap}
+/* barra da carteira: texto legivel quando ela fica cheia */
+body.mob .prog b{mix-blend-mode:normal;color:#fff;text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000}
+
+/* ================= ABERTURA / FECHAMENTO DE APP NO CELULAR =================
+   No desktop a janela é pequena e flutua, então um zoom leve funciona.
+   Em tela cheia esse zoom vira "página web escalando" — sem peso nenhum.
+   Aqui o app sobe de dentro da barra de tarefas como uma linha de tubo de TV
+   que se abre: origem embaixo, escala vertical de quase zero até cheio.
+   É o mesmo idioma do power-on do boot, e não passa de 170ms. */
+body.mob #screen > .win.opening{
+  transform-origin:50% 100%;
+  animation:mobwinup .17s cubic-bezier(.13,.86,.26,1) both}
+@keyframes mobwinup{
+  0%  {opacity:.35;transform:translateY(9%) scaleY(.045) scaleX(1.03)}
+  34% {opacity:1}
+  70% {transform:translateY(0) scaleY(1.012) scaleX(1)}
+  100%{opacity:1;transform:translateY(0) scaleY(1) scaleX(1)}}
+/* fecha desabando de volta pra barra, mais rápido do que abre */
+body.mob #screen > .win.closing{
+  transform-origin:50% 100%;
+  animation:mobwindn .125s cubic-bezier(.55,0,.9,.35) forwards}
+@keyframes mobwindn{
+  0%  {opacity:1;transform:none}
+  100%{opacity:.25;transform:translateY(8%) scaleY(.05) scaleX(.99)}}
+/* "mostrar a área de trabalho" desce pela barra, não pro canto inferior esquerdo */
+body.mob #screen > .win.minimizing{
+  transform-origin:50% 100%;
+  animation:mobwinmin .16s cubic-bezier(.55,0,.9,.35) forwards}
+@keyframes mobwinmin{
+  0%  {opacity:1;transform:none}
+  100%{opacity:.2;transform:translateY(10%) scaleY(.04)}}
+/* a titlebar entra com um respiro a mais: dá a sensação de peso caindo no lugar */
+body.mob #screen > .win.opening .titlebar{animation:mobbar .19s cubic-bezier(.13,.86,.26,1) both}
+@keyframes mobbar{0%{opacity:0}40%{opacity:.5}100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  body.mob #screen > .win.opening,body.mob #screen > .win.closing,
+  body.mob #screen > .win.minimizing,body.mob #screen > .win.opening .titlebar{animation-duration:.01s}
+}
+
+/* ================= ESTADOS DE TOQUE =================
+   Sem mouse não existe hover: o estado apertado é o único retorno que sobra.
+   Todo alvo clicável precisa virar o chanfro do Win98 quando o dedo encosta. */
+body.mob .tbtn:active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+body.mob .tbtn:active .tt{transform:translate(1px,1px)}
+/* menu iniciar e menu de contexto: seleção azul do Win98 */
+body.mob .smi:active,body.mob .ctx-item:not(.dis):active{background:var(--navy);color:#fff}
+body.mob .smi:active svg,body.mob .ctx-item:not(.dis):active svg{transform:translate(1px,1px)}
+/* abas */
+body.mob .tab:active:not(.on){background:#b4b4b4;box-shadow:inset 1px 1px 0 var(--shadow),inset -1px 0 0 #0a0a0a,inset -2px 0 0 var(--shadow),inset 0 2px 0 var(--shadow)}
+/* cartões: viram o chanfro pra dentro */
+body.mob .nftcard:active{transform:none;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+body.mob .nftcard:active canvas,body.mob .nftcard:active .nm{transform:translate(1px,1px)}
+body.mob .bcard:active{transform:translateY(1px) scale(.965);
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+body.mob .bslot:active{border-color:var(--lime);background:#1c1409}
+body.mob .bslot:active .sleeve{transform:translate(1px,1px)}
+/* linhas afundadas (ofertas, loja): sem pulo, só a linha acendendo */
+body.mob .offer:active,body.mob .shop-item:not(.owned):active{background:#dbe3f6;
+  box-shadow:inset -1px -1px 0 var(--face-lt),inset 1px 1px 0 var(--shadow),inset -2px -2px 0 #fff,inset 2px 2px 0 #0a0a0a}
+/* sanfonas do site */
+body.mob .fold-h:active{background:rgba(168,232,50,.16);color:var(--lime-hi)}
+body.mob .fold-h:active > *{transform:translate(1px,1px)}
+/* o botão gigante de MINT e os seletores de quantidade precisam afundar de verdade */
+body.mob .mintbig:active:not(:disabled){transform:translateY(5px);box-shadow:0 0 0 #4d7a14;filter:brightness(.93)}
+body.mob .qbtn:not(:disabled):active{transform:translateY(2px);filter:brightness(.82);border-color:var(--lime)}
+body.mob .refbtn:active:not(:disabled){transform:translateY(2px);filter:brightness(.9)}
+/* ícone da área de trabalho: o rótulo também precisa reagir */
+body.mob .dicon:active .lbl{background:var(--navy);color:#fff}
+body.mob .dicon:active .glyph{transform:scale(.88) translateY(1px)}
+
+/* ================= REVELAÇÃO DO MINT =================
+   É o pico emocional do jogo. Numa tela de 393px a arte não pode ficar
+   parada em 248px com sobra dos dois lados. */
+body.mob .reveal .rv-stage{padding:12px 10px;gap:9px}
+body.mob .reveal canvas{max-width:100%;image-rendering:auto}
+/* a pílula da raridade do mint de 1: grande, chapada, gritando */
+body.mob .rv-rar[data-rvrar]{font-size:calc(19px * var(--fs));padding:9px 24px;letter-spacing:3px;
+  line-height:1.2;box-shadow:0 3px 0 rgba(0,0,0,.55),inset 0 -2px 0 rgba(0,0,0,.22),inset 0 2px 0 rgba(255,255,255,.28)}
+body.mob .rv-rar[data-rvrar].pop{animation:mobrarslam .42s cubic-bezier(.16,1.7,.36,1)}
+@keyframes mobrarslam{
+  0%  {transform:scale(2.1);opacity:0;filter:blur(2px)}
+  38% {opacity:1;filter:blur(0)}
+  62% {transform:scale(.9)}
+  80% {transform:scale(1.06)}
+  100%{transform:scale(1)}}
+body.mob .rv-name{font-size:calc(13px * var(--fs))}
+body.mob .rv-race{font-size:calc(13px * var(--fs))}
+/* o brilho de raridade tem que ser visível num aparelho na mão, não um fio de 3px */
+body.mob .rv-shroud.glow canvas{box-shadow:0 0 0 4px var(--rc,#fff),0 0 34px var(--rc,#fff)}
+body.mob .rv-shroud.glow canvas{animation:mobrarglow 1.2s ease-in-out infinite}
+@keyframes mobrarglow{50%{box-shadow:0 0 0 4px var(--rc,#fff),0 0 52px var(--rc,#fff)}}
+/* confete maior: a 3x de DPR um quadrado de 6px some */
+body.mob .cfp{box-shadow:1px 1px 0 rgba(0,0,0,.35)}
+/* o clarão precisa cobrir a tela toda inclusive a barra */
+body.mob #flash{animation:mobfl .3s ease-out forwards}
+@keyframes mobfl{0%{opacity:.92}55%{opacity:.3}100%{opacity:0}}
+
+/* ================= ENTRADA DOS ÍCONES NO BOOT =================
+   Na grade do celular a fila linear vira um rastro chato de cima pra baixo.
+   40-boot.js calcula o atraso em onda diagonal; aqui só damos mais corpo. */
+body.mob .dicon.popin{animation:mobiconpop .3s cubic-bezier(.2,1.55,.35,1) backwards}
+@keyframes mobiconpop{
+  0%  {opacity:0;transform:scale(.35) translateY(16px)}
+  60% {opacity:1}
+  100%{opacity:1;transform:scale(1) translateY(0)}}
+body.mob .dicon.popin .lbl{animation:mobiconlbl .26s ease-out backwards;animation-delay:inherit}
+@keyframes mobiconlbl{0%,42%{opacity:0}100%{opacity:1}}
+
+/* ---------- abrir e fechar app: sobe da barra de tarefas ---------- */
+body.mob .win.opening{animation:mobopen .19s cubic-bezier(.15,.9,.25,1)}
+@keyframes mobopen{from{opacity:.4;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+body.mob .win.closing{animation:mobclose .15s cubic-bezier(.4,0,1,1) forwards}
+@keyframes mobclose{to{opacity:0;transform:translateY(20px) scale(.97)}}
+body.mob .win.minimizing{animation:mobclose .15s cubic-bezier(.4,0,1,1) forwards}
+body.mob .win.restoring{animation:mobopen .19s cubic-bezier(.15,.9,.25,1)}
+/* o toque tem que responder na hora */
+body.mob .btn:active:not(:disabled),body.mob .qbtn:active,body.mob .mintbig:active:not(:disabled),
+body.mob .tab:active,body.mob .smi:active,body.mob .ctx-item:active{filter:brightness(.93)}
+body.mob .nftcard:active,body.mob .bcard:active,body.mob .bslot:active{transform:scale(.96)}
+body.mob .nftcard,body.mob .bcard,body.mob .bslot{transition:transform .09s ease-out}
+body.mob *{-webkit-tap-highlight-color:transparent}
+body.mob .rv-arrow{width:42px;height:70px;font-size:calc(22px * var(--fs))}
+body.mob .rv-th{width:54px;height:60px}
+body.mob .rv-th canvas{width:52px;height:52px}
+body.mob .rv-strip{gap:6px}
+body.mob .rtree{grid-template-columns:repeat(5,1fr);gap:5px}
+body.mob .rnode{padding:9px 2px 7px}
+body.mob .rnode .rn-f{width:30px;height:30px}
+body.mob .ibroot{flex-direction:column}
+body.mob .iblist{flex:0 0 auto;max-height:38svh}
+body.mob .ibrow{padding:12px 10px}
+body.mob .savecode{height:120px}
+/* no celular os widgets ficam empilhados no topo e nao atrapalham os icones */
+body.mob .wgt{width:calc(50vw - 9px) !important;left:auto;right:6px}
+body.mob .wgt canvas{height:var(--wgh,62px)}
+body.mob #wgt_gas canvas{height:var(--wgh,42px)}
+body.mob .gw-pct{font-size:calc(22px * var(--fs))}
+body.mob .wgt .wg-x{width:26px;height:22px}
+body.mob .wgt .wg-tt{padding:5px 4px 5px 6px}
+body.mob .tdacts .btn{padding:14px 14px;font-size:calc(13px * var(--fs))}
+body.mob .pp-m{padding:13px 2px}
+body.mob .pp-step{width:56px}
+body.mob .pp-foot .btn{padding:14px 12px}
+body.mob .wgt .wg-rs{width:26px;height:26px}

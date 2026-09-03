@@ -1,0 +1,43 @@
+KAIJUKAKI GOTTA MINT OUT! - build de desktop (Electron)
+========================================================
+
+O QUE VOCE PRECISA
+  Node.js instalado. Se nao tiver: https://nodejs.org (pega o LTS)
+
+PRIMEIRA VEZ (uma vez so, baixa o Electron, ~200 MB)
+  Abra o PowerShell nesta pasta e rode:
+      npm install
+
+  ATENCAO: esta maquina tem NODE_ENV=production no ambiente. Com isso o npm
+  PULA as dependencias de desenvolvimento em silencio: ele diz "up to date"
+  e nao instala nada. Por isso o electron ficou como dependencia normal aqui.
+  Se algum dia der "up to date" sem criar node_modules, rode:
+      npm install --include=dev
+
+RODAR O JOGO
+      npm start
+
+GERAR O .EXE INSTALAVEL
+      npm run dist
+  Sai em build\  -- um instalador .exe e um .zip portatil.
+
+TECLAS
+  F11  tela cheia
+  F12  console (se der pau, abre e me manda o print)
+
+ONDE FICA O SAVE
+  C:\Users\<voce>\AppData\Roaming\Kaijukaki Gotta Mint Out\saves\save.json
+  Tem backup automatico em save.bak.json.
+  Nao e mais localStorage: limpar cache do navegador nao apaga mais nada.
+
+O QUE MUDOU EM RELACAO A BUILD WEB
+  - As 35 folhas de arte sairam de dentro do HTML e viraram arquivos em
+    app\art\. O index.html caiu de 15 MB pra 1,1 MB.
+  - A arte continua PERMUTADA e sem o KK_REAL. Arquivo em disco e facil de
+    abrir, entao nada aqui revela a ordem do mint de verdade.
+
+O QUE FALTA PRA STEAM (nao e bug, e proximo passo)
+  - As fontes (VT323 e Press Start 2P) ainda vem do Google Fonts pela
+    internet. Pra Steam elas precisam vir embutidas: sem internet, o jogo
+    hoje cai numa fonte substituta.
+  - Steamworks: conquistas e Steam Cloud.

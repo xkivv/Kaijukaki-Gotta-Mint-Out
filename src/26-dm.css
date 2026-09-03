@@ -1,0 +1,260 @@
+/* ==========================================================================
+   KAIJU MESSENGER
+   A aba não tinha UMA linha de CSS: .dmlist e .dmchat eram <div> soltos, então
+   o navegador empilhava tudo e as conversas viravam blocos jogados no topo.
+   Isto aqui é a tela inteira — duas colunas no desktop, uma no celular.
+   Tudo com o piso de 15px e o contraste da regra do projeto.
+   ========================================================================== */
+.dmroot{display:flex;height:100%;min-height:0;gap:0;background:var(--face)}
+
+/* ---------- coluna das conversas ---------- */
+.dmlist{flex:0 1 calc(232px * var(--ui));min-width:calc(150px * var(--ui));max-width:38%;
+  display:flex;flex-direction:column;min-height:0;
+  background:#b4b4b4;box-shadow:inset -1px 0 0 var(--shadow)}
+.dml-h{flex:0 0 auto;display:flex;gap:calc(3px * var(--ui));
+  padding:calc(4px * var(--ui));background:var(--face);
+  box-shadow:inset 0 -1px 0 var(--shadow)}
+.dml-h .btn{flex:1 1 0;min-width:0;font-size:calc(15px * var(--fs));
+  padding:calc(4px * var(--ui)) calc(4px * var(--ui));white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.dml-h .btn.on{background:#a9a9a9;font-weight:bold;
+  box-shadow:inset 1px 1px 0 var(--shadow), inset -1px -1px 0 var(--face-lt)}
+.dml-none{padding:calc(14px * var(--ui)) calc(10px * var(--ui));text-align:center;
+  font-family:var(--uif);font-size:calc(15px * var(--fs));color:#3d3d3d}
+.dml-b{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:calc(3px * var(--ui))}
+
+.dmrow{width:100%;display:flex;align-items:center;text-align:left;
+  gap:calc(6px * var(--ui));
+  background:var(--face);border:0;cursor:pointer;position:relative;
+  margin-bottom:calc(3px * var(--ui));
+  box-shadow:inset 1px 1px 0 var(--face-lt), inset -1px -1px 0 var(--shadow)}
+.dmrow:hover{background:#cbcbcb}
+.dmrow.on{background:var(--navy);
+  box-shadow:inset 1px 1px 0 #4a4ac8, inset -1px -1px 0 #01005a}
+.dmrow.on .dm-n b{color:#fff}
+.dmrow.on .dm-n i{color:#c8d4f0}
+.dm-av{flex:0 0 auto;line-height:0;display:block}
+.dm-n{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:1px}
+.dm-n b{color:#141414;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-n i{color:#3d3d3d;font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* bolinha de confiança: verde gosta, âmbar neutro, vermelho azedou */
+.dm-pip{flex:0 0 auto;width:calc(10px * var(--ui));height:calc(10px * var(--ui));
+  border-radius:50%;box-shadow:0 0 0 1px rgba(0,0,0,.55)}
+.dm-pip.up{background:#4f9c22}.dm-pip.mid{background:#b8940f}.dm-pip.down{background:#a83226}
+/* a etiqueta vai junto do texto da prévia, então o nome fica com a linha
+   inteira e apelido comprido não é cortado */
+.dm-flag{display:inline-block;font-style:normal;
+  background:#4d7a14;color:#eaffc8;font-family:var(--uif);font-weight:bold;
+  font-size:calc(15px * var(--fs));letter-spacing:.5px;line-height:1.35;
+  padding:0 calc(5px * var(--ui));margin-right:calc(5px * var(--ui))}
+.dmrow.on .dm-flag{background:#a8e832;color:#16250a}
+.dm-flag.gift{background:#1f5aa8;color:#e8f0ff}
+.dm-flag.alert{background:#a83226;color:#ffe8e4}
+.dmrow.on .dm-flag.gift{background:#8fc0ff;color:#0a2044}
+.dmrow.on .dm-flag.alert{background:#ff9a8a;color:#3a0c06}
+
+/* ---------- coluna da conversa ---------- */
+.dmchat{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;min-height:0;
+  container-type:inline-size}
+.dm-head{flex:0 0 auto;display:flex;align-items:center;gap:calc(7px * var(--ui));
+  padding:calc(6px * var(--ui)) calc(8px * var(--ui));
+  background:var(--face);box-shadow:inset 0 -1px 0 var(--shadow)}
+.dm-who{display:flex;flex-direction:column;min-width:0;gap:1px}
+.dm-who b{font-size:calc(17px * var(--fs));color:#141414;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-who i{font-style:normal;font-size:calc(15px * var(--fs));color:#3d3d3d;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dm-who .pos{color:#2b6b12;font-weight:bold}
+.dm-who .neg{color:#9a3226;font-weight:bold}
+.dm-who .dim{color:#3d3d3d}
+.dm-back{display:none}
+/* a linha de temperamento saiu da tela e virou tooltip do nome: era mais uma
+   faixa de texto competindo com a conversa */
+.dm-chip{flex:0 0 auto;font-family:var(--uif);font-size:calc(15px * var(--fs));
+  font-weight:bold;color:#5a4208;background:#e8dcae;white-space:nowrap;
+  padding:calc(1px * var(--ui)) calc(7px * var(--ui));
+  box-shadow:inset 1px 1px 0 #fff, inset -1px -1px 0 #b8ab7e}
+.dm-head .btn.tight{flex:0 0 auto;min-width:calc(30px * var(--ui));
+  font-size:calc(15px * var(--fs))}
+
+/* ---------- os balões ---------- */
+/* Quem manda na altura é o RODAPÉ: ele é a parte interativa, e um botão de
+   escolha cortado pela metade é pior que um log curto. O rodapé nunca encolhe;
+   o log fica com o que sobra e rola. */
+.dm-body{flex:1 1 auto;min-height:calc(92px * var(--ui));overflow-y:auto;overflow-x:hidden;
+  padding:calc(9px * var(--ui));background:#8e9a94;
+  box-shadow:inset 1px 1px 0 #5f6a65, inset -1px -1px 0 #b8c2bd;
+  display:flex;flex-direction:column}
+.dm-b{display:flex;align-items:flex-end;gap:calc(5px * var(--ui));max-width:88%}
+.dm-b.me{align-self:flex-end;flex-direction:row-reverse}
+.dm-bav{flex:0 0 auto;line-height:0;opacity:.9}
+.dm-bx{min-width:0;background:#f4f2e8;color:#141414;
+  padding:calc(7px * var(--ui)) calc(9px * var(--ui));
+  box-shadow:inset 1px 1px 0 #ffffff, inset -1px -1px 0 #a8a49a, 2px 2px 0 rgba(0,0,0,.28)}
+.dm-b.me .dm-bx{background:#d8ecc0;box-shadow:inset 1px 1px 0 #ffffff,
+  inset -1px -1px 0 #9ab884, 2px 2px 0 rgba(0,0,0,.28)}
+/* a resposta escolhida deixa marca: dá pra reler a conversa e ver o que você fez */
+.dm-b.me.t-push .dm-bx{background:#f0d8c0;box-shadow:inset 1px 1px 0 #fff,
+  inset -1px -1px 0 #c0a184, 2px 2px 0 rgba(0,0,0,.28)}
+.dm-b.me.t-cold .dm-bx{background:#e6cdc8;box-shadow:inset 1px 1px 0 #fff,
+  inset -1px -1px 0 #b89a94, 2px 2px 0 rgba(0,0,0,.28)}
+.dm-t{font-family:var(--uif);font-size:calc(16px * var(--fs));line-height:1.45;
+  word-break:break-word}
+.dm-when{font-family:var(--uif);font-size:calc(15px * var(--fs));color:#4a4a4a;
+  margin-top:calc(3px * var(--ui))}
+/* anexo suspeito, seed vazada, dinheiro recebido */
+.dm-tag{font-family:var(--uif);font-weight:bold;font-size:calc(15px * var(--fs));
+  line-height:1.35;padding:calc(3px * var(--ui)) calc(6px * var(--ui));
+  margin-bottom:calc(5px * var(--ui))}
+.dm-tag.raw{background:#d8d2c0;color:#3d3d3d}
+.dm-tag.flag{background:#8a2f24;color:#ffe4de}
+.dm-tag.seedtag{background:#8a6a08;color:#fff4d8}
+.dm-bx.sus{box-shadow:inset 0 0 0 2px #8a2f24, inset 1px 1px 0 #fff, 2px 2px 0 rgba(0,0,0,.28)}
+.dm-bx.seed{box-shadow:inset 0 0 0 2px #8a6a08, inset 1px 1px 0 #fff, 2px 2px 0 rgba(0,0,0,.28)}
+.dm-t.mono{font-family:var(--term);font-size:calc(21px * var(--fs));line-height:1.3;
+  color:#2a2000;letter-spacing:.5px;word-break:break-word}
+.dm-money{margin-top:calc(5px * var(--ui));font-family:var(--term);
+  font-size:calc(30px * var(--fs));color:#134a0e;font-weight:bold}
+
+/* o Kaiju que está em jogo, dentro do balão */
+.dm-off{display:flex;align-items:center;gap:calc(7px * var(--ui));flex-wrap:wrap;
+  margin-top:calc(6px * var(--ui));padding:calc(5px * var(--ui));
+  background:#e6e2d4;box-shadow:inset 1px 1px 0 #a8a49a, inset -1px -1px 0 #fff}
+.dm-oart{flex:0 0 auto;display:block;image-rendering:auto;
+  box-shadow:0 0 0 1px #6b6b6b}
+.dm-ol{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.dm-ol b{font-family:var(--term);font-size:calc(21px * var(--fs));color:#1c1c1c}
+.dm-ol i{font-style:normal;font-family:var(--uif);font-size:calc(15px * var(--fs));color:#3d3d3d}
+.dm-op{margin-left:auto;font-family:var(--term);font-size:calc(26px * var(--fs));
+  color:#134a0e;font-weight:bold;white-space:nowrap}
+.dm-oacc{flex:0 0 auto;font-size:calc(15px * var(--fs));font-weight:bold;
+  padding:calc(6px * var(--ui)) calc(12px * var(--ui))}
+.dm-off.dead{opacity:.55;filter:grayscale(.6)}
+.dm-ogone{margin-left:auto;font-family:var(--uif);font-size:calc(15px * var(--fs));
+  color:#8a2f24;font-weight:bold;letter-spacing:1px}
+
+/* ---------- o rodapé: onde a escolha acontece ---------- */
+.dm-foot{flex:0 0 auto;background:var(--face);
+  box-shadow:inset 0 1px 0 var(--face-lt);padding:calc(7px * var(--ui))}
+
+/* DUAS colunas fixas. Antes era auto-fit com mínimo de 158px*--ui: numa janela
+   de 1024 a coluna da conversa fica com ~355px e o auto-fit caía pra UMA
+   coluna, o rodapé ia a 508px de altura e as opções saíam pela borda de baixo
+   da janela. Duas colunas é previsível em qualquer largura. */
+.dmopts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:calc(5px * var(--ui))}
+/* Numa janela de 1024 a coluna da conversa fica com ~355px e duas colunas
+   deixam ~150px por botão — todo rótulo saía cortado. Agora cada escolha é UMA
+   linha, então uma coluna só custa barato em altura e devolve o rótulo
+   inteiro. Container query: quem manda é a largura da conversa, não da tela. */
+@container (max-width: 30em){
+  .dmopts{grid-template-columns:1fr}
+}
+/* UMA LINHA por escolha. Antes eram três (título, efeito, frase) e o rodapé
+   virava um muro. A frase que vai ser dita agora é o tooltip do botão: o que
+   importa na hora de decidir é a ação e o efeito. */
+/* o recheio lateral era 9px de cada lado: com o selo de efeito do lado direito
+   sobravam 56px pro rótulo numa janela padrão e "Post it" já virava "Po...".
+   6px devolvem os 8px que faltavam e a altura do rodapé não muda. */
+.dmopt{display:flex;flex-direction:row;align-items:center;gap:calc(5px * var(--ui));
+  text-align:left;background:var(--face);border:0;cursor:pointer;
+  padding:calc(7px * var(--ui)) calc(6px * var(--ui));
+  box-shadow:inset 1px 1px 0 var(--face-lt), inset -1px -1px 0 var(--shadow),
+             inset 2px 2px 0 var(--white), inset -2px -2px 0 var(--face-dk)}
+.dmopt:hover:not(:disabled){background:#cdcdcd}
+.dmopt:active:not(:disabled){box-shadow:inset 1px 1px 0 var(--shadow), inset -1px -1px 0 var(--face-lt)}
+.dmopt:disabled{opacity:.5;cursor:default}
+.dmopt svg{flex:0 0 auto}
+.dmo-l{flex:1 1 auto;min-width:0;font-family:var(--uif);font-weight:bold;
+  font-size:calc(16px * var(--fs));color:#141414;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dmo-g{flex:0 0 auto;font-family:var(--uif);font-size:calc(15px * var(--fs));
+  color:#3d3d3d;white-space:nowrap}
+.dmo-h svg{flex:0 0 auto;align-self:center}
+.dmo-h i{font-style:normal;font-weight:normal;font-size:calc(15px * var(--fs));color:#3d3d3d}
+
+/* a faixa de cor diz o tom antes de ler: verde relação, âmbar dinheiro,
+   vermelho risco. É o mesmo vocabulário do resto do jogo. */
+.dmopt.warm{border-left:calc(4px * var(--ui)) solid #4f9c22}
+.dmopt.firm{border-left:calc(4px * var(--ui)) solid #b8940f}
+.dmopt.push{border-left:calc(4px * var(--ui)) solid #c8701c}
+.dmopt.hold{border-left:calc(4px * var(--ui)) solid #4a6a8a}
+.dmopt.cold{border-left:calc(4px * var(--ui)) solid #a83226}
+.dm-cap{margin-top:calc(6px * var(--ui));font-family:var(--uif);
+  font-size:calc(15px * var(--fs));color:#3d3d3d}
+
+/* ---------- caixa vazia ---------- */
+.dm-empty{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:calc(8px * var(--ui));text-align:center;
+  padding:calc(20px * var(--ui));font-family:var(--uif)}
+.dm-empty b{font-size:calc(17px * var(--fs));color:#141414}
+.dm-empty span{font-size:calc(15px * var(--fs));line-height:1.5;color:#3d3d3d;
+  max-width:calc(320px * var(--ui))}
+
+/* ---------- celular: uma coluna de cada vez ---------- */
+html body.mob .dmroot .dmlist{flex:1 1 auto;width:100%;max-width:none}
+html body.mob .dmroot .dmchat{display:none}
+html body.mob .dmroot.chatopen .dmlist{display:none}
+html body.mob .dmroot.chatopen .dmchat{display:flex}
+html body.mob .dm-back{display:block;font-size:calc(17px * var(--fs));min-width:calc(40px * var(--ui))}
+/* No celular as opções continuam em DUAS colunas. Em uma coluna o rodapé ia a
+   508px numa tela de 830 e as duas últimas escolhas ficavam fora da janela —
+   e escolha que não dá pra ver não existe. Cada linha já é cortada com
+   reticências, então em 190px continua legível. */
+html body.mob .dmopts{grid-template-columns:repeat(2,minmax(0,1fr));gap:calc(4px * var(--ui))}
+html body.mob .dmopt{padding:calc(5px * var(--ui)) calc(6px * var(--ui))}
+html body.mob .dm-body{min-height:calc(80px * var(--ui))}
+html body.mob .dm-b{max-width:96%}
+
+/* ---------- celular: a conversa é a tela inteira ----------
+   No celular a janela abre maximizada, e o balão de pensamento e os painéis
+   flutuantes (Kaiju Charts, Gas Tracker) ficam por cima de tudo — em cima
+   justamente do preço da oferta e das duas últimas opções de resposta.
+   Enquanto o Messenger está aberto no celular eles saem da frente. Escolha
+   que não dá pra ver não existe. */
+html body.mob:has(.win .dmroot) #thoughts{display:none}
+html body.mob:has(.win .dmroot) .wgt{display:none}
+
+/* ==========================================================================
+   SITUAÇÕES NOVAS
+   Uma troca precisa mostrar os DOIS Kaiju: escolher sem ver os dois é apostar
+   no escuro. O resto aqui é etiqueta — nada abaixo do piso de 15px.
+   ========================================================================== */
+/* Um balão tem no máximo 88% de uma coluna de ~350px: lado a lado, cada Kaiju
+   ficaria com 150px e o rank não caberia. Então os dois ficam EMPILHADOS, com
+   a seta no meio — é a leitura natural de uma troca de cima pra baixo. */
+.dm-swap{display:flex;flex-direction:column;align-items:stretch;
+  gap:calc(3px * var(--ui));margin-top:calc(6px * var(--ui));
+  padding:calc(5px * var(--ui));background:#e6e2d4;
+  box-shadow:inset 1px 1px 0 #a8a49a, inset -1px -1px 0 #fff}
+.dm-sw{display:flex;align-items:center;gap:calc(6px * var(--ui))}
+.dm-swx{align-self:center;font-family:var(--term);font-size:calc(20px * var(--fs));
+  font-weight:bold;color:#1c1c1c;line-height:1}
+.dm-ol em{font-style:normal;font-family:var(--uif);font-weight:bold;
+  font-size:calc(15px * var(--fs))}
+.dm-ol em.get{color:#134a0e}
+.dm-ol em.give{color:#8a2f24}
+.dm-swb{align-self:flex-end;font-family:var(--term);font-weight:bold;
+  font-size:calc(24px * var(--fs));color:#134a0e;white-space:nowrap}
+.dm-swap.dead{opacity:.55;filter:grayscale(.6)}
+/* o pedido pra guardar: mesmo bloco da oferta, sem botão nenhum */
+.dm-okeep{margin-left:auto;font-family:var(--uif);font-weight:bold;
+  font-size:calc(15px * var(--fs));color:#4a4208;white-space:nowrap}
+/* anexo marcado porque um amigo avisou, e não porque o antivírus pegou:
+   a cor é de aviso, não de perigo confirmado */
+.dm-tag.tip{background:#7a5a08;color:#fff4d8}
+.dm-flag.trade{background:#4a3f7a;color:#eae4ff}
+.dm-flag.keep{background:#6b5a14;color:#fff4d8}
+.dmrow.on .dm-flag.trade{background:#b8ace8;color:#151030}
+.dmrow.on .dm-flag.keep{background:#e8d68a;color:#2a2200}
+
+/* ---------- mensageiro de 1999 ---------- */
+.dm-sep{display:flex;align-items:center;gap:calc(8px * var(--ui));margin:calc(6px * var(--ui)) 0;color:#3d3d3d;
+  font-family:var(--uif);font-size:calc(15px * var(--fs))}
+.dm-sep::before,.dm-sep::after{content:'';flex:1;border-top:1px solid #8a8a8a;box-shadow:0 1px 0 #fff}
+.dm-sep span{background:#c0c0c0;padding:0 calc(6px * var(--ui));border:1px solid #808080;box-shadow:inset 1px 1px 0 #fff}
+/* o botao de resposta mostra a frase inteira */
+.dmopt{flex-direction:column;align-items:stretch;text-align:left;gap:calc(3px * var(--ui))}
+.dmo-h{display:flex;align-items:center;gap:calc(5px * var(--ui))}
+.dmo-p{font-family:var(--uif);font-size:calc(15px * var(--fs));font-weight:normal;color:#232323;line-height:1.25;
+  white-space:normal;font-style:italic}

@@ -1,0 +1,135 @@
+/* ==========================================================================
+   TAMANHO DE VISUALIZACAO — Kaki+ (S/M/L) e pagina de mint (S/M/L)
+   O jogo ja tinha isso na Carteira (GRID_SIZES). Aqui a ideia e a mesma, mas
+   quem faz o trabalho e o CSS: o JS so troca uma CLASSE no container.
+   POR QUE ASSIM: o feed do Kaki+ e montado UMA vez e depois so remendado.
+   Se trocar de tamanho redesenhasse o feed, a leitura voltava pro topo — foi
+   esse exato bug que o dono odiou. Classe + CSS nao encosta em nenhum no.
+
+   PISO DE LEITURA: nada que a pessoa LE desce abaixo de calc(15px*var(--fs)).
+   Por isso todo texto do post usa max(15px, Npx * var(--kn)): no "S" o que
+   aperta e o espaco, o avatar e a densidade — a frase para no piso.
+   Este arquivo carrega depois de 16-social.css e de 21b-leg-social.css, e
+   ANTES de 14-mobile.css (por isso as regras de celular vem com body.mob).
+   ========================================================================== */
+
+/* uma copia do valor herdado, com outro nome, pra a pagina poder multiplicar
+   o proprio --ui sem se auto-referenciar (var(--ui) dentro de --ui e ciclo) */
+body{--uib:var(--ui);--fsb:var(--fs)}
+
+/* ==================== KAKI+ ====================
+   --kn e o multiplicador de densidade: avatar, respiro e botao de reagir. */
+.knroot,.dmroot{--kn:1}
+.knroot.kn-s,.dmroot.kn-s{--kn:.8}
+.knroot.kn-m,.dmroot.kn-m{--kn:1}
+.knroot.kn-l,.dmroot.kn-l{--kn:1.26}
+
+/* os tres botoes na barra: letra de gente, nao de rodape */
+.knsize .btn.tight,.pgsize .btn.tight{font-size:calc(15px * var(--fs));
+  padding:calc(3px * var(--ui)) calc(7px * var(--ui));min-width:calc(24px * var(--ui))}
+
+/* ---------- o cartao ---------- */
+.knroot .knfeedwrap{padding:calc(5px * var(--ui) * var(--kn))}
+.knroot .kn-post{padding:calc(7px * var(--ui) * var(--kn)) calc(8px * var(--ui) * var(--kn));
+  margin-bottom:calc(5px * var(--ui) * var(--kn))}
+.knroot .kn-head{gap:calc(6px * var(--ui) * var(--kn));
+  padding-bottom:calc(4px * var(--ui) * var(--kn))}
+/* o avatar e desenho: cresce e encolhe junto com a densidade */
+.knroot .kn-av svg,.dmroot .dmrow>svg,.dmroot .dm-head>svg{
+  width:calc(18px * var(--ui) * var(--kn));height:calc(18px * var(--ui) * var(--kn))}
+.knroot .kn-inner{padding-left:calc(7px * var(--ui) * var(--kn));
+  border-left-width:calc(3px * var(--ui) * var(--kn))}
+.knroot .kn-acts{gap:calc(4px * var(--ui) * var(--kn));
+  padding-top:calc(7px * var(--ui) * var(--kn))}
+.knroot .kn-act{gap:calc(5px * var(--ui) * var(--kn));
+  min-width:calc(54px * var(--ui) * var(--kn));
+  padding:calc(6px * var(--ui) * var(--kn)) calc(10px * var(--ui) * var(--kn))}
+.knroot .kn-gift{margin-top:calc(7px * var(--ui) * var(--kn));
+  padding:calc(6px * var(--ui) * var(--kn)) calc(8px * var(--ui) * var(--kn))}
+/* a foto do Kaiju no post: em "L" ela nunca passa da largura do cartao */
+.knroot .kn-shot{width:min(100%,calc(220px * var(--ui) * var(--kn)))}
+
+/* ---------- o texto, com piso ---------- */
+.knroot .kn-txt{font-size:calc(var(--fs) * max(15px, 17px * var(--kn)))}
+.knroot .kn-head,
+.knroot .kn-who,
+.knroot .kn-when{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)))}
+.knroot .kn-act{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)))}
+.knroot .kn-act b{font-size:calc(var(--fs) * max(15px, 17px * var(--kn)))}
+.knroot .kn-act span{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)));
+  min-width:calc(14px * var(--ui) * var(--kn))}
+.knroot .kn-gift{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)))}
+.knroot .kn-shot .kn-shot-id{font-size:calc(var(--fs) * max(15px, 15px * var(--kn)))}
+
+/* ---------- as mensagens seguem a mesma escolha ---------- */
+.dmroot .dmrow{padding:calc(6px * var(--ui) * var(--kn)) calc(7px * var(--ui) * var(--kn));
+  gap:calc(6px * var(--ui) * var(--kn))}
+.dmroot .dm-n b{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)))}
+.dmroot .dm-n i{font-size:calc(var(--fs) * max(15px, 15px * var(--kn)))}
+.dmroot .dm-head b{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)))}
+.dmroot .dm-t{font-size:calc(var(--fs) * max(15px, 16px * var(--kn)))}
+.dmroot .dm-b{padding:calc(6px * var(--ui) * var(--kn)) calc(8px * var(--ui) * var(--kn))}
+.dmroot .dm-body{gap:calc(6px * var(--ui) * var(--kn))}
+/* o S/M/L cabe na ponta do cabecalho da conversa, depois do "confia em voce".
+   inline-flex porque .dm-head e um bloco simples: um flex ali dentro virava
+   uma linha inteira so pros tres botoes. */
+.dmroot .dm-head .knsize{display:inline-flex;vertical-align:middle;
+  margin-left:calc(6px * var(--ui))}
+
+/* ---------- celular (14-mobile.css carrega depois) ---------- */
+html body.mob .knroot .kn-act{flex:1 1 calc(62px * var(--ui) * var(--kn));
+  min-width:calc(62px * var(--ui) * var(--kn));
+  padding:calc(7px * var(--ui) * var(--kn)) calc(4px * var(--ui) * var(--kn))}
+html body.mob .knroot .kn-post{padding:calc(6px * var(--ui) * var(--kn));
+  margin-bottom:calc(5px * var(--ui) * var(--kn))}
+html body.mob .knsize .btn.tight,html body.mob .pgsize .btn.tight{
+  font-size:calc(15px * var(--fs));padding:calc(6px * var(--ui)) calc(6px * var(--ui));
+  min-width:calc(26px * var(--ui))}
+
+/* ==================== PAGINA DE MINT ====================
+   A pagina inteira e escrita em calc(px * var(--ui)): trocar esse --ui SO
+   dentro de .page escala heroi, esteira, deck, barra de hype e dobras de uma
+   vez, sem tocar em nenhuma das regras do 17-mint.css.
+   O "L" tambem sobe o corpo do texto; o "S" NAO desce nenhuma frase — ele
+   aperta o espaco e encolhe so os numeros gigantes, que sobram de tamanho. */
+.page.pg-s{--ui:calc(var(--uib) * .84)}
+.page.pg-m{--ui:var(--uib)}
+.page.pg-l{--ui:calc(var(--uib) * 1.16);--fs:calc(var(--fsb) * 1.08)}
+
+/* tela baixa em "L": o heroi ja cede espaco no .tight do 17-mint.css, e aqui
+   cede um pouco mais — o botao MINT tem que caber sem a pagina abrir rolada */
+.page.pg-l.tight .hero-mark h1{font-size:calc(16px * var(--fs))}
+.page.pg-l.tight .hero-cell canvas{width:calc(30px * var(--ui))!important;
+  height:calc(30px * var(--ui))!important}
+
+/* "S": os numeroes gigantes cedem. Piso de VT323/Press Start 2P respeitado — numero em
+   --term pede +5px sobre o que o Tahoma pediria, entao ninguem desce de 20. */
+.page.pg-s .sc-num{font-size:calc(21px * var(--fs))}
+.page.pg-s .sc-pct{font-size:calc(20px * var(--fs))}
+.page.pg-s .mintdeck .qbtn,html body.mob .page.pg-s .mintdeck .qbtn{font-size:calc(20px * var(--fs))}
+.page.pg-s .mintdeck .bl-row b{font-size:calc(22px * var(--fs))}
+.page.pg-s .mintdeck .bl-row.total b{font-size:calc(25px * var(--fs))}
+.page.pg-s .mintdeck .mintbig .mb-price{font-size:calc(21px * var(--fs))}
+.page.pg-s .deck-foot{font-size:calc(20px * var(--fs))}
+.page.pg-s .hero-mark h1{font-size:calc(19px * var(--fs))}
+/* com .tight ligado o heroi ja esta cedendo: o "S" nao pode devolver tamanho */
+.page.pg-s.tight .hero-mark h1{font-size:calc(17px * var(--fs))}
+.page.pg-s .istat .is-v{font-size:calc(20px * var(--fs))}
+.page.pg-s .mintdeck .mintbig{min-height:calc(52px * var(--ui))}
+
+/* A tira de "ultimos mints" e uma grade de cinco colunas 1fr, e o minimo
+   automatico de uma coluna 1fr e o conteudo dela. Com a letra maior do "L" as
+   cartas paravam de caber e a pagina ganhava rolagem horizontal. Zerar o
+   minimo da carta deixa a coluna encolher — e a carta corta o que sobrar. */
+.page .lastmints .lm-card{min-width:0;overflow:hidden}
+
+/* ---------- a barra do navegador com tres botoes a mais ----------
+   O campo de endereco e um <input>: como item flex ele nunca encolhe abaixo
+   da largura natural do controle, entao numa janela estreita a URL passava
+   POR CIMA do GO e do proprio S/M/L. min-width:0 devolve o direito de
+   encolher. E no celular a fita inteira nao cabe em 393px: ela quebra em
+   duas linhas, endereco em cima e os botoes embaixo — que e como um
+   navegador de 1999 fazia mesmo. */
+.brtoolbar .addrbar input{min-width:0}
+html body.mob .brtoolbar{flex-wrap:wrap}
+html body.mob .brtoolbar .addrwrap{flex:1 1 calc(150px * var(--ui))}

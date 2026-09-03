@@ -1,0 +1,154 @@
+/* ==========================================================================
+   MODO HISTÓRIA — a caixa de fala e o alvo
+   Regra desta tela: ela NÃO escurece o resto. Quem está sendo ensinado a
+   clicar num ícone precisa conseguir olhar pro ícone enquanto lê.
+   ========================================================================== */
+/* a barra de tarefas mora dentro do #screen e fica em z-index 5000: com
+   bottom:14px a caixa nascia com os botoes atras dela */
+.storybox{position:absolute;left:50%;bottom:calc(42px * var(--ui));
+  transform:translateX(-50%);z-index:4600;
+  width:min(calc(640px * var(--ui)),94vw);
+  display:flex;gap:calc(10px * var(--ui));
+  background:var(--face);padding:calc(10px * var(--ui));
+  box-shadow:inset 1px 1px 0 var(--face-lt), inset -1px -1px 0 var(--shadow),
+             inset 2px 2px 0 var(--white), inset -2px -2px 0 var(--face-dk),
+             0 0 0 1px #000, 5px 6px 0 rgba(0,0,0,.45);
+  transition:transform .18s ease-out, opacity .18s ease-out}
+.storybox.opening{transform:translateX(-50%) translateY(calc(14px * var(--ui)));opacity:0}
+.storybox.closing{transform:translateX(-50%) translateY(calc(8px * var(--ui)));opacity:0}
+
+/* ---------- o retrato ----------
+   A moldura tem tamanho fixo: quando as imagens de verdade chegarem elas
+   entram aqui sem mexer em mais nada da caixa. */
+.sb-por{flex:0 0 auto;width:calc(86px * var(--ui));height:calc(86px * var(--ui));
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background:#0d1a16;
+  box-shadow:inset 1px 1px 0 #000, inset -1px -1px 0 #4a6a5a, 0 0 0 1px #000}
+.sb-por .sb-img{width:100%;height:100%;object-fit:cover;display:block;
+  image-rendering:auto}
+.sb-por .sb-fallback{line-height:0;filter:drop-shadow(2px 2px 0 rgba(0,0,0,.5))}
+
+.sb-main{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;
+  gap:calc(4px * var(--ui))}
+.sb-who{display:flex;align-items:baseline;gap:calc(8px * var(--ui));min-width:0}
+.sb-who b{font-family:var(--uif);font-size:calc(17px * var(--fs));color:#141414;
+  white-space:nowrap}
+.sb-who i{font-style:normal;font-family:var(--uif);font-size:calc(15px * var(--fs));
+  color:#3d3d3d;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sb-txt{flex:1 1 auto;font-family:var(--uif);font-size:calc(17px * var(--fs));
+  line-height:1.5;color:#141414;min-height:calc(52px * var(--ui))}
+.sb-act{display:flex;gap:calc(6px * var(--ui));justify-content:flex-end;
+  align-items:center}
+.sb-next{min-width:calc(96px * var(--ui));font-weight:bold;
+  font-size:calc(16px * var(--fs))}
+.sb-skip{font-size:calc(15px * var(--fs));color:#3d3d3d}
+
+/* ---------- o alvo ----------
+   Um anel que pulsa em volta do que a pessoa acabou de mencionar. Sem seta,
+   sem overlay escuro: só a coisa certa ficando impossível de não ver. */
+.story-point{position:relative;z-index:60}
+.story-point::after{content:'';position:absolute;
+  inset:calc(-6px * var(--ui));pointer-events:none;
+  box-shadow:0 0 0 calc(3px * var(--ui)) #d4ff6b,
+             0 0 calc(18px * var(--ui)) rgba(212,255,107,.75);
+  animation:storyping 1.15s ease-in-out infinite}
+@keyframes storyping{0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.45;transform:scale(1.04)}}
+/* num ícone da mesa o anel acompanha o rótulo, não só o desenho */
+.dicon.story-point::after{inset:calc(-2px * var(--ui))}
+
+/* ---------- celular ---------- */
+html body.mob .storybox{width:calc(100% - 12px);left:6px;transform:none;
+  bottom:calc(46px * var(--ui));gap:calc(8px * var(--ui));
+  padding:calc(8px * var(--ui))}
+html body.mob .storybox.opening,html body.mob .storybox.closing{transform:translateY(10px)}
+html body.mob .sb-por{width:calc(62px * var(--ui));height:calc(62px * var(--ui))}
+html body.mob .sb-txt{font-size:calc(16px * var(--fs));min-height:calc(46px * var(--ui))}
+
+@media (prefers-reduced-motion: reduce){
+  .storybox{transition:none}
+  .story-point::after{animation:none}
+}
+
+/* ==========================================================================
+   A HORA DE APARECER
+   O que a historia entrega nao pode simplesmente estar la no proximo desenho
+   da tela. Chega: entra com animacao e fica com um selo NOVO ate ser aberto.
+   Verde-limao do jogo sobre preto — nada de roxo com amarelo.
+   ========================================================================== */
+.dicon.arriving{animation:storyarrive .52s cubic-bezier(.2,1.4,.35,1) backwards}
+@keyframes storyarrive{
+  0%{opacity:0;transform:scale(.3) translateY(calc(16px * var(--ui)))}
+  62%{opacity:1;transform:scale(1.1) translateY(0)}
+  100%{opacity:1;transform:scale(1) translateY(0)}}
+
+/* o selo mora no canto de cima a ESQUERDA: o contador de mensagens (.badge) e
+   a bolinha de aviso (.ndot) ja moram na direita e no meio */
+.dicon .newtag{position:absolute;top:0;left:0;
+  background:#d4ff6b;color:#101a06;border:1px solid #000;
+  font-family:var(--uif);font-weight:bold;font-size:calc(15px * var(--fs));
+  line-height:1.05;padding:calc(1px * var(--ui)) calc(4px * var(--ui));
+  box-shadow:1px 1px 0 rgba(0,0,0,.55);pointer-events:none;
+  animation:storytagin .4s ease-out .2s backwards}
+@keyframes storytagin{from{opacity:0;transform:scale(.5)}}
+
+/* a aba que nasce dentro de uma janela ja aberta */
+.hubtabs .tab.tab-arrive,.tabs .tab.tab-arrive{animation:storytabin .46s ease-out backwards}
+@keyframes storytabin{from{opacity:0;transform:translateY(calc(7px * var(--ui))) scaleX(.86)}}
+.tab .newdot{display:inline-block;width:calc(8px * var(--ui));height:calc(8px * var(--ui));
+  margin-left:calc(5px * var(--ui));background:#d4ff6b;border:1px solid #000;border-radius:50%;
+  box-shadow:0 0 calc(6px * var(--ui)) rgba(212,255,107,.9);vertical-align:middle;
+  animation:storyping 1.4s ease-in-out infinite}
+
+@media (prefers-reduced-motion: reduce){
+  .dicon.arriving,.dicon .newtag,.hubtabs .tab.tab-arrive,.tabs .tab.tab-arrive{animation:none}
+  .tab .newdot{animation:none}
+}
+
+/* Uma aba sozinha nao e aba. Enquanto a janela so tem uma, a barra de abas
+   nao aparece — o titulo da janela ja diz o que e aquilo. Assim que a segunda
+   chega, a barra nasce inteira (e a nova entra com storytabin). */
+.hubtabs:not(:has(.hubtab ~ .hubtab)){display:none}
+
+/* ---------- celular ----------
+   Na grade do celular o icone e `position:static`, entao qualquer coisa
+   ancorada nele escapava pro canto da area de trabalho — o selo NOVO e, ja de
+   antes, o contador de mensagens. Um ancoradouro proprio resolve os dois sem
+   mexer no tamanho de nada. */
+html body.mob .dicon{position:relative !important}
+html body.mob .dicon .newtag{top:0;left:0}
+
+/* a caixa some enquanto um modal está aberto por cima dela, e volta depois */
+.storybox.behind{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(calc(10px * var(--ui)))}
+html body.mob .storybox.behind{transform:translateY(10px)}
+
+/* ==========================================================================
+   UM CANAL DE CADA VEZ
+   Enquanto um personagem fala, o balão de pensamento some (é a mesma voz
+   interna, e disputar espaço com uma conversa é o que fazia a tela parecer
+   entulhada) e os avisos sobem pra cima da caixa em vez de cobrir os botões.
+   ========================================================================== */
+body.storytalk #thoughts{opacity:0;transition:opacity .16s ease-out}
+body.storytalk #toasts{bottom:calc(190px * var(--ui));transition:bottom .18s ease-out}
+html body.mob.storytalk #toasts{bottom:calc(178px * var(--ui))}
+#toasts{transition:bottom .18s ease-out}
+
+/* ---------- o dialogo de download ---------- */
+.dlwin{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);z-index:5500;
+  width:min(calc(420px * var(--ui)),92vw);opacity:1;transition:opacity .18s,transform .18s}
+.dlwin.opening,.dlwin.closing{opacity:0;transform:translate(-50%,-46%)}
+.dl-body{background:var(--face);padding:calc(10px * var(--ui)) calc(12px * var(--ui)) calc(8px * var(--ui))}
+.dl-row{display:flex;align-items:center;gap:calc(10px * var(--ui));margin-bottom:calc(8px * var(--ui))}
+.dl-ico{width:calc(40px * var(--ui));height:calc(40px * var(--ui));flex:none}
+.dl-txt b{font-size:calc(15px * var(--fs));display:block}
+.dl-from{font-size:calc(15px * var(--fs));color:#3d3d3d}
+.dl-anim{height:calc(22px * var(--ui));display:flex;align-items:center;gap:6px;margin:calc(4px * var(--ui)) 0;overflow:hidden}
+.dl-anim i{display:block;width:calc(14px * var(--ui));height:calc(10px * var(--ui));background:#ffffcc;border:1px solid #000;
+  animation:dlfly 1.1s linear infinite}
+.dl-anim i:nth-child(2){animation-delay:.36s}.dl-anim i:nth-child(3){animation-delay:.72s}
+.dl-anim.done i{animation:none;opacity:.35}
+@keyframes dlfly{0%{transform:translateX(0)}100%{transform:translateX(calc(380px * var(--ui)))}}
+.dl-prog{height:calc(18px * var(--ui))}
+.dl-prog i{background:var(--navy);display:block;height:100%;transition:width .12s linear}
+.dl-meta{font-size:calc(15px * var(--fs));margin-top:calc(6px * var(--ui));color:#141414}
+.dl-foot{margin-top:calc(6px * var(--ui));font-size:calc(15px * var(--fs));color:#3d3d3d}

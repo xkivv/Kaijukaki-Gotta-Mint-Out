@@ -1,0 +1,94 @@
+/* ==========================================================================
+   LEGIBILIDADE — a regra numero um do projeto
+   Nada que uma pessoa PRECISA LER pode ficar abaixo de calc(15px * var(--fs)).
+   Este arquivo carrega DEPOIS de 12-apps.css e 13-fx.css, entao e aqui que a
+   gente conserta os tamanhos presos naqueles dois sem mexer neles.
+   VT323 (--term) e Press Start 2P (--pix) desenham bem menores que o nominal:
+   numero em --term pede +5px sobre o que o Tahoma pediria, e texto corrido
+   NUNCA usa --pix nem --term.
+   ========================================================================== */
+
+/* ---------- navegador: a barra de endereco e a lista de sugestoes ---------- */
+.brtoolbar .addrbar input{font-size:calc(15px * var(--fs));padding:calc(3px * var(--ui))}
+.addr-drop .ad-item{font-size:calc(15px * var(--fs));padding:calc(5px * var(--ui)) calc(7px * var(--ui))}
+.win .statusbar{font-size:calc(15px * var(--fs));flex:0 0 calc(25px * var(--ui))}
+.win .menubar{font-size:calc(15px * var(--fs))}
+
+/* ---------- a pagina do mint ---------- */
+/* .btn vale 11px no sistema inteiro; dentro da pagina (POST ON KAKI+, TAKE ME
+   BACK, RETRY) isso e texto que o jogador le */
+.page .btn{font-size:calc(15px * var(--fs))}
+.page .fchev{font-size:calc(15px * var(--fs))}
+/* .tiny vale 10px no app inteiro; dentro da pagina isso e ilegivel */
+.page .tiny{font-size:calc(15px * var(--fs));line-height:1.55}
+.page .reflock,.page .refbtn{font-size:calc(15px * var(--fs))}
+.page .reflink input{font-size:calc(19px * var(--fs))}
+/* o scanner da fila: rotulo, barra e porcentagem */
+.page .qo-row{font-size:calc(15px * var(--fs))}
+.page .qo-row>span{flex:0 0 calc(132px * var(--ui))}
+.page .qo-row>b{flex:0 0 calc(46px * var(--ui));font-family:var(--term);font-size:calc(20px * var(--fs))}
+.page .qo-bar{height:calc(12px * var(--ui))}
+/* discagem e queda de conexao */
+.page .loadtxt{font-size:calc(23px * var(--fs))}
+.page .loadhost{font-size:calc(18px * var(--fs))}
+.page .loadmodem{font-size:calc(18px * var(--fs))}
+.page .drop-m{font-size:calc(15px * var(--fs))}
+.page .drop-url{font-size:calc(19px * var(--fs))}
+.page .istat .is-k{font-size:calc(15px * var(--fs))}
+.page .istat .is-v{font-size:calc(22px * var(--fs))}
+.page .foldtxt{font-size:calc(15px * var(--fs))}
+/* 14-mobile.css carrega depois e prende .qbtn/.mintbig no celular: dois niveis
+   de classe aqui ganham daquele body.mob .qbtn de um nivel so */
+body.mob .mintdeck .qbtn{font-size:calc(23px * var(--fs))}
+body.mob .mintdeck .mintbig .mb-q{font-size:calc(16px * var(--fs))}
+
+/* ---------- KAIJU CHARTS: dinheiro e floor ---------- */
+/* era o preco grande em 20px de VT323 com a variacao em 11px de Tahoma; o
+   dono reclamou desse exato canto. O canvas e tratado no 41-app-chart.js. */
+.chart-top{font-size:calc(15px * var(--fs))}
+.ch-pair{font-family:var(--uif);font-weight:bold;font-size:calc(15px * var(--fs));letter-spacing:.5px}
+.ch-last b{font-size:calc(27px * var(--fs))}
+.ch-last .up,.ch-last .down{font-size:calc(16px * var(--fs))}
+.chart-legend{font-size:calc(15px * var(--fs));gap:calc(12px * var(--ui))}
+.chart-legend b{font-size:calc(20px * var(--fs))}
+.ch-tip{font-size:calc(19px * var(--fs))}
+
+/* ---------- o painelzinho de grafico na area de trabalho ----------
+   "24 candles" e "$3.48 +4.3%" viviam em 10px de VT323 — o print que veio do
+   dono era exatamente isso. */
+.wgt .wg-tt{font-size:calc(15px * var(--fs))}
+.wgt .wg-foot{font-size:calc(20px * var(--fs))}
+.gw-cash{font-size:calc(20px * var(--fs))}
+
+/* ---------- o celular carrega DEPOIS: precisa de um nivel a mais ----------
+   14-mobile.css tem body.mob .btn e body.mob .statusbar; sem a classe extra
+   aqui, o celular voltava pros 11/12px. */
+body.mob .win .statusbar{font-size:calc(15px * var(--fs));flex:0 0 calc(27px * var(--ui))}
+body.mob .page .btn{font-size:calc(15px * var(--fs))}
+.pulldet .btn,body.mob .pulldet .btn,body.mob .pulldet .btn.big{font-size:calc(15px * var(--fs))}
+
+/* o GO da barra de endereco do navegador — ultimo texto do jogo abaixo da regua */
+.brtoolbar .btn.tight.go{font-size:calc(15px * var(--fs));
+  padding:calc(4px * var(--ui)) calc(11px * var(--ui))}
+
+/* ---------- Mr. Kaiju numa tela baixa ----------
+   Em 1024x700 o balão de pensamento do canto (que é do desktop, não da janela)
+   caía exatamente em cima do PAGAR / NÃO TENHO. O botão continuava clicável,
+   mas ninguém clica no que não vê. Enquanto o Mr. Kaiju está aberto o balão do
+   canto some — ele já fala pela boca dele, dentro da própria janela. */
+body:has(.win.danger) #thoughts{display:none}
+/* e o desenho dele comia metade de uma tela de 700px: a fatura precisa de mais
+   linhas visíveis que o retrato */
+@media (max-height:780px){
+  .win.danger .doodle-stage{max-height:calc(210px * var(--ui));overflow:hidden}
+  .win.danger .doodle-stage canvas{object-fit:cover;object-position:top center}
+}
+
+/* carta do "your last mints" que ja foi vendida: continua no registro, mas
+   descolorida e carimbada, pra ninguem achar que ainda esta na carteira */
+.lm-card.gone{position:relative;opacity:.62}
+.lm-card.gone .lm-art{filter:grayscale(.72)}
+.lm-card.gone .lm-gone{position:absolute;left:50%;top:calc(34% );transform:translate(-50%,-50%) rotate(-11deg);
+  background:rgba(20,20,20,.82);color:#e8e8e8;font-family:var(--uif);font-weight:bold;
+  font-size:calc(15px * var(--fs));letter-spacing:2px;padding:calc(2px * var(--ui)) calc(9px * var(--ui));
+  box-shadow:0 0 0 2px rgba(232,232,232,.55);pointer-events:none;white-space:nowrap}

@@ -1,0 +1,27 @@
+/* ==========================================================================
+   MISSOES — o "claimed" ficava EM CIMA da recompensa
+   .kzg-b e .kzg-done eram position:absolute;right:0, exatamente onde o
+   .kzg-r ("+$27.00") ja estava. Os dois textos empilhavam no mesmo pixel.
+   Agora tudo vive na linha, e recompensa e "claimed" nunca coexistem:
+   pago = so "claimed"; nao pago = valor (+ botao, se der pra pegar).
+   ========================================================================== */
+.kzg-top{align-items:center;gap:calc(7px * var(--ui));
+  font-size:calc(15px * var(--fs))}
+.kzg-top .grow{flex:1}
+.kzg-n{color:#3a3a3a;min-width:0}
+.kzg-r{position:static;flex:0 0 auto;color:#7a5a08;font-weight:bold;
+  font-family:var(--term);font-size:calc(20px * var(--fs));white-space:nowrap}
+.kzg-b{position:static;flex:0 0 auto;background:#e8c060;
+  font-size:calc(15px * var(--fs));white-space:nowrap;
+  padding:calc(3px * var(--ui)) calc(10px * var(--ui))}
+.kzg-done{position:static;flex:0 0 auto;font-size:calc(15px * var(--fs));
+  color:#2f6b3a;font-weight:bold;white-space:nowrap;
+  padding:calc(2px * var(--ui)) calc(8px * var(--ui));background:#dfeedf;
+  box-shadow:inset 0 0 0 1px #9dbf9d}
+/* a barrinha e o rotulo dela tambem estavam ilegiveis */
+.kzg-bar{height:calc(17px * var(--ui))}
+.kzg-bar b{font-size:calc(14px * var(--fs));color:#1a1a1a;font-family:var(--term)}
+.kzgoal.got{opacity:.72}
+.kzc-h,.kzactive,.kzused span{font-size:calc(15px * var(--fs))}
+.kzactive b{font-size:calc(20px * var(--fs))}
+.kzc-s{font-size:calc(15px * var(--fs))}

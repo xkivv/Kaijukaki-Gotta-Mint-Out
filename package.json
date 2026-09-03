@@ -1,0 +1,15 @@
+{
+  "name": "kaijukaki-gotta-mint-out",
+  "version": "1.7.0",
+  "description": "Kaijukaki: Gotta Mint Out! — simulador de desktop Win98. Jogo HTML single-file, montado por build.sh.",
+  "private": true,
+  "license": "UNLICENSED",
+  "author": "Oekaki Connect",
+  "scripts": {
+    "build": "bash build.sh",
+    "leg": "node tools/leg2.js 1366 900"
+  },
+  "devDependencies": {
+    "playwright": "^1.40.0"
+  }
+}

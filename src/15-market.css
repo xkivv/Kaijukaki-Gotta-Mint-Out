@@ -1,0 +1,269 @@
+/* ================= MERCADO =================
+   Carrega depois de 12-apps.css: o que estiver aqui manda.
+   Regra da casa: nada de px pelado, tudo passa por calc(... * var(--ui)). */
+
+/* ---------- 1. a tag do binder saiu de cima do BUY ----------
+   Antes era position:absolute com bottom fixo e, em qualquer --ui, caia bem
+   em cima do botao de comprar. Agora a carta e uma coluna: id, preco, faixa
+   do binder e BUY, nessa ordem, sem ninguem se sobrepor. A faixa tem altura
+   fixa e as cartas sem tag ganham uma faixa invisivel do mesmo tamanho, pra
+   grade nao ficar com carta alta e carta baixa. */
+.mkcard{display:flex;flex-direction:column}
+.mkcard > .mk-art{flex:0 0 auto}
+.mkcard .mk-p{margin:calc(1px * var(--ui)) 0 calc(4px * var(--ui))}
+.mkcard .mk-bflag{
+  position:static;display:block;
+  margin:auto 0 calc(4px * var(--ui));      /* auto em cima: cola no rodape da carta */
+  height:calc(16px * var(--ui));line-height:calc(16px * var(--ui));
+  padding:0 calc(4px * var(--ui));
+  font-size:calc(9px * var(--fs));letter-spacing:.5px;font-weight:bold;text-align:center;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+  box-shadow:inset -1px -1px 0 rgba(0,0,0,.35),inset 1px 1px 0 rgba(255,255,255,.25)}
+.mkcard .mk-bflag.void{visibility:hidden;background:none;box-shadow:none}
+.mkcard .mk-buy{flex:0 0 auto}
+
+/* ---------- 2. o sweep desceu pro rodape ----------
+   A grade e a primeira coisa que se ve. O corpo da aba virou o scroller da
+   janela (antes o hubbody cortava a lista fora e nada rolava) e a barra do
+   sweep fica grudada no fim dele: fechada e uma barrinha fina, aberta cresce
+   PRA CIMA por cima da grade. */
+.mkroot{height:100%}
+.mkroot > .tabbody{flex:1 1 auto;min-height:0;overflow:auto;position:relative}
+.mkgrid{margin-bottom:calc(4px * var(--ui))}
+.fold.mksweep{
+  /* bottom:-9px porque o .tabbody tem 9px de padding: sem isso a barra
+     parava 9px acima do fundo e a grade aparecia por baixo dela */
+  position:sticky;bottom:-9px;z-index:8;
+  margin:calc(8px * var(--ui)) -9px -9px;    /* -9px come o padding do .tabbody */
+  border:0;background:#131f08;
+  box-shadow:inset 0 1px 0 var(--lime-deep),0 calc(-3px * var(--ui)) calc(5px * var(--ui)) rgba(0,0,0,.45)}
+.fold.mksweep .fold-h{padding:calc(7px * var(--ui)) calc(10px * var(--ui))}
+.fold.mksweep .sw-sum{margin-left:auto;font-family:var(--term);
+  font-size:calc(13px * var(--fs));color:#9fbf6a;white-space:nowrap}
+.fold.mksweep.open .sw-sum{color:#d4ff6b}
+.fold.mksweep .fold-b{
+  padding:0 calc(10px * var(--ui)) calc(10px * var(--ui));
+  max-height:min(calc(300px * var(--ui)),46vh);overflow:auto;
+  box-shadow:inset 0 1px 0 rgba(168,232,50,.16)}
+/* no celular a janela inteira rola: barra grudada so atrapalharia */
+body.mob .mkroot{height:auto;min-height:100%}
+body.mob .mkroot > .tabbody{overflow:visible}
+body.mob .fold.mksweep{position:static;margin:calc(8px * var(--ui)) 0 0}
+
+/* ---------- 3. ofertas: arte nitida e tamanho a escolha ----------
+   O canvas e desenhado no tamanho real de tela (x devicePixelRatio) la no JS;
+   aqui so reservamos o espaco certo pro flex nao brigar com ele. */
+.offhead{display:flex;align-items:center;flex-wrap:wrap;gap:calc(7px * var(--ui));
+  margin-bottom:calc(8px * var(--ui));padding-bottom:calc(6px * var(--ui));
+  box-shadow:inset 0 -1px 0 var(--shadow),0 1px 0 #fff}
+.offhead .osz{display:flex;gap:2px}
+.offhead .osz .btn{min-width:0;padding:calc(2px * var(--ui)) calc(9px * var(--ui));
+  font-weight:bold;font-family:var(--mono)}
+.offhead .osz .btn.on{font-weight:bold;background:#d0d0d0}
+
+.offwrap{--oa:calc(58px * var(--ui))}
+.offwrap.os-m{--oa:calc(92px * var(--ui))}
+.offwrap.os-l{--oa:calc(140px * var(--ui))}
+/* moldura afundada por FORA do canvas: inset em canvas fica debaixo do
+   bitmap e nao aparece */
+.offwrap .offer > canvas{flex:0 0 var(--oa);width:var(--oa);height:var(--oa);
+  image-rendering:auto;background:#111;
+  box-shadow:-1px -1px 0 #0a0a0a,-2px -2px 0 var(--shadow),1px 1px 0 #fff,2px 2px 0 var(--face-lt)}
+.offwrap .offer .o-sp{flex:0 0 var(--oa)}
+.offwrap .offer .oi{align-self:center}
+.offer .oact{flex:0 0 auto;text-align:right}
+.offer .o-price{color:#0a4d24;font-size:calc(15px * var(--fs))}
+.offer .o-btns{display:flex;justify-content:flex-end;gap:calc(4px * var(--ui));
+  margin-top:calc(4px * var(--ui))}
+
+/* L: a arte fica grande em cima, a ficha embaixo e o preco + botoes num
+   rodape com sulco, igual caixa de dialogo do 98 */
+.offwrap.os-l .offer.has-art{flex-direction:column;align-items:stretch;
+  gap:calc(6px * var(--ui))}
+.offwrap.os-l .offer.has-art > canvas{align-self:center}
+.offwrap.os-l .offer.has-art .oi{align-self:stretch}
+.offwrap.os-l .offer.has-art .oact{display:flex;align-items:center;
+  justify-content:flex-end;gap:calc(12px * var(--ui));
+  padding-top:calc(7px * var(--ui));
+  box-shadow:inset 0 1px 0 var(--shadow),inset 0 2px 0 #fff}
+.offwrap.os-l .offer.has-art .o-price{font-size:calc(20px * var(--fs))}
+.offwrap.os-l .offer.has-art .o-btns{margin-top:0}
+.offwrap.os-l .offer .o-sp{display:none}
+
+/* o cabecalho da guerra de lances ("2 buyers want Kaiju #3485") vinha em
+   #7a5510 sobre o cinza da janela: 3.68:1, abaixo dos 4.5:1 da regra. So
+   aparece quando dois compradores disputam o mesmo Kaiju, por isso ninguem
+   tinha tropecado nele ainda. Mesmo ambar, dois tons mais escuro: 5.17:1. */
+.ogroup .og-h{color:#5e4106}
+
+/* a frase de quem manda a offer era vermelha e italica, e ficava melhor:
+   e a unica coisa na linha que uma PESSOA escreveu. */
+.offer .o-line{font-style:italic;color:#b0301a}
+.offer.best .o-line{color:#9a2410}
+
+/* ---------- 4. a barra da colecao, no topo do mercado ----------
+   Cinco colunas: rotulo miudo em maiusculas em cima, numero grande embaixo.
+   A grade e sempre de cinco colunas de largura igual e o ROTULO pode quebrar
+   em duas linhas — assim a barra encolhe com a janela em vez de estourar pra
+   fora dela. Como as colunas do grid esticam todas na mesma altura e cada
+   coluna tem uma linha elastica em cima, os cinco numeros ficam alinhados na
+   mesma base mesmo com rotulo de uma ou de duas linhas. */
+.mkstatswrap{flex:0 0 auto;container-type:inline-size;
+  /* 1em daqui = o piso de legibilidade. As consultas la embaixo sao em em, e
+     por isso os pontos de quebra acompanham --fs e --ui sem numero magico. */
+  font-size:calc(15px * var(--fs))}
+.mkstats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  row-gap:calc(6px * var(--ui));
+  margin:0 0 calc(7px * var(--ui));
+  padding:calc(6px * var(--ui)) calc(2px * var(--ui));
+  background:#131f08;
+  box-shadow:inset -1px -1px 0 #2c4416,inset 1px 1px 0 #050a02,0 1px 0 #fff}
+.mkstats .ms-c{display:grid;grid-template-rows:1fr auto;align-items:end;justify-items:center;
+  gap:calc(3px * var(--ui));padding:0 calc(5px * var(--ui));text-align:center;min-width:0}
+.mkstats .ms-c + .ms-c{box-shadow:inset 1px 0 0 rgba(168,232,50,.20)}
+.mkstats .ms-k{align-self:end;font-family:var(--uif);font-size:calc(15px * var(--fs));
+  line-height:1.15;letter-spacing:.5px;color:#9fbf6a;overflow-wrap:break-word}
+/* VT323 desenha bem menor que o nominal: numero grande pede 24, nao 15 */
+.mkstats .ms-v{font-family:var(--term);font-size:calc(24px * var(--fs));line-height:1;
+  color:#d4ff6b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.mkstats .ms-v.up{color:#8ef0b2}
+.mkstats .ms-v.down{color:#ff8a78}
+/* Quantas colunas cabem e decidido pela LARGURA DA BARRA, nao pela da tela:
+   a mesma janela pode estar espremida num canto de 1024 e larga em 1366, e o
+   celular e so mais um caso estreito. Cinco colunas so quando cabe o numero
+   inteiro em cada uma; senao 3 + 2, e no celular 2 + 2 + 1. */
+@container (min-width:25em){
+  .mkstats{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@container (min-width:42em){
+  .mkstats{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+
+/* ---------- 5. a fita: quem acabou de comprar ----------
+   Altura fixa DE PROPOSITO: a linha troca de texto o tempo todo e nada pode
+   empurrar a grade pra baixo enquanto o jogador esta lendo ela. */
+.mktape{display:flex;align-items:center;gap:calc(7px * var(--ui));
+  min-height:calc(28px * var(--ui));
+  margin:0 0 calc(7px * var(--ui));padding:calc(3px * var(--ui)) calc(9px * var(--ui));
+  background:#131f08;color:#cfe8a8;font-size:calc(15px * var(--fs));
+  box-shadow:inset 1px 1px 0 #050a02,inset -1px -1px 0 #2c4416}
+.mktape .mt-dot{flex:0 0 calc(9px * var(--ui));height:calc(9px * var(--ui));
+  background:#4d7a14;border-radius:50%}
+.mktape .mt-txt{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.mktape.hit .mt-txt{animation:mtin .45s ease-out}
+.mktape.hit .mt-dot{animation:mtdot .7s ease-out}
+@keyframes mtin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+@keyframes mtdot{0%{background:#d4ff6b;transform:scale(1.8)}100%{background:#4d7a14;transform:none}}
+/* a carta que alguem levou: um brilho curto e some. So ela sai do DOM. */
+.mkcard.sold{pointer-events:none;animation:mksold .42s ease-in forwards}
+@keyframes mksold{
+  0%{transform:none;filter:none}
+  26%{transform:scale(1.05);filter:brightness(1.4)}
+  100%{opacity:0;transform:scale(.78)}}
+
+/* ---------- 6. lances na COLECAO INTEIRA ----------
+   Ficam em cima das offers normais: sao poucos, valem menos que o floor e nao
+   apontam pra Kaiju nenhum — quem escolhe a peca e o jogador. */
+.cbwrap{margin-bottom:calc(11px * var(--ui))}
+.cbhead{display:flex;flex-wrap:wrap;align-items:baseline;
+  gap:0 calc(9px * var(--ui));background:#131f08;
+  padding:calc(6px * var(--ui)) calc(10px * var(--ui));
+  box-shadow:inset -1px -1px 0 #2c4416,inset 1px 1px 0 #050a02}
+.cbhead .cb-h-t{font-family:var(--uif);font-weight:bold;letter-spacing:1px;
+  font-size:calc(15px * var(--fs));color:#d4ff6b;white-space:nowrap}
+.cbhead .cb-h-s{font-size:calc(15px * var(--fs));color:#9fbf6a;line-height:1.4}
+.cb-empty{background:#fff;color:#3a3a3a;line-height:1.5;
+  padding:calc(11px * var(--ui));font-size:calc(15px * var(--fs));
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.cbid{display:flex;flex-wrap:wrap;align-items:center;gap:calc(9px * var(--ui));background:#fff;
+  padding:calc(9px * var(--ui));margin-bottom:calc(6px * var(--ui));
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.cbid:hover{background:#f4f7ff}
+.cbid .cb-ic{flex:0 0 auto;display:block}
+/* numa janela estreita os tres botoes nao cabem ao lado da ficha: em vez de
+   espremer a frase em tres linhas, o preco e os botoes descem inteiros pra
+   uma segunda linha, encostados a direita */
+.cbid .cb-i{flex:1 1 calc(190px * var(--ui));min-width:0}
+.cbid .cb-who{font-weight:bold;font-size:calc(15px * var(--fs));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cbid .cb-sub{font-size:calc(15px * var(--fs));color:#3a3a3a;line-height:1.45}
+.cbid .cb-act{flex:0 1 auto;margin-left:auto;text-align:right}
+.cbid .cb-p{font-family:var(--term);font-size:calc(22px * var(--fs));color:#0a4d24}
+.cbid .cb-btns{display:flex;flex-wrap:wrap;justify-content:flex-end;
+  gap:calc(4px * var(--ui));margin-top:calc(4px * var(--ui))}
+.cbid.new{animation:oin .32s cubic-bezier(.2,1.3,.4,1)}
+.cbid.gone{animation:oout .25s ease-in forwards}
+
+/* a escolha da peca: o preco e o mesmo pra qualquer uma, entao a unica
+   pergunta e "qual delas vale menos que isso" — verde ganha, vermelho perde */
+.cbpick-h{font-size:calc(15px * var(--fs));line-height:1.55;
+  margin-bottom:calc(9px * var(--ui))}
+.cbpick{display:grid;gap:calc(6px * var(--ui));
+  grid-template-columns:repeat(auto-fill,minmax(calc(86px * var(--ui)),1fr));
+  max-height:min(calc(330px * var(--ui)),50vh);overflow:auto;
+  padding:calc(5px * var(--ui));background:#8a8a8a}
+.cbp-c{background:#e4e4e4;padding:calc(5px * var(--ui));text-align:center;cursor:pointer;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+.cbp-c:hover{background:#f4f7ff}
+.cbp-c canvas{width:100%;height:auto;aspect-ratio:1;display:block;
+  image-rendering:auto;background:#111}
+.cbp-c .cbp-id{font-family:var(--term);font-size:calc(20px * var(--fs));
+  color:#333;line-height:1.15;margin-top:calc(3px * var(--ui))}
+.cbp-c .cbp-v{font-size:calc(15px * var(--fs));line-height:1.25}
+.cbp-c.good .cbp-v{color:#0a4d24;font-weight:bold}
+.cbp-c.bad .cbp-v{color:#8c1414}
+
+/* ==========================================================================
+   O GAS DE LISTAR, ANTES DE LISTAR
+   Reclamacao do dono: "a precificacao do gas nao aparece quanto o usuario vai
+   pagar pra listar antes de listar, so quando esta listando." Listar e uma
+   assinatura na chain e queima gas de verdade (listFee), so que o numero so
+   aparecia dentro da tela de assinatura — depois da decisao.
+   Regra da casa: MENOS coisa na tela. Entao nao entra caixa nova em lugar
+   nenhum. O numero entra dentro de um elemento que ja existia:
+     · ficha do Kaiju  -> dentro do proprio botao "List for sale" (.bgas)
+     · painel de preco -> uma linha ao lado do "% vs fair" (.pp-gas)
+     · LIST ALL        -> no lugar da linha de hover que so repetia o total
+   A cor segue o humor do gas (gm-cheap/ok/high/insane), entao gas violento
+   se ve sem ler. Todos os tons foram medidos em AA sobre o cinza da janela.
+   ========================================================================== */
+.bgas,.pp-gas,.lagas{font-style:normal;font-weight:normal;color:#474747}
+.bgas.gm-cheap,.pp-gas.gm-cheap,.lagas.gm-cheap{color:#17471f}
+.bgas.gm-high,.pp-gas.gm-high,.lagas.gm-high{color:#5f3f00}
+.bgas.gm-insane,.pp-gas.gm-insane,.lagas.gm-insane{color:#8a1010;font-weight:bold}
+
+/* o rotulo do botao ja tem icone + frase: o gas vem depois, mais apagado, e
+   quebra pra segunda linha em vez de ser cortado quando a tela e estreita */
+.tdacts .btn{flex-wrap:wrap}
+.bgas{white-space:nowrap}
+
+/* a linha do painel de preco fica colada no "% vs fair": o jogador esta
+   olhando pra esse canto enquanto digita o preco */
+.pp-gas{min-height:calc(16px * var(--ui));text-align:center;
+  margin-top:calc(2px * var(--ui));margin-bottom:calc(6px * var(--ui))}
+
+.lagas{flex:1 1 auto;min-width:0;line-height:1.45}
+
+/* ---------- a conta do lote num fundo CLARO ----------
+   .bill nasceu na pagina do mint, que e escura: verde-claro sobre preto. Na
+   janelinha de listar em lote o mesmo bloco caia sobre cinza #c0c0c0 e o
+   numero ficava em 1,37:1 — praticamente invisivel. Aqui ele vira um painel
+   afundado branco com letra preta, bevel do Win98 igual ao resto. */
+.bill.lightbill{background:#fff;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow),
+             inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 #0a0a0a}
+.bill.lightbill .bl-row{color:#000}
+.bill.lightbill .bl-row + .bl-row{box-shadow:inset 0 1px 0 #cfcfcf}
+.bill.lightbill .bl-row b{color:#123}
+.bill.lightbill .bl-row i{color:#474747}
+.bill.lightbill .bl-row.gas b{color:#7a5200}
+.bill.lightbill .bl-row.gas.gm-cheap b{color:#0a5c22}
+.bill.lightbill .bl-row.gas.gm-high b{color:#7a5200}
+.bill.lightbill .bl-row.gas.gm-insane b{color:#a01515}
+.bill.lightbill .bl-row.gas.gm-insane{background:rgba(210,75,58,.12)}
+.bill.lightbill .bl-row.total{background:#eaf4ea}
+.bill.lightbill .bl-row.total b{color:#0a5c22}
+
+/* o valor nunca se separa do rotulo quando a linha quebra */
+.lagas .nobrk{white-space:nowrap}
+.lagas{display:block;margin-top:calc(9px * var(--ui));line-height:1.5}

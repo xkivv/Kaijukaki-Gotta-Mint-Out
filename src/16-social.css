@@ -1,0 +1,303 @@
+/* ================= KAKI+ =================
+   Volta pro visual simples do fórum antigo: cartão branco fininho, avatar à
+   esquerda, nome em negrito, texto, e as reações numa barra embaixo. Os
+   painéis cinza em relevo pesavam demais e o feed virava uma pilha de caixas.
+   Regra da casa: todo px que precisa crescer vai em calc(px * var(--ui)). */
+
+/* ==================== O BANNER ====================
+   Todo fórum de 2003 tinha um: céu estrelado, o nome grande com sombra dura,
+   um subtítulo pretensioso e uma fileira de links que ninguém clicava.
+   É isso que faz parecer um LUGAR, e não uma caixa de mensagens. */
+.knban{position:relative;overflow:hidden;flex:0 0 auto;
+  background:
+    radial-gradient(140% 90% at 50% 118%, rgba(255,127,176,.22) 0 34%, transparent 66%),
+    radial-gradient(120% 150% at 78% -30%, rgba(90,220,220,.32) 0 38%, transparent 62%),
+    linear-gradient(158deg,#23477a 0%,#16294a 46%,#0b1424 100%);
+  border-bottom:calc(3px * var(--ui)) solid #0a1220}
+/* a linha do horizonte: duas reguas finas, ciano e rosa, coladas */
+.knban-in::after{content:'';position:absolute;left:0;right:0;bottom:0;height:calc(2px * var(--ui));
+  background:linear-gradient(90deg,#2ec4c4 0 42%,#ff7fb0 42% 100%);opacity:.55}
+/* estrelinhas: um punhado de quadradinhos, sem imagem nenhuma */
+.knban-stars{position:absolute;inset:0;pointer-events:none;opacity:.85;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.85) .8px, transparent 1px),
+    radial-gradient(circle, rgba(160,230,255,.55) .8px, transparent 1px);
+  background-size:37px 29px, 61px 47px;
+  background-position:6px 5px, 22px 18px}
+/* o brilho diagonal que passa de vez em quando */
+.knban::after{content:'';position:absolute;top:0;bottom:0;width:calc(70px * var(--ui));
+  pointer-events:none;transform:skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);
+  animation:knshine 7s ease-in-out infinite}
+@keyframes knshine{0%,72%{left:-22%}92%,100%{left:112%}}
+.knban-in{position:relative;z-index:2;display:flex;align-items:center;
+  gap:calc(10px * var(--ui));padding:calc(15px * var(--ui)) calc(13px * var(--ui)) calc(13px * var(--ui))}
+.knban-mark{min-width:0}
+.knban-mark h1{margin:0;font-family:var(--pix);font-size:calc(28px * var(--fs));
+  line-height:1.15;letter-spacing:1px;color:#fff;
+  text-shadow:
+    1px 0 0 #0a1220,-1px 0 0 #0a1220,0 1px 0 #0a1220,0 -1px 0 #0a1220,
+    2px 2px 0 #2ec4c4, 4px 4px 0 #14607a}
+.knban-mark h1 i{font-style:normal;color:#ff7fb0;
+  text-shadow:1px 0 0 #0a1220,-1px 0 0 #0a1220,0 1px 0 #0a1220,0 -1px 0 #0a1220,2px 2px 0 #a8285e}
+.knban-sub{margin-top:calc(8px * var(--ui));font-size:calc(15px * var(--fs));
+  color:#b6d9ea;letter-spacing:.4px;font-style:italic;text-shadow:1px 1px 0 rgba(0,0,0,.55)}
+/* a arte: quatro caras da colecao encostadas na direita, sumindo pra esquerda */
+.knban-art{margin-left:auto;flex:0 0 auto;align-self:flex-end;line-height:0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 55%);
+          mask-image:linear-gradient(90deg,transparent,#000 55%)}
+.knart-in{display:flex;align-items:flex-end;gap:calc(-6px * var(--ui))}
+.knart-c{flex:0 0 auto;margin-left:calc(-9px * var(--ui));
+  box-shadow:0 0 0 1px rgba(0,0,0,.55), calc(2px * var(--ui)) calc(2px * var(--ui)) 0 rgba(0,0,0,.35)}
+.knart-c:nth-child(1){transform:rotate(-5deg);opacity:.55}
+.knart-c:nth-child(2){transform:rotate(3deg);opacity:.72}
+.knart-c:nth-child(3){transform:rotate(-3deg);opacity:.88}
+.knart-c:nth-child(4){transform:rotate(4deg)}
+.knart-c canvas{display:block;image-rendering:auto;
+  width:calc(48px * var(--ui))!important;height:calc(48px * var(--ui))!important}
+.knban-nav{position:relative;z-index:2;display:flex;align-items:center;flex-wrap:wrap;
+  gap:calc(5px * var(--ui));padding:calc(4px * var(--ui)) calc(12px * var(--ui));
+  background:rgba(0,0,0,.34);border-top:1px solid rgba(160,230,255,.18);
+  font-family:var(--pix);font-size:calc(11px * var(--fs));letter-spacing:1px;color:#7fb4d4}
+.knban-nav em{font-style:normal;color:#3d6280}
+.knban-nav .grow{flex:1}
+.knban-me{color:#2ec4c4;font-style:normal}
+.knban .grow{flex:1}
+
+/* ==================== BARRA DE FERRAMENTAS ====================
+   REGRA #1 DO PROJETO: nada que a pessoa precisa LER fica abaixo de
+   calc(15px * var(--fs)). O Kaki+ inteiro estava em 10/11/12px porque herdou o
+   corpo do sistema. Onde a fonte é --pix (Press Start 2P), 11px já desenha
+   letra MAIOR que 15px de Tahoma — a caixa alta da pixel font ocupa a altura
+   inteira do em, a do Tahoma ocupa uns 73%. Por isso "EXP" e os links do
+   banner ficam em 11px de --pix, e todo o resto em 15px. */
+.knbar{display:flex;align-items:center;gap:calc(7px * var(--ui));flex-wrap:wrap;
+  background:var(--face);border-bottom:0;
+  font-size:calc(15px * var(--fs));
+  padding:calc(5px * var(--ui)) calc(8px * var(--ui));
+  box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 var(--shadow)}
+/* o seletor de filtro herdava os 10px da barra do 12-apps.css */
+.knbar select{font-size:calc(15px * var(--fs));padding:calc(2px * var(--ui)) calc(3px * var(--ui))}
+/* o hype virou um medidorzinho aqui, em vez de um painel em cima do feed */
+.kn-hype{display:inline-flex;align-items:center;gap:calc(5px * var(--ui));
+  font-size:calc(15px * var(--fs))}
+.knh-bar{display:block;width:calc(56px * var(--ui));height:calc(9px * var(--ui));
+  background:#7a7a7a;overflow:hidden;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a}
+.knh-bar b{display:block;height:100%;
+  background:repeating-linear-gradient(90deg,#2f6b3a 0 calc(5px * var(--ui)),transparent calc(5px * var(--ui)) calc(7px * var(--ui)))}
+.kn-hype.low .knh-bar b{background:repeating-linear-gradient(90deg,#a01515 0 calc(5px * var(--ui)),transparent calc(5px * var(--ui)) calc(7px * var(--ui)))}
+.kn-hype em{font-style:normal;font-family:var(--mono);font-size:calc(16px * var(--fs));color:#1e5a28}
+.kn-hype.low em{color:#a01515}
+.kn-shill{display:inline-flex;align-items:center;gap:calc(5px * var(--ui));
+  border:0;cursor:pointer;background:#c8d4b8;font-family:inherit;color:#14280a;
+  padding:calc(4px * var(--ui)) calc(9px * var(--ui));
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,
+             inset -2px -2px 0 var(--shadow),inset 2px 2px 0 #eaf2e0}
+.kn-shill b{font-size:calc(15px * var(--fs));letter-spacing:.5px}
+.kn-shill em{font-style:normal;font-family:var(--mono);font-size:calc(15px * var(--fs));color:#3a4a2a}
+.kn-shill:hover{background:#d6e0c8}
+.kn-shill:active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,
+  inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.kn-shill:active > *{transform:translate(1px,1px)}
+.kn-shill.broke{background:#d8c0bc;color:#6a1010}
+.kn-shill.broke em{color:#7a3030}
+
+/* ==================== O FEED ==================== */
+.knwrap{padding:0;background:#8a8a8a;gap:0}
+.kncol{max-width:none;margin:0;position:static}
+.knfeedwrap{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;
+  background:#c9c9c9;padding:calc(5px * var(--ui))}
+.knfeed{flex:1;min-height:0;overflow:auto}
+.knnew{top:calc(9px * var(--ui));font-size:calc(15px * var(--fs));
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #4a7ad8,0 2px 5px rgba(0,0,0,.5);
+  font-weight:bold;padding:calc(4px * var(--ui)) calc(12px * var(--ui))}
+
+/* ---------- o post: cartão branco fininho ---------- */
+.kn-post{display:block;background:#fff;border-bottom:0;
+  padding:calc(7px * var(--ui)) calc(8px * var(--ui));
+  margin:0 0 calc(5px * var(--ui));
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #999}
+.kn-post:last-child{margin-bottom:0}
+.kn-head{display:flex;align-items:center;gap:calc(6px * var(--ui));
+  padding:0 0 calc(4px * var(--ui));font-size:calc(15px * var(--fs))}
+.kn-av{flex:0 0 auto;line-height:0}
+.kn-who{font-weight:bold;font-size:calc(15px * var(--fs));color:#101010;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:calc(190px * var(--ui))}
+.kn-when{font-size:calc(15px * var(--fs));color:#6e6e6e;
+  font-family:var(--mono);white-space:nowrap}
+.kn-tipped{line-height:0;opacity:.95}
+/* nada de área afundada: o texto mora no próprio cartão */
+.kn-inner{background:transparent;padding:0;box-shadow:none;
+  border-left:calc(3px * var(--ui)) solid transparent;padding-left:calc(7px * var(--ui))}
+.kn-txt{font-size:calc(15px * var(--fs));line-height:1.55;margin:0;color:#0a0a0a;
+  word-break:break-word}
+.kn-link{margin-top:calc(6px * var(--ui))}
+
+/* ---------- reações: embaixo, tamanho de gente ---------- */
+.kn-acts{display:flex;align-items:center;flex-wrap:wrap;
+  gap:calc(4px * var(--ui));padding:calc(7px * var(--ui)) 0 0}
+.kn-act{display:inline-flex;align-items:center;justify-content:center;
+  gap:calc(5px * var(--ui));border:0;cursor:pointer;
+  background:var(--face);color:#0a0a0a;line-height:1;
+  font-family:inherit;font-size:calc(15px * var(--fs));
+  min-width:calc(54px * var(--ui));
+  padding:calc(6px * var(--ui)) calc(10px * var(--ui));
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,
+             inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+.kn-act b{font-size:calc(16px * var(--fs));line-height:1}
+.kn-act span{font-family:var(--mono);font-size:calc(15px * var(--fs));min-width:calc(11px * var(--ui))}
+.kn-act:hover:not(:disabled){background:var(--face-lt)}
+.kn-act:active:not(:disabled){box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,
+  inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.kn-act:active:not(:disabled) > *{transform:translate(1px,1px)}
+.kn-act.on{background:#2f6b3a;color:#eafce8}
+.kn-act.on:hover{background:#3a7d46}
+.kn-act.dn{background:#a01515;color:#ffe8e6}
+.kn-act.dn:hover{background:#b52020}
+.kn-act.kn-haha{color:#6a4708}
+.kn-act.kn-haha.ha{background:#c8901c;color:#241802}
+.kn-act.kn-tipb{color:#6a4708;background:#d8cfae}
+.kn-act.kn-tipb svg{display:block}
+.kn-act.kn-tipb:hover:not(:disabled){background:#f0e4b8}
+.kn-act.kn-tipb:disabled,.kn-act.kn-tipb.done{cursor:default;color:var(--shadow);
+  text-shadow:1px 1px 0 #fff;background:var(--face);opacity:.75}
+
+/* ---------- COR POR TIPO DE POST: SÓ COM O MARCADOR DE SENTIMENTO ----------
+   O fundo vermelho do FUD e o verde do shill entregavam como reagir antes de a
+   pessoa ler a frase — spoiler. Sem o upgrade comprado (body.kntint), todo
+   cartão é o mesmo cartão branco, seja qual for o tipo.
+   12-apps.css também pinta k-fud/k-anon/k-shill/k-art/k-life e carrega ANTES
+   daqui, então a regra de desligar leva o body:not() na frente pra ganhar dele
+   na especificidade, e não só na ordem. */
+body:not(.kntint) .kn-post.k-fud,
+body:not(.kntint) .kn-post.k-anon,
+body:not(.kntint) .kn-post.k-shill,
+body:not(.kntint) .kn-post.k-art,
+body:not(.kntint) .kn-post.k-life,
+body:not(.kntint) .kn-post.k-talk,
+body:not(.kntint) .kn-post.k-flex,
+body:not(.kntint) .kn-post.k-meme{
+  background:#fff;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #999}
+body:not(.kntint) .kn-post:not(.k-gift) .kn-inner{border-left-color:transparent}
+/* comprou o Marcador: a tarja fina volta, uma cor por sentimento */
+body.kntint .kn-post.k-fud .kn-inner{border-left-color:#a01515}
+body.kntint .kn-post.k-anon .kn-inner{border-left-color:#8a7a3a}
+body.kntint .kn-post.k-shill .kn-inner{border-left-color:#2f6b3a}
+body.kntint .kn-post.k-art .kn-inner{border-left-color:#2a5c9a}
+body.kntint .kn-post.k-meme .kn-inner{border-left-color:#7a3fa8}
+/* o Marcador etiqueta TODO post, não só os cinco que já tinham cor */
+body.kntint .kn-post.k-life .kn-inner{border-left-color:#7a6a58}
+body.kntint .kn-post.k-talk .kn-inner{border-left-color:#5a6a7a}
+body.kntint .kn-post.k-flex .kn-inner{border-left-color:#b8860b}
+/* o presente nunca foi spoiler: o botão TAKE IT já diz o que ele é, então o
+   amarelo dele fica ligado com ou sem o upgrade */
+.kn-post.k-gift{background:#fffbe8;box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #c8901c}
+.kn-post.k-gift .kn-inner{border-left-color:#c8901c}
+.kn-gift{margin-top:calc(7px * var(--ui));border:2px solid #c8901c;
+  padding:calc(6px * var(--ui)) calc(8px * var(--ui));font-size:calc(15px * var(--fs))}
+
+@keyframes knin{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}
+.kn-post.kn-in{animation:knin .3s ease-out}
+
+/* a foto do post: drawKaiju escreve style.width inline, então sem !important
+   ela fica um selo de 150px num cartão largo, com um vazio branco do lado */
+.kn-shot{display:block;width:min(100%,calc(220px * var(--ui)));margin-top:calc(6px * var(--ui))}
+.kn-shot canvas{width:100%!important;height:auto!important;aspect-ratio:1;image-rendering:auto}
+/* o "#7751" no canto da foto vinha em 8px do 12-apps.css: é um número que a
+   pessoa lê pra procurar o Kaiju no mercado */
+.kn-shot .kn-shot-id{font-size:calc(15px * var(--fs));padding:calc(1px * var(--ui)) calc(5px * var(--ui))}
+/* o recado de feed vazio herdava o .tiny de 10px do sistema */
+.knfeed .tiny{font-size:calc(15px * var(--fs));line-height:1.6}
+
+/* ---------- celular ---------- */
+body.mob .knban-in{padding:calc(9px * var(--ui)) calc(9px * var(--ui)) calc(7px * var(--ui))}
+body.mob .knban-mark h1{font-size:calc(21px * var(--fs))}
+body.mob .knban-nav span:nth-child(n+7){display:none}
+body.mob .knart-c:nth-child(-n+2){display:none}
+body.mob .knfeedwrap{padding:calc(4px * var(--ui))}
+body.mob .kn-post{padding:calc(6px * var(--ui));margin-bottom:calc(5px * var(--ui))}
+body.mob .kn-acts{gap:calc(4px * var(--ui))}
+body.mob .kn-act{flex:1 1 calc(62px * var(--ui));min-width:calc(62px * var(--ui));
+  padding:calc(7px * var(--ui)) calc(4px * var(--ui))}
+body.mob .kn-acts .grow{display:none}
+body.mob .kn-who{max-width:calc(160px * var(--ui))}
+/* no celular a barra quebra em duas linhas: o BOOST fica na segunda,
+   largo, pra nao sumir atras de nada */
+body.mob .knbar{gap:calc(5px * var(--ui))}
+body.mob .kn-hype{order:2}
+body.mob .kn-shill{order:3;flex:1 1 auto;justify-content:center;
+  padding:calc(7px * var(--ui)) calc(9px * var(--ui))}
+body.mob .knbar .grow{display:none}
+
+/* ==================== O EXP ====================
+   Fica na mesma linha do hype: o medidor da esquerda diz como a sala está, o
+   da direita diz o quanto ficar nela já rendeu. A barrinha é o quanto falta
+   pro próximo degrau — mesmo desenho afundado do hype, cor diferente. */
+.kn-xp{display:inline-flex;align-items:center;gap:calc(4px * var(--ui));
+  font-size:calc(15px * var(--fs));cursor:default}
+.kn-xp b{font-family:var(--pix);font-size:calc(11px * var(--fs));
+  letter-spacing:1px;color:#20344f}
+.knx-bar{display:block;width:calc(38px * var(--ui));height:calc(9px * var(--ui));
+  background:#7a7a7a;overflow:hidden;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a}
+.knx-bar u{display:block;height:100%;text-decoration:none;
+  background:repeating-linear-gradient(90deg,#2a5c9a 0 calc(5px * var(--ui)),transparent calc(5px * var(--ui)) calc(7px * var(--ui)))}
+.kn-xp em{font-style:normal;font-family:var(--mono);font-size:calc(16px * var(--fs));color:#20344f}
+.kn-xp.max .knx-bar u{background:repeating-linear-gradient(90deg,#b8860b 0 calc(5px * var(--ui)),transparent calc(5px * var(--ui)) calc(7px * var(--ui)))}
+.kn-xp.max em{color:#6a4708}
+
+/* ==================== A REAÇÃO SE MEXE ====================
+   O número sobe contando (isso é no JS) e a setinha dá um pulo pro lado dela:
+   ▲ pula pra cima, ▼ afunda, ☺ balança. Mola curta, sem borrão. */
+@keyframes knkup{
+  0%{transform:translateY(0) scale(1)}
+  26%{transform:translateY(calc(-9px * var(--ui))) scale(1.32)}
+  52%{transform:translateY(calc(3px * var(--ui))) scale(.9)}
+  74%{transform:translateY(calc(-2px * var(--ui))) scale(1.08)}
+  100%{transform:none}}
+@keyframes knkdn{
+  0%{transform:translateY(0) scale(1)}
+  26%{transform:translateY(calc(9px * var(--ui))) scale(1.32)}
+  52%{transform:translateY(calc(-3px * var(--ui))) scale(.9)}
+  74%{transform:translateY(calc(2px * var(--ui))) scale(1.08)}
+  100%{transform:none}}
+@keyframes knkha{
+  0%{transform:rotate(0) scale(1)}
+  22%{transform:rotate(-16deg) scale(1.34)}
+  46%{transform:rotate(14deg) scale(1.16)}
+  70%{transform:rotate(-7deg) scale(1.04)}
+  100%{transform:none}}
+.kn-act b.knk-up{animation:knkup .64s cubic-bezier(.2,.9,.25,1)}
+.kn-act b.knk-dn{animation:knkdn .64s cubic-bezier(.2,.9,.25,1)}
+.kn-act b.knk-ha{animation:knkha .64s cubic-bezier(.2,.9,.25,1)}
+@keyframes knpop{0%{transform:scale(1)}30%{transform:scale(1.5)}100%{transform:scale(1)}}
+.kn-act span.knpop{animation:knpop .5s ease-out}
+
+/* ==================== A RISADA ====================
+   Só quando o JOGADOR ri. As carinhas são SVG de pixel desenhado no JS (fonte
+   de emoji muda de máquina pra máquina e levaria junto a cara do 98). O
+   container é absoluto dentro do #screen: não empurra nada, não rola nada. */
+.knburst{position:absolute;width:0;height:0;pointer-events:none;z-index:7400}
+.knlf{position:absolute;left:0;top:0;line-height:0;opacity:0;
+  filter:drop-shadow(1px 1px 0 rgba(0,0,0,.5));
+  animation:knlf .8s cubic-bezier(.16,.72,.3,1) forwards}
+.knlf svg{display:block}
+@keyframes knlf{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.25) rotate(0deg)}
+  16%{opacity:1;
+    transform:translate(calc(-50% + var(--dx) * .22),calc(-50% + var(--dy) * .20)) scale(1.22) rotate(calc(var(--rot) * .25))}
+  68%{opacity:1}
+  100%{opacity:0;
+    transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(.72) rotate(var(--rot))}}
+
+body.mob .kn-xp{order:2}
+body.mob .knx-bar{width:calc(30px * var(--ui))}
+
+@media (prefers-reduced-motion: reduce){
+  .knban::after{animation:none;display:none}
+  .kn-post.kn-in{animation:none}
+  .kn-act b.knk-up,.kn-act b.knk-dn,.kn-act b.knk-ha,.kn-act span.knpop{animation:none}
+  .knburst{display:none}
+}

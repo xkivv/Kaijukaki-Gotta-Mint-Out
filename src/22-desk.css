@@ -1,0 +1,119 @@
+/* ==========================================================================
+   AREA DE TRABALHO — relogio, e um pouco de vida nos painéis
+   ========================================================================== */
+
+/* ---------- o relogio ----------
+   Sem moldura nenhuma: os numeros flutuam no fundo teal. A barra de titulo
+   continua existindo (é o que arrasta), só que invisível — ela cobre o widget
+   inteiro e só aparece quando o mouse chega perto. */
+/* Os painéis (.wgt) ficam em z-index 3900, ou seja, SEMPRE por cima das
+   janelas — é o certo pra Kaiju Charts e Gas Tracker, que são gadgets de
+   sempre-visível. O relógio não: ele é papel de parede. Desenhando por cima
+   de uma janela aberta ele fica em cima do texto que a pessoa está lendo. */
+.wgt.bare{background:transparent;padding:0;box-shadow:none;border:0;z-index:1}
+.wgt.bare .wg-tt{position:absolute;inset:0;z-index:2;background:transparent;
+  box-shadow:none;padding:0;cursor:move;opacity:0}
+.wgt.bare .wg-tt > span,.wgt.bare .wg-tt > svg{display:none}
+.wgt.bare:hover .wg-tt{opacity:1}
+.wgt.bare .wg-x{position:absolute;top:calc(2px * var(--ui));right:calc(2px * var(--ui));
+  width:calc(20px * var(--ui));height:calc(18px * var(--ui));
+  font-size:calc(14px * var(--fs));background:rgba(0,0,0,.5);color:#d4ff6b;
+  box-shadow:inset 0 0 0 1px rgba(212,255,107,.4)}
+.wgt.bare .wg-body{margin:0;padding:0;background:transparent;box-shadow:none}
+.wgt.bare .wg-rs{opacity:0;background:transparent}
+.wgt.bare:hover .wg-rs{opacity:.75}
+
+.ck-wrap{display:flex;flex-direction:column;align-items:flex-end;
+  line-height:1;padding:calc(2px * var(--ui)) calc(4px * var(--ui));
+  /* container query: os numeros crescem junto com o widget quando o jogador
+     arrasta o canto. cqw = 1% da largura do proprio relogio. */
+  container-type:inline-size}
+.ck-day{font-family:var(--pix);letter-spacing:2px;
+  /* o piso tem que ser a régua do projeto: em UI Huge + Texto Grande o
+     clamp prendia o "DAY 22" em 22px enquanto o resto da tela estava em 31. */
+  font-size:clamp(calc(15px * var(--fs)), 7cqw, 60px);
+  white-space:nowrap;
+  color:#8fd8a0;
+  text-shadow:0 0 calc(7px * var(--ui)) rgba(120,255,170,.55),
+              2px 2px 0 rgba(0,0,0,.75)}
+.ck-time{font-family:var(--term);font-variant-numeric:tabular-nums;
+  font-size:clamp(calc(34px * var(--fs)), 30cqw, 190px);
+  line-height:.92;letter-spacing:2px;color:#eafff0;
+  text-shadow:0 0 calc(4px * var(--ui)) #b8f0c8,
+              0 0 calc(16px * var(--ui)) rgba(120,255,170,.55),
+              calc(3px * var(--ui)) calc(3px * var(--ui)) 0 rgba(0,0,0,.6)}
+/* o relogio nao pode comer clique de icone: so os digitos recebem mouse */
+.wgt.bare{pointer-events:none}
+.wgt.bare .wg-tt,.wgt.bare .wg-x,.wgt.bare .wg-rs{pointer-events:auto}
+/* passou da hora util: fica ambar, sem piscar na cara */
+.wgt.bare.late .ck-time{color:#ffe6b0;
+  text-shadow:0 0 calc(4px * var(--ui)) #f0c060,
+              0 0 calc(16px * var(--ui)) rgba(240,192,96,.5),
+              calc(3px * var(--ui)) calc(3px * var(--ui)) 0 rgba(0,0,0,.6)}
+.wgt.bare.late .ck-day{color:#f0c060}
+body.mob .wgt.bare{width:auto!important;right:auto}
+
+/* ==========================================================================
+   UM POUCO DE VIDA — de vez em quando, nunca o tempo todo
+   O painel da carteira e o do gas ficavam completamente parados. O que entra
+   aqui é curto e espaçado: um brilho que atravessa o dinheiro a cada 9s e um
+   ponto de varredura no gás a cada 11s. Nada de loop contínuo — um painel
+   sempre visível que se mexe sem parar vira irritação no dia 20.
+   ========================================================================== */
+#hud .hud-money{position:relative;overflow:hidden}
+#hud .hud-money::after{content:'';position:absolute;top:0;bottom:0;
+  width:calc(46px * var(--ui));pointer-events:none;transform:skewX(-20deg);
+  background:linear-gradient(90deg,transparent,rgba(212,255,107,.30),transparent);
+  animation:hudshine 9s ease-in-out infinite}
+@keyframes hudshine{0%,80%{left:-30%}96%,100%{left:130%}}
+/* o cursor do terminal piscando na linha do dia */
+#hud .hud-row:first-of-type span::after{content:'_';color:#7fc417;
+  animation:hudcar 1.25s steps(2,end) infinite}
+@keyframes hudcar{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* o gas: um ponto de luz percorre o painel, como um radar antigo */
+#wgt_gas .wg-body{position:relative;overflow:hidden}
+#wgt_gas .wg-body::after{content:'';position:absolute;top:0;bottom:0;
+  width:calc(2px * var(--ui));pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(232,192,96,.65),transparent);
+  animation:gasscan 11s linear infinite}
+@keyframes gasscan{0%,72%{left:-2%;opacity:0}74%{opacity:1}98%{left:101%;opacity:1}100%{left:101%;opacity:0}}
+
+/* nada disso roda com a janela escondida nem com movimento reduzido */
+body.hid #hud .hud-money::after,
+body.hid #wgt_gas .wg-body::after,
+body.hid #hud .hud-row:first-of-type span::after{animation:none}
+@media (prefers-reduced-motion: reduce){
+  #hud .hud-money::after,#wgt_gas .wg-body::after{animation:none;display:none}
+  #hud .hud-row:first-of-type span::after{animation:none;opacity:1}
+}
+
+/* o rodape do Kaiju Charts virou duas linhas depois que a fonte cresceu.
+   Uma linha so, e o painel um pouco mais largo pra caber. */
+#wgt_chart{min-width:calc(250px * var(--ui))}
+#wgt_chart .wg-foot{display:flex;justify-content:space-between;align-items:baseline;
+  gap:calc(8px * var(--ui));white-space:nowrap;overflow:hidden}
+#wgt_chart .wg-foot span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#wgt_gas .wg-foot{display:flex;justify-content:space-between;align-items:baseline;
+  gap:calc(8px * var(--ui));white-space:nowrap}
+
+/* ==========================================================================
+   MENU DO BOTAO DIREITO QUE FICOU COMPRIDO
+   O submenu Apps lista um icone por linha. Com a mesa cheia e a interface em
+   Huge isso passa de dez linhas e o menu ficava mais alto que a tela — o
+   ctxMenu encosta o topo em 0 e o resto some pra fora do rodape. Ele rola
+   dentro de si mesmo, como o menu Iniciar de um Windows lotado.
+   .ctxmenu e absoluto dentro do #screen, que tem altura definida, entao o
+   100% aqui e a tela inteira.
+   ========================================================================== */
+/* O TETO TEM QUE SER MENOR QUE A ALTURA UTIL, NAO QUE A TELA.
+   ctxMenu() posiciona com Math.min(y, B.h - altura - 4) e B.h ja desconta a
+   barra de tarefas — sem piso em zero, um menu mais alto que isso ganhava
+   `top` NEGATIVO e as primeiras linhas saiam por cima da tela. Descontando
+   44px*--ui (a barra tem 33px*--ui) o menu nunca passa da altura util, entao
+   aquela conta nunca fica negativa. */
+.ctxmenu{max-height:calc(100% - 44px * var(--ui));overflow-y:auto;overscroll-behavior:contain}
+
+/* a celula de destino do arrasto */
+.dghost{position:absolute;pointer-events:none;z-index:1;border:1px dotted #ffffcc;
+  background:rgba(255,255,204,.10);box-sizing:border-box}

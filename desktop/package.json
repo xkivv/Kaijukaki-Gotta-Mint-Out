@@ -1,0 +1,25 @@
+{
+  "name": "kaijukaki-gotta-mint-out",
+  "productName": "Kaijukaki Gotta Mint Out!",
+  "version": "1.7.0",
+  "description": "Kaijukaki Gotta Mint Out! — desktop build",
+  "main": "main.js",
+  "author": "Oekaki Connect",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64"
+  },
+  "dependencies": {
+    "electron": "^32.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "art.kaijukaki.gottamintout",
+    "productName": "Kaijukaki Gotta Mint Out",
+    "directories": { "output": "build" },
+    "files": ["main.js", "preload.js", "app/**/*"],
+    "win": { "target": ["nsis", "zip"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true }
+  }
+}

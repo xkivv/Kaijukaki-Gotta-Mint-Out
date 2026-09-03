@@ -1,0 +1,237 @@
+/* ============ KAIJUKAKI OS — base / win98 chrome ============ */
+:root{
+  --face:#c0c0c0; --face-lt:#dfdfdf; --face-dk:#9a9a9a;
+  --white:#ffffff; --shadow:#808080; --ink:#000000;
+  --navy:#02007e; --navy2:#1284d1; --navy-dim:#7d7d7d; --navy-dim2:#b1b1b1;
+  --desk:#0d6b5f; --desk2:#0a4f47;
+  --moss:#2f6b3a; --moss-lt:#57a05f;
+  --blood:#a02020; --blood-dk:#6d1414; --blood-lt:#d24b3a;
+  --gold:#b8860b;
+  --scr:#0b1208; --scr-txt:#b8f04a;
+  --lime:#a8e832; --lime-lt:#d4ff6b; --lime-hi:#c6f75e; --lime-dk:#7fc417; --lime-deep:#4d7a14;
+  --page-bg:#0a1207; --page-txt:#cfe8a8; --page-dim:#93b86a;
+  --fs:1;
+  /* CUIDADO: isto chamava --ui, o MESMO nome da escala de interla la embaixo
+     (:root{--ui:1}). O numero ganhava, font-family:var(--ui) virava
+     font-family:1 (invalido) e o jogo INTEIRO renderizava em Times New Roman.
+     A fonte agora e --uif. Nao renomear de volta. */
+  --uif: Tahoma, "MS Sans Serif", Geneva, Verdana, sans-serif;
+  --pix: "Press Start 2P", monospace;
+  --term: "VT323", "Courier New", monospace;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overscroll-behavior:none;overflow:hidden}
+body{
+  margin:0;background:#000;color:var(--ink);
+  font-family:var(--uif);font-size:calc(12px * var(--fs));
+  overflow:hidden;user-select:none;
+  image-rendering:pixelated;
+  touch-action:manipulation;
+}
+svg,canvas,img{-webkit-user-drag:none;user-select:none}
+
+button{font-family:inherit;font-size:inherit;color:inherit}
+::-webkit-scrollbar{width:16px;height:16px}
+::-webkit-scrollbar-track{background:#d6d6d6;
+  background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%),
+  linear-gradient(45deg,#fff 25%,#d0d0d0 25%,#d0d0d0 75%,#fff 75%);
+  background-size:4px 4px;background-position:0 0,2px 2px}
+::-webkit-scrollbar-thumb{background:var(--face);
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+::-webkit-scrollbar-corner{background:#d6d6d6}
+
+/* ---------- bevels ---------- */
+.out{box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+.in{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.thin-in{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
+.thin-out{box-shadow:inset -1px -1px 0 var(--shadow),inset 1px 1px 0 #fff}
+
+/* ---------- screen / CRT ---------- */
+#screen{position:fixed;inset:0;overflow:hidden;background:var(--desk);
+  background-image:radial-gradient(ellipse at 50% 40%, #12836f 0%, var(--desk) 45%, var(--desk2) 100%);}
+#crt{position:fixed;inset:0;pointer-events:none;z-index:9000}
+#crt::before{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,.20) 0 1px,rgba(0,0,0,0) 1px 3px);
+  mix-blend-mode:multiply;opacity:.75}
+#crt::after{content:"";position:absolute;inset:-4%;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0) 52%,rgba(0,0,0,.42) 100%);
+  box-shadow:inset 0 0 90px rgba(0,0,0,.55)}
+#flicker{position:fixed;left:0;right:0;top:0;height:160px;pointer-events:none;z-index:9001;
+  background:linear-gradient(180deg,transparent,rgba(190,255,225,.07) 45%,rgba(190,255,225,.09) 55%,transparent);
+  mix-blend-mode:screen;animation:roll 7.5s linear infinite}
+@keyframes roll{from{transform:translateY(-170px)}to{transform:translateY(102vh)}}
+body.nocrt #crt,body.nocrt #flicker{display:none}
+
+/* ---------- desktop icons ---------- */
+#desktop{position:absolute;inset:0 0 calc(30px * var(--ui)) 0}
+.dicon{position:absolute;width:calc(100px * var(--ui) * var(--fst,1));padding:calc(9px * var(--ui)) 3px calc(8px * var(--ui));display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;border:1px dotted transparent;text-align:center;touch-action:none}
+.dicon.popin{animation:iconpop .34s cubic-bezier(.2,1.5,.4,1) backwards}
+@keyframes iconpop{from{opacity:0;transform:scale(.4) translateY(10px)}}
+.dicon.dragging-icon{opacity:.75;z-index:50;filter:drop-shadow(2px 4px 3px rgba(0,0,0,.5))}
+.dicon .glyph{width:calc(52px * var(--ui));height:calc(52px * var(--ui));display:block;filter:drop-shadow(1px 1px 0 rgba(0,0,0,.45))}
+.dicon .lbl{color:#fff;font-size:calc(12px * var(--fs));line-height:1.2;text-shadow:1px 1px 0 rgba(0,0,0,.85);padding:1px 2px}
+.dicon:hover .lbl{background:rgba(0,0,20,.35)}
+.dicon.sel .lbl{background:var(--navy);border:1px dotted #fff}
+.dicon.sel .glyph{filter:drop-shadow(1px 1px 0 rgba(0,0,0,.45)) hue-rotate(200deg) brightness(.85)}
+.dicon.locked .glyph{filter:grayscale(1) brightness(.7)}
+.dicon .lock{position:absolute;top:34px;right:20px;font-size:calc(15px * var(--fs));filter:drop-shadow(1px 1px 0 #000)}
+.dicon:active .glyph{transform:translateY(1px)}
+.dicon .badge{position:absolute;top:4px;right:16px;background:var(--blood);color:#fff;
+  font-size:calc(9px * var(--fs));font-weight:bold;border:1px solid #000;padding:0 3px;border-radius:7px;line-height:13px;
+  box-shadow:1px 1px 0 rgba(0,0,0,.5);animation:bpulse 1.1s ease-in-out infinite}
+@keyframes bpulse{50%{transform:scale(1.2)}}
+
+/* ---------- taskbar ---------- */
+#taskbar{position:absolute;left:0;right:0;bottom:0;height:calc(30px * var(--ui));background:var(--face);
+  display:flex;align-items:center;gap:4px;padding:2px 3px;z-index:5000;
+  box-shadow:inset 0 1px 0 #fff, inset 0 2px 0 var(--face-lt)}
+#startbtn{height:calc(23px * var(--ui));padding:0 calc(8px * var(--ui)) 0 calc(6px * var(--ui));display:flex;align-items:center;gap:5px;
+  background:var(--face);font-weight:bold;font-size:calc(12px * var(--fs));border:0;cursor:pointer;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+#startbtn.on,#startbtn:active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+#startbtn.on span,#startbtn:active span{transform:translate(1px,1px)}
+#tasks{flex:1;display:flex;gap:3px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+#tasks::-webkit-scrollbar{height:0}
+.tbtn{height:calc(23px * var(--ui));flex:0 0 auto;min-width:calc(36px * var(--ui));max-width:calc(160px * var(--ui));display:flex;align-items:center;gap:4px;padding:0 6px;
+  background:var(--face);border:0;cursor:pointer;font-size:calc(11px * var(--fs));overflow:hidden;white-space:nowrap;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+.tbtn .tt{overflow:hidden;text-overflow:ellipsis}
+.tbtn:hover{background:#cacaca}
+.tbtn:not(.active):active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.tbtn.active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow);
+  background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%),linear-gradient(45deg,#fff 25%,var(--face) 25%,var(--face) 75%,#fff 75%);
+  background-size:4px 4px;background-position:0 0,2px 2px;font-weight:bold}
+#tray{height:calc(23px * var(--ui));display:flex;align-items:center;gap:6px;padding:0 7px;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
+#tray .money{font-family:var(--term);font-size:calc(17px * var(--fs));line-height:1;color:#0a4d24;font-weight:bold;letter-spacing:.5px}
+#clock{font-size:calc(11px * var(--fs));min-width:62px;text-align:right}
+#m_hypewrap{display:flex;align-items:center;gap:4px}
+#m_hypewrap .cap{font-size:calc(9px * var(--fs));color:#3a3a3a;letter-spacing:.5px}
+#m_hypebar{width:42px;height:9px;background:#fff;padding:1px;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
+#m_hypebar i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--moss) 0 3px,transparent 3px 4px);transition:width .4s ease-out}
+#m_hypebar.hot i{background:repeating-linear-gradient(90deg,var(--blood) 0 3px,transparent 3px 4px)}
+#m_hypewrap.pulse{animation:hpulse .5s ease-out}
+@keyframes hpulse{0%{transform:scale(1)}40%{transform:scale(1.14)}100%{transform:scale(1)}}
+#tray .lvl.bump{animation:bump .45s steps(2,end) 3;background:var(--gold);color:#000}
+@keyframes bump{50%{filter:brightness(1.7)}}
+#m_money.pop{animation:mpop .22s ease-out}
+@keyframes mpop{45%{transform:scale(1.16)}}
+#tray .lvl{font-size:calc(10px * var(--fs));background:var(--navy);color:#fff;padding:1px 4px}
+
+/* ---------- start menu ---------- */
+#startmenu{position:absolute;left:3px;bottom:calc(30px * var(--ui));width:calc(212px * var(--ui));background:var(--face);z-index:5100;
+  display:none;padding:3px 3px 3px 0;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+#startmenu.open{display:flex;animation:smopen .13s ease-out}
+@keyframes smopen{from{clip-path:inset(100% 0 0 0)}to{clip-path:inset(0 0 0 0)}}
+#smband{width:calc(22px * var(--ui));background:linear-gradient(180deg,var(--navy) 0%,#3a3a8a 100%);margin-right:3px;
+  position:relative;flex:0 0 calc(22px * var(--ui))}
+/* texto vertical de verdade: nao sai da faixa nem e cortado em cima */
+#smband{display:flex;align-items:flex-end;justify-content:center;padding-bottom:calc(10px * var(--ui));
+  overflow:hidden}
+#smband b{position:static;writing-mode:vertical-rl;transform:rotate(180deg);
+  color:#fff;font-size:calc(13px * var(--fs));letter-spacing:1px;white-space:nowrap;font-family:var(--uif);
+  text-shadow:1px 1px 0 rgba(0,0,0,.5)}
+#smitems{flex:1;display:flex;flex-direction:column}
+.smi{display:flex;align-items:center;gap:calc(9px * var(--ui));padding:calc(6px * var(--ui)) calc(9px * var(--ui));cursor:pointer;font-size:calc(12px * var(--fs))}
+.smi:hover{background:var(--navy);color:#fff}
+.smi img,.smi svg{width:22px;height:22px;flex:0 0 22px}
+.smsep{height:1px;margin:3px 4px;box-shadow:0 1px 0 #fff;background:var(--shadow)}
+
+/* ---------- money HUD ---------- */
+#hud{position:absolute;top:10px;right:12px;z-index:4000;opacity:.97;background:var(--face);padding:3px;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt),
+  3px 3px 0 rgba(0,0,0,.35);min-width:186px}
+#hud .hud-tt{background:linear-gradient(90deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;font-size:calc(10px * var(--fs));
+  padding:3px 5px;font-weight:bold;letter-spacing:.4px;display:flex;justify-content:space-between;align-items:center;
+  cursor:move;touch-action:none;user-select:none}
+#hud.dragging{opacity:.85}
+#hud .hud-body{padding:7px 8px 6px;box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow);margin-top:3px;background:#0b1208}
+#hud .hud-money{font-family:var(--term);font-size:calc(34px * var(--fs));line-height:.95;color:#b8f04a;letter-spacing:1px;
+  text-shadow:0 0 10px rgba(168,232,50,.35);font-variant-numeric:tabular-nums}
+#hud .hud-money.flash{animation:hudflash .5s ease-out}
+@keyframes hudflash{0%{transform:scale(1)}30%{transform:scale(1.08);filter:brightness(1.5)}100%{transform:scale(1)}}
+#hud .hud-row{display:flex;justify-content:space-between;gap:8px;font-size:calc(10px * var(--fs));color:#93b86a;margin-top:5px;
+  letter-spacing:.4px;font-variant-numeric:tabular-nums}
+#hud .hud-row b{color:#cfe8a8}
+#hud.mini .hud-body{display:none}
+#hud .hud-tt button{background:none;border:0;color:#fff;cursor:pointer;font-size:calc(10px * var(--fs));padding:0 2px;line-height:1}
+@media (max-width:720px){
+  #hud{top:4px;right:4px;min-width:150px}
+  #hud .hud-money{font-size:calc(26px * var(--fs))}
+}
+
+#hud .hud-skip{width:100%;margin-top:7px;background:var(--face);border:0;cursor:pointer;font-size:calc(11px * var(--fs));padding:3px 0;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+#hud .hud-skip:active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+
+/* ---------- log on screen ---------- */
+#loginveil{position:absolute;inset:0;z-index:8900;background:#0a3f3a;
+  background-image:radial-gradient(ellipse at 50% 40%,#12836f 0%,#0d6b5f 45%,#0a4f47 100%);
+  display:grid;place-items:center;animation:fadein .25s}
+#loginveil.gone{animation:fadeout .25s forwards}
+@keyframes fadeout{to{opacity:0}}
+.loginbox{width:min(calc(360px * var(--ui)),92vw);position:relative}
+.logintop{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.slotlist{display:flex;flex-direction:column;gap:4px}
+.slotrow{display:flex;align-items:center;gap:9px;padding:6px;cursor:pointer;background:#fff;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.slotrow.sel{background:var(--navy);color:#fff}
+.slotrow.sel .dim{color:#c8d4f0}
+.slotpic{width:52px;height:52px;flex:0 0 52px;image-rendering:pixelated;background:#111;
+  box-shadow:0 0 0 1px #000}
+.slotinfo{flex:1;min-width:0}
+.slotname{font-size:calc(12px * var(--fs));font-weight:bold;margin-bottom:2px}
+.slotprog{height:9px;background:#e6e6e6;margin-top:4px;position:relative;box-shadow:inset 1px 1px 0 #808080}
+.slotprog i{display:block;height:100%;background:repeating-linear-gradient(90deg,var(--moss) 0 5px,transparent 5px 7px)}
+.slotprog b{position:absolute;right:3px;top:-1px;font-size:calc(8px * var(--fs));color:#333}
+.slotrow.sel .slotprog b{color:#fff}
+.slotdel{min-width:0;padding:1px 7px;font-weight:bold}
+
+/* ---------- text size ----------
+   Every font-size in the app is calc(Npx * var(--fs)), so one variable
+   scales the entire interface. */
+/* --ui e a escala do sistema (janelas, molduras, icones). --fs e o tamanho do
+   texto. O texto acompanha a escala do sistema, senao aumentar a janela deixava
+   as letras iguais e o problema continuava. */
+body.txt-s{--fst:.88}
+body.txt-m{--fst:1}
+body.txt-l{--fst:1.22}
+body{--fs:calc(var(--fst,1) * var(--ui,1))}
+
+body.txt-l .keyrow .v{line-height:1}
+
+#tray .artq{font-size:calc(9px * var(--fs));padding:1px 4px;letter-spacing:.5px;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #808080;background:#c0c0c0;color:#404040;cursor:default}
+#tray .artq.full{background:#0a5a1e;color:#b6ff8a;box-shadow:inset -1px -1px 0 #2e8f45,inset 1px 1px 0 #063f14}
+#tray .artq.low{background:#8a6a12;color:#ffe9a8;box-shadow:inset -1px -1px 0 #c09a2e,inset 1px 1px 0 #5c4708}
+#tray .artq.bad{background:#7a1a12;color:#ffc9c2;box-shadow:inset -1px -1px 0 #b04a3e,inset 1px 1px 0 #4d0f08}
+#clock.sleepnow{background:#7a1a12;color:#ffd8d2;cursor:pointer;
+  box-shadow:inset -1px -1px 0 #b04a3e,inset 1px 1px 0 #4d0f08;
+  animation:sleepblink 1.4s steps(2,end) infinite}
+#clock.sleepnow:hover{background:#9a2418}
+@keyframes sleepblink{0%,60%{opacity:1}61%,100%{opacity:.62}}
+/* ---------- escala da interface ---------- */
+:root{--ui:1;--fst:1}
+body.ui-s{--ui:.9}
+body.ui-m{--ui:1}
+body.ui-l{--ui:1.3}
+body.ui-xl{--ui:1.7}
+/* bolinha de aviso no icone: vermelha pede acao, amarela e dinheiro esperando */
+.dicon .ndot{position:absolute;top:calc(4px * var(--ui));left:calc(50% + 12px * var(--ui));
+  width:calc(13px * var(--ui));height:calc(13px * var(--ui));border-radius:50%;
+  border:2px solid #06210f;box-shadow:0 0 0 1px rgba(0,0,0,.5);animation:ndotp 1.7s ease-in-out infinite}
+.dicon .ndot.alert{background:#e03a28}
+.dicon .ndot.warn{background:#f0c020}
+@keyframes ndotp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.22);opacity:.75}}
+.smi.bold .lb{font-weight:bold}
+.dicon.bin-hot .glyph{filter:drop-shadow(0 0 6px #ff6a55) brightness(1.3);transform:scale(1.12)}
+.dicon.bin-hot{background:rgba(210,75,58,.22)}
+.dicon.to-bin{animation:tobin .22s ease-in forwards}
+@keyframes tobin{to{opacity:0;transform:scale(.5) translateY(10px)}}
+
+/* ---------- o relogio avisa que o dia esta acabando ---------- */
+#clock.late{background:#7a4a10;color:#ffd9a0}
+#clock.critical{background:#7a1010;color:#ffc8c8;animation:sleepblink 1s steps(2,end) infinite}

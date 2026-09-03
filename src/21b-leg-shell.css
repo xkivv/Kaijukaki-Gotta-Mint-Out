@@ -1,0 +1,239 @@
+/* ==========================================================================
+   LEGIBILIDADE — A CASCA DO SISTEMA
+   Barra de tarefas, menu Iniciar, HUD da carteira, molduras de janela, balao
+   de pensamento, avisos, menus do botao direito, tela de perfil, boot,
+   rotulos dos icones e os paineis da area de trabalho.
+   Regra unica do projeto: nada legivel abaixo de calc(15px * var(--fs)).
+   Este arquivo carrega depois de 10/11/12/13/19/21, entao pode corrigir tudo
+   aquilo sem tocar naqueles arquivos. So 14-mobile.css vem depois — por isso
+   o bloco 12 repete as regras de celular com "html body.mob" na frente.
+   VT323 (--term) e Press Start 2P (--pix) desenham bem menores que o nominal:
+   onde o Tahoma pede 15, essas duas pedem 20.
+   ========================================================================== */
+
+/* ==========================================================================
+   1. BARRA DE TAREFAS
+   Tudo aqui vivia entre 9 e 12px. Como a barra so tinha 30px de altura, subir
+   as letras sem subir a barra cortaria as bordas — por isso a barra, a bandeja
+   e os botoes crescem juntos, e o que se apoia nela (area de trabalho, menu
+   Iniciar, avisos) desce junto pra nao ficar escondido atras.
+   ========================================================================== */
+#taskbar{height:calc(33px * var(--ui))}
+#desktop{inset:0 0 calc(33px * var(--ui)) 0}
+#startmenu{bottom:calc(33px * var(--ui))}
+#thoughts{bottom:calc(39px * var(--ui))}
+#toasts{bottom:calc(41px * var(--ui))}
+#bomdia{bottom:calc(42px * var(--ui))}
+
+#startbtn{height:calc(27px * var(--ui));font-size:calc(15px * var(--fs))}
+/* a bandeja aperta as folgas pra devolver largura aos botoes de janela */
+#tray{height:calc(27px * var(--ui));gap:calc(4px * var(--ui));padding:0 calc(5px * var(--ui));min-width:0}
+
+/* botao de janela na barra: com a letra maior cabem menos botoes, entao eles
+   passam a se espremer entre si (flex:0 1) em vez de sumir pro lado de fora
+   da barra. A letra nunca encolhe; quem encolhe e a caixa, com reticencias. */
+.tbtn{height:calc(27px * var(--ui));font-size:calc(15px * var(--fs));
+  flex:0 1 auto;max-width:calc(200px * var(--ui));min-width:calc(96px * var(--ui));
+  padding:0 calc(5px * var(--ui));gap:calc(4px * var(--ui))}
+.tbtn .tt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+
+/* a bandeja: cada item vira uma linha unica que nao quebra */
+#tray .artq{font-size:calc(15px * var(--fs));padding:calc(1px * var(--ui)) calc(5px * var(--ui));white-space:nowrap}
+#tray .lvl{font-size:calc(15px * var(--fs));padding:calc(1px * var(--ui)) calc(5px * var(--ui));white-space:nowrap;
+  max-width:calc(130px * var(--ui));overflow:hidden;text-overflow:ellipsis}
+#m_hypewrap .cap{font-size:calc(15px * var(--fs));white-space:nowrap}
+#m_hypebar{width:calc(38px * var(--ui));height:calc(11px * var(--ui))}
+/* dinheiro e relogio: o VT323 desenha pequeno, entao pede 20 e nao 15 */
+#tray .money{font-size:calc(20px * var(--fs));white-space:nowrap}
+#clock{font-size:calc(15px * var(--fs));min-width:0;white-space:nowrap}
+
+/* tela estreita: com todas as letras da bandeja legiveis ela comia mais da
+   metade da barra e nao sobrava lugar pros botoes de janela. Some com o selo
+   de qualidade de arte e com a palavra HYPE (a barrinha continua) — e o mesmo
+   corte que o celular ja faz, e nada aqui fica pequeno pra caber. */
+@media (max-width:1180px){
+  body:not(.mob) #tray .artq{display:none}
+  body:not(.mob) #m_hypewrap .cap{display:none}
+}
+
+/* ==========================================================================
+   2. MENU INICIAR
+   ========================================================================== */
+/* o menu ficou mais alto com os itens maiores: em tela baixa ele saia pra fora
+   do topo. Agora para na altura da tela e a lista rola por dentro. */
+#startmenu{width:calc(244px * var(--ui));max-height:calc(100vh - 40px * var(--ui))}
+#smitems{overflow-y:auto;min-height:0}
+.smi{font-size:calc(15px * var(--fs))}
+/* a faixa lateral tem o nome do sistema deitado: se a letra cresce e a faixa
+   nao, a palavra sai por fora */
+#smband{width:calc(28px * var(--ui));flex:0 0 calc(28px * var(--ui))}
+#smband b{font-size:calc(15px * var(--fs))}
+/* .smtitle ainda nao existe na tela; fica aqui pra ja nascer legivel */
+.smtitle{font-size:calc(15px * var(--fs))}
+
+/* ==========================================================================
+   3. HUD DA CARTEIRA (canto da tela)
+   O titulo, as duas linhas de status e o botao de pular estavam em 10/11px.
+   A caixa tinha largura minima fixa em pixel cru: com a letra maior as duas
+   colunas de cada linha se encavalavam. As folgas de dentro encolhem na mesma
+   medida em que as letras crescem — os paineis da area de trabalho se penduram
+   na base do HUD, e um HUD mais alto empurrava todos eles pra cima do relogio.
+   ========================================================================== */
+#hud{min-width:calc(216px * var(--ui));top:calc(6px * var(--ui))}
+#hud .hud-tt{font-size:calc(15px * var(--fs));padding:calc(2px * var(--ui)) calc(5px * var(--ui))}
+#hud .hud-tt button{font-size:calc(15px * var(--fs));padding:0 calc(4px * var(--ui))}
+#hud .hud-body{padding:calc(4px * var(--ui)) calc(7px * var(--ui)) calc(3px * var(--ui))}
+/* o numerao da carteira sobrava altura: 28px ja e enorme e devolve pros
+   paineis de baixo o espaco que as linhas de texto maiores consumiram */
+#hud .hud-money{font-size:calc(26px * var(--fs));line-height:.9}
+#hud .hud-row{font-size:calc(15px * var(--fs));gap:calc(10px * var(--ui));flex-wrap:wrap;
+  margin-top:calc(2px * var(--ui));line-height:1.15}
+#hud .hud-row>span,#hud .hud-row>b{white-space:nowrap}
+#hud .hud-skip{font-size:calc(15px * var(--fs));padding:calc(4px * var(--ui)) 0;margin-top:calc(5px * var(--ui))}
+@media (max-width:720px){
+  #hud{min-width:calc(200px * var(--ui))}
+}
+
+/* ==========================================================================
+   4. MOLDURA DA JANELA
+   O titulo era 11px numa faixa de 20px de altura. Subindo a letra a faixa
+   precisa subir junto, senao o texto encosta na borda de cima.
+   ========================================================================== */
+.titlebar{height:calc(26px * var(--ui));flex:0 0 calc(26px * var(--ui));font-size:calc(15px * var(--fs))}
+.titlebar .ttl{font-size:calc(15px * var(--fs))}
+.tb{width:calc(22px * var(--ui));height:calc(20px * var(--ui))}
+.menubar{font-size:calc(15px * var(--fs))}
+.menubar span{padding:calc(2px * var(--ui)) calc(7px * var(--ui))}
+.win .statusbar{font-size:calc(15px * var(--fs));flex:0 0 calc(26px * var(--ui))}
+
+/* ==========================================================================
+   5. BALAO DE PENSAMENTO E AVISOS
+   O "YOU" do balao era Press Start 2P em 8px — a fonte mais estreita do jogo
+   no menor tamanho do jogo. Vira Tahoma, que e o que se le de verdade.
+   ========================================================================== */
+.thought{font-size:calc(15px * var(--fs));max-width:min(calc(400px * var(--ui)),88vw)}
+.thought .who{font-family:var(--uif);font-size:calc(15px * var(--fs));font-weight:bold;letter-spacing:.5px}
+.toast{font-size:calc(15px * var(--fs));max-width:min(calc(360px * var(--ui)),88vw)}
+/* o contador "x3" do aviso repetido nasce com tamanho colado no proprio
+   elemento pelo JS; so o !important vence isso daqui */
+.toast .cnt{font-size:calc(15px * var(--fs)) !important}
+
+/* ==========================================================================
+   6. CAIXAS DE AVISO (UI.dialog)
+   O texto da caixa tambem nasce com tamanho colado pelo JS.
+   ========================================================================== */
+.win.dlg{width:min(calc(400px * var(--ui)),92vw)}
+.win.dlg .wbody .pad>div{font-size:calc(15px * var(--fs)) !important;line-height:1.5}
+.win.dlg .btn{font-size:calc(15px * var(--fs))}
+
+/* ==========================================================================
+   7. MENU DO BOTAO DIREITO
+   ========================================================================== */
+.ctxmenu{min-width:calc(210px * var(--ui))}
+.ctx-item{font-size:calc(15px * var(--fs))}
+/* a tecla de atalho na direita era 9px */
+.ctx-item b{font-size:calc(15px * var(--fs));padding-left:calc(14px * var(--ui))}
+
+/* ==========================================================================
+   8. TELA DE ESCOLHA DE PERFIL
+   A porcentagem ficava dentro de uma barrinha de 9px de altura: pra caber uma
+   letra legivel a barra precisou virar uma faixa de verdade.
+   ========================================================================== */
+.loginbox{width:min(calc(410px * var(--ui)),94vw)}
+#loginveil .logintop b{font-size:calc(17px * var(--fs))}
+#loginveil .tiny{font-size:calc(15px * var(--fs));line-height:1.45}
+.slotname{font-size:calc(15px * var(--fs))}
+.slotprog{height:calc(21px * var(--ui))}
+/* a porcentagem cabia numa faixa de 9px e era branca em cima de barra clara:
+   sumia. Agora e uma etiqueta escura, que se le com a barra cheia ou vazia,
+   no perfil escolhido ou nao. */
+.slotprog b{font-size:calc(15px * var(--fs));top:50%;transform:translateY(-50%);
+  right:calc(3px * var(--ui));line-height:1.25;color:#fff;background:rgba(0,0,0,.66);
+  padding:0 calc(5px * var(--ui))}
+#loginveil .btn{font-size:calc(15px * var(--fs))}
+/* o × de apagar perfil herdava o branco da linha selecionada e sumia no
+   cinza do proprio botao */
+#loginveil .slotdel{font-size:calc(17px * var(--fs));color:#000}
+
+/* ==========================================================================
+   9. BOOT E DESLIGAMENTO
+   Tudo aqui e VT323 ou Press Start 2P: pedem 20, nao 15.
+   ========================================================================== */
+#boot{font-size:calc(21px * var(--fs))}
+#boot .logo{font-size:calc(20px * var(--fs))}
+.syslogo{font-size:calc(20px * var(--fs))}
+.systxt{font-size:calc(21px * var(--fs))}
+.sysnote{font-size:calc(20px * var(--fs))}
+
+/* ==========================================================================
+   10. ROTULOS DOS ICONES DA AREA DE TRABALHO
+   O rotulo cresce, mas a grade de icones e calculada no JS e nao muda: o que
+   sobrar de altura tem que sair da folga em volta do desenho, senao um icone
+   encosta no de baixo.
+   ========================================================================== */
+.dicon{padding:calc(4px * var(--ui)) 3px calc(4px * var(--ui));gap:calc(4px * var(--ui))}
+.dicon .lbl{font-size:calc(15px * var(--fs));line-height:1.15;word-break:normal;overflow-wrap:normal;hyphens:none;max-width:100%}
+.dicon .badge{font-size:calc(15px * var(--fs));line-height:calc(19px * var(--ui));
+  padding:0 calc(5px * var(--ui));border-radius:calc(10px * var(--ui))}
+.dicon .nudgetag{font-size:calc(15px * var(--fs))}
+
+/* ==========================================================================
+   11. PAINEIS DA AREA DE TRABALHO
+   NAO mexe no relogio (.wgt.bare): ele ja esta no tamanho certo.
+   ========================================================================== */
+.wgt:not(.bare) .wg-tt{font-size:calc(15px * var(--fs));padding:calc(2px * var(--ui)) calc(4px * var(--ui))}
+.wgt:not(.bare) .wg-body{padding:calc(3px * var(--ui))}
+.wgt:not(.bare) .wg-x{width:calc(21px * var(--ui));height:calc(19px * var(--ui));font-size:calc(15px * var(--fs))}
+.wgt:not(.bare) .wg-min{width:calc(21px * var(--ui));height:calc(19px * var(--ui));font-size:calc(15px * var(--fs))}
+/* o rodape e frase, nao numero: "24 candles", "cheap — mint now". Em VT323 ele
+   precisaria de 20px e ai "24 candles" ja nao cabia na largura do painel e
+   saia cortado. Em Tahoma 15px cabe inteiro, e ainda sobra altura. O numerao
+   do painel (.gw-pct, .gw-cash) continua em VT323. */
+.wgt:not(.bare) .wg-foot{font-family:var(--uif);font-size:calc(15px * var(--fs));
+  line-height:1.2;margin-top:calc(3px * var(--ui));gap:calc(6px * var(--ui))}
+.wgt:not(.bare) .wg-foot>*{white-space:nowrap}
+/* forma encolhida e VT323 de verdade (so numero): pede 20 */
+.wg-mini{font-size:calc(20px * var(--fs))}
+.wg-mini b{font-size:calc(24px * var(--fs))}
+.wgt.mini{min-width:calc(215px * var(--ui))}
+.gw-cash{font-size:calc(20px * var(--fs))}
+
+/* ==========================================================================
+   12. CELULAR
+   14-mobile.css carrega DEPOIS deste arquivo e prendia varios destes de volta
+   em 11/12/13px. "body.mob X" contra "body.mob X" da empate — e no empate
+   ganha quem carrega por ultimo, ou seja o celular. Por isso cada regra daqui
+   comeca com "html": um seletor a mais e a regra volta a ganhar.
+   ========================================================================== */
+html body.mob .dicon .lbl{font-size:calc(15px * var(--fs));line-height:1.15;word-break:normal;overflow-wrap:normal;hyphens:none;max-width:100%}
+html body.mob .dicon .badge{font-size:calc(15px * var(--fs));line-height:calc(19px * var(--ui))}
+html body.mob .titlebar{font-size:calc(15px * var(--fs))}
+html body.mob .titlebar .ttl{font-size:calc(15px * var(--fs))}
+html body.mob .win .statusbar{font-size:calc(15px * var(--fs));flex:0 0 calc(28px * var(--ui))}
+html body.mob .smi{font-size:calc(15px * var(--fs))}
+html body.mob .ctx-item{font-size:calc(15px * var(--fs))}
+html body.mob .win.dlg .btn,html body.mob #loginveil .btn{font-size:calc(15px * var(--fs))}
+html body.mob .tb.mobback{font-size:calc(15px * var(--fs))}
+html body.mob #mobhome .n{font-size:calc(15px * var(--fs));line-height:calc(19px * var(--ui))}
+html body.mob #boot{font-size:calc(21px * var(--fs))}
+html body.mob #boot .logo{font-size:calc(20px * var(--fs))}
+html body.mob .thought{font-size:calc(15px * var(--fs))}
+
+/* ---------- a barra de tarefas do celular ----------
+   Tudo aqui e uma disputa por 390px de largura. As letras sobem pro tamanho
+   legivel e o espaco vem das FOLGAS, nao das letras: botao Iniciar, barra e
+   bandeja apertam o proprio respiro. */
+html body.mob #startbtn{font-size:calc(15px * var(--fs));padding:0 calc(8px * var(--ui)) 0 calc(6px * var(--ui));gap:5px}
+html body.mob #taskbar{gap:4px;padding-left:3px;padding-right:3px}
+html body.mob #tray{padding:0 4px;gap:5px}
+html body.mob #tray>*{flex:0 0 auto;min-width:0}
+html body.mob #tray .lvl{font-size:calc(15px * var(--fs))}
+html body.mob #tray .money{font-size:calc(20px * var(--fs))}
+html body.mob #clock{font-size:calc(15px * var(--fs));min-width:0}
+/* telefone estreito: mesmo com as folgas apertadas nao cabe tudo em tamanho
+   legivel. Em vez de espremer as letras, saem os dois indicadores mudos — o
+   selo de nivel e a barrinha de hype (o celular ja tirava a palavra "HYPE" e o
+   selo de arte). Ficam o dinheiro e o relogio, que sao o que se le. */
+@media (max-width:430px){
+  html body.mob #tray .lvl,html body.mob #m_hypewrap{display:none}
+}

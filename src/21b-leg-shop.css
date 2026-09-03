@@ -1,0 +1,232 @@
+/* ==========================================================================
+   LEGIBILIDADE — LOJA, KAKIZONE, MR. KAIJU, CHARTS e os EFEITOS DE TELA CHEIA
+   A regra numero um: nada que uma pessoa PRECISA LER pode desenhar abaixo de
+   calc(15px * var(--fs)). Aqui nao existe "isso e so enfeite" — se tem palavra
+   na tela, ela passa da regua.
+
+   Duas familias desenham menor do que o numero diz: var(--term) (VT323) e
+   var(--pix) (Press Start 2P). Onde elas ficam, o piso sobe pra 20px, que e o
+   que da a mesma altura de letra que 15px de Tahoma.
+
+   Este arquivo carrega depois de 12-apps/13-fx/20-shop/21-legible e ANTES de
+   23-quests, 24-spot e 14-mobile. Onde um desses tres prende o tamanho de
+   novo, a regra daqui ganha um seletor a mais de proposito.
+   ========================================================================== */
+
+
+/* ==========================================================================
+   KAIJU SHOP
+   O card do upgrade e a unica explicacao que o jogo da do que a coisa faz:
+   titulo, descricao, o aviso de nivel e o botao sao todos texto de leitura.
+   ========================================================================== */
+.shop-item h4{font-size:calc(15px * var(--fs));line-height:1.4}
+.shop-item p{font-size:calc(15px * var(--fs));line-height:1.5;margin-bottom:calc(6px * var(--ui))}
+.shop-item .btn{font-size:calc(15px * var(--fs))}
+/* "Requires level 6", "-> holds 32", "Right now 42% of mint": e aqui que mora
+   o motivo de comprar ou nao. .tiny valia 10px no app inteiro. */
+.shop-item .tiny{font-size:calc(15px * var(--fs));line-height:1.5}
+/* a escada do mint em lote (x2 x3 x4...) e VT323 */
+.shop-item .btrack i{font-size:calc(20px * var(--fs));line-height:1.35}
+.itemlock{font-size:calc(15px * var(--fs))}
+
+/* o cartao de preco e as estatisticas do item */
+.pricehero .ph-k,.pricehero .ph-s{font-size:calc(15px * var(--fs))}
+.istat .is-k{font-size:calc(15px * var(--fs))}
+.istat .is-v{font-size:calc(22px * var(--fs))}
+.keyrow .k{font-size:calc(15px * var(--fs))}
+.lsrow .ls-l{font-size:calc(15px * var(--fs))}
+.signtxt{font-size:calc(15px * var(--fs))}
+.qslot .qi{font-size:calc(20px * var(--fs))}
+.qslot .qr{font-size:calc(15px * var(--fs))}
+
+/* 14-mobile.css carrega por ultimo e prende .btn em 12px no celular; um nivel
+   a mais aqui devolve o tamanho de leitura */
+body.mob .shop-item .btn{font-size:calc(15px * var(--fs))}
+body.mob .shop-item p,body.mob .shop-item h4,body.mob .shop-item .tiny{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   KAKIZONE
+   ========================================================================== */
+/* o letreiro e a chamada do dia: KAKIZONE e a piada embaixo dele */
+.kz-t{font-size:calc(20px * var(--fs))}
+/* a piada do dia era uma linha so, com reticencias: no tamanho de leitura ela
+   sumia pela metade. Agora ela quebra em duas linhas e o banner cresce junto. */
+.kz-s{font-size:calc(15px * var(--fs));line-height:1.4;
+  white-space:normal;overflow:visible;text-overflow:clip}
+.kzbanner{align-items:center}
+/* "2 freemints" — o numero ja era grande, a palavra estava em 8px */
+.kz-count i{font-size:calc(15px * var(--fs))}
+/* o selo READY diz que o freemint do dia ainda esta la — e informacao, nao
+   enfeite. Em tamanho de leitura ele cobria o numero de freemints, porque
+   estava solto por cima do banner (position:absolute). Agora ele entra na
+   fila do banner, do lado do numero, e nada mais se sobrepoe. */
+.kz-flag{position:static;flex:0 0 auto;align-self:center;
+  font-size:calc(19px * var(--fs));padding:calc(4px * var(--ui)) calc(9px * var(--ui))}
+
+/* o botao do freemint do dia */
+.kzc-t{font-size:calc(20px * var(--fs));line-height:1.5}
+.froot .kzcard .tiny{font-size:calc(15px * var(--fs));line-height:1.55}
+.froot .kzcode .btn{font-size:calc(15px * var(--fs))}
+body.mob .froot .kzcode .btn{font-size:calc(15px * var(--fs))}
+
+/* O "41 / 46" da barrinha ficava em 14px de VT323, e ele fica escrito POR
+   DENTRO da barra: em cima do verde cheio, letra escura sozinha nao le. Aqui
+   ele cresce e ganha contorno branco, que serve nos dois lados da barra.
+   23-quests.css carrega DEPOIS com um .kzg-bar b de um nivel so — por isso o
+   .win na frente. */
+.win .kzg-bar b{font-size:calc(20px * var(--fs));
+  text-shadow:0 0 calc(3px * var(--ui)) #fff,
+    1px 1px 0 #fff,-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff}
+.win .kzg-bar{height:calc(21px * var(--ui))}
+/* a missao inteira na linha de cima — nada volta pra position:absolute */
+.win .kzg-top{font-size:calc(15px * var(--fs))}
+.win .kzg-r{font-size:calc(21px * var(--fs))}
+.win .kzg-b,.win .kzg-done{font-size:calc(15px * var(--fs))}
+body.mob .win .kzg-b{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   MR. KAIJU
+   A fatura e o texto mais importante da janela: e ela que diz por que ele quer
+   o dinheiro. CUIDADO: a linha cresceu, entao a conta rola dentro de .txroot e
+   os dois botoes seguem colados no rodape (.txacts). Testado em 1024x700.
+   ========================================================================== */
+.txroot .tiny{font-size:calc(15px * var(--fs));line-height:1.55}
+.txroot .fieldset > .lg{font-size:calc(15px * var(--fs))}
+.dr-row{font-size:calc(15px * var(--fs))}
+.dr-row.tot{font-size:calc(17px * var(--fs))}
+/* o balao do proprio Mr. Kaiju */
+.doodle-stage .speech{font-size:calc(15px * var(--fs));line-height:1.45}
+/* PAGAR e NAO TENHO: os dois botoes que decidem o dia */
+.txacts .btn.big{font-size:calc(15px * var(--fs))}
+body.mob .txacts .btn.big{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   KAIJU CHARTS
+   ========================================================================== */
+/* 1H e 1D escolhem o que o grafico mostra */
+.ch-scale .btn{font-size:calc(15px * var(--fs));padding:calc(3px * var(--ui)) calc(11px * var(--ui))}
+body.mob .ch-scale .btn{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   O SORTEIO (reveal)
+   Nome, raca e raridade sao o resultado do mint — e a tela inteira existe pra
+   ser lida. Tudo em --pix aqui sobe pra 20px.
+   ========================================================================== */
+.rv-name{font-size:calc(20px * var(--fs));line-height:1.45}
+.rv-race{font-size:calc(20px * var(--fs))}
+.rv-rar{font-size:calc(20px * var(--fs))}
+.rv-racebox b{font-size:calc(15px * var(--fs))}
+.rv-racebox span{font-size:calc(20px * var(--fs))}
+.rv-count{font-size:calc(16px * var(--fs))}
+.rv-bestmark{font-size:calc(16px * var(--fs))}
+.rv-th:not(.done)::after{font-size:calc(20px * var(--fs))}
+/* o resumo da leva: quantas de cada raridade e quanto custou */
+.rv-tiers span{font-size:calc(15px * var(--fs));padding:calc(4px * var(--ui)) calc(9px * var(--ui))}
+.rv-sum .tiny{font-size:calc(15px * var(--fs))}
+.reveal .rv-traits{font-size:calc(15px * var(--fs))}
+.reveal .rv-traits div b{font-size:calc(15px * var(--fs))}
+.reveal .btn{font-size:calc(15px * var(--fs))}
+/* com as letras no tamanho de leitura a caixa do sorteio ficou ~150px mais
+   alta, e numa tela de 700px o botao KEEP IT saia por baixo. Nada aqui
+   encolhe de letra: o que encolhe e o ar entre as coisas e o espaco vazio que
+   o nome reservava (eram sempre duas linhas guardadas, agora a reserva
+   acompanha a linha de verdade). A margem da fileira dos botoes vem por
+   style="" no proprio elemento — por isso, e so por isso, o !important. */
+.reveal .rv-stage{gap:calc(5px * var(--ui));padding:calc(8px * var(--ui)) calc(12px * var(--ui))}
+.rv-name{min-height:calc(2.4em);line-height:1.2}
+.rv-rar{min-height:calc(1.25em);padding:calc(4px * var(--ui)) calc(12px * var(--ui))}
+.rv-racebox{padding:calc(5px * var(--ui)) calc(20px * var(--ui));gap:calc(1px * var(--ui))}
+.reveal .row{padding:calc(7px * var(--ui)) !important}
+/* tela baixa (1024x700 com a interface grande): a arte do sorteio cresce junto
+   com a interface (o tamanho vem por style="" do proprio desenho, por isso o
+   !important). Numa tela de 700px isso somado as letras maiores empurrava o
+   KEEP IT pra fora. Aqui, e so aqui, a arte para de crescer — a letra nao cede
+   nada. No celular a arte continua enchendo o palco. */
+@media (max-height:800px){
+  body:not(.mob) .reveal .rv-shroud canvas{width:248px !important;height:248px !important}
+}
+/* 14-mobile.css derruba nome e raca pra 13px no celular. Ele tambem tem um
+   body.mob .btn.big que empata com um seletor de tres niveis daqui — e quem
+   empata e carrega depois ganha. Por isso o .btn.big aparece escrito. */
+body.mob .reveal .rv-name{font-size:calc(20px * var(--fs))}
+body.mob .reveal .rv-race{font-size:calc(20px * var(--fs))}
+body.mob .reveal .btn,body.mob .reveal .btn.big{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   SUBIDA DE NIVEL E MINTOUT
+   O nome do rank e o texto do premio vinham por style="" no proprio elemento,
+   e style ganha de qualquer seletor — por isso, e so por isso, o !important.
+   ========================================================================== */
+.lvlup h2{font-size:calc(22px * var(--fs))}
+.lvlup .rank{font-size:calc(20px * var(--fs));line-height:1.5}
+.lvlup .stage > div{font-size:calc(15px * var(--fs)) !important;line-height:1.6}
+/* a margem lateral do palco era px cru: com a letra maior a ultima palavra da
+   linha encostava na borda da janela */
+.lvlup .stage{padding:calc(14px * var(--ui)) calc(16px * var(--ui))}
+/* no MINTOUT o corpo da janela e pedido mais largo que a propria janela (a
+   largura vem por style="" no elemento), e a ultima palavra de cada linha
+   caia pra fora da moldura. O corpo passa a caber na janela. */
+.win.lvlup > .wbody{max-width:100%;box-sizing:border-box}
+.lvlup .btn{font-size:calc(15px * var(--fs))}
+body.mob .lvlup .btn,body.mob .lvlup .btn.big{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   VENDA GRANDE
+   ========================================================================== */
+.bs-id{font-size:calc(15px * var(--fs))}
+.bs-over{font-size:calc(15px * var(--fs))}
+.bs-line{font-size:calc(15px * var(--fs));letter-spacing:1.5px}
+/* o comprador aparece direto por cima da area de trabalho, sem caixa atras:
+   sem sombra o cinza sumia no fundo */
+.bs-who{font-size:calc(15px * var(--fs));text-shadow:0 1px 0 #000,0 0 calc(4px * var(--ui)) #000}
+
+
+/* ==========================================================================
+   CARD DO EVENTO, RELATORIO DO DIA E A FAIXA DO CLIMA
+   ========================================================================== */
+.evcard .evtxt{font-size:calc(15px * var(--fs))}
+.evrow{font-size:calc(15px * var(--fs))}
+.evbanner{font-size:calc(15px * var(--fs))}
+.evbanner b{font-size:calc(20px * var(--fs))}
+.sysev{font-size:calc(20px * var(--fs))}
+.win.evcard .tiny{font-size:calc(15px * var(--fs))}
+.win.evcard .btn,.win.dayrep .btn{font-size:calc(15px * var(--fs))}
+body.mob .win.evcard .btn,body.mob .win.dayrep .btn,
+body.mob .win.evcard .btn.big,body.mob .win.dayrep .btn.big{font-size:calc(15px * var(--fs))}
+.dr-hd{font-size:calc(20px * var(--fs));line-height:1.5}
+.win.dayrep .tiny{font-size:calc(15px * var(--fs));line-height:1.55}
+/* "47,25% mintado" fica escrito por dentro da barra. O texto usava
+   mix-blend-mode pra se virar sozinho contra os dois fundos; em tamanho de
+   leitura isso virava rosa em cima do verde. Agora e letra escura com contorno
+   branco: le igual na parte cheia e na parte vazia da barra. */
+.win.dayrep .prog b{font-size:calc(15px * var(--fs));mix-blend-mode:normal;
+  color:#141414;text-shadow:0 0 calc(3px * var(--ui)) #fff,
+    1px 1px 0 #fff,-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff}
+.win.dayrep .prog{height:calc(22px * var(--ui))}
+
+
+/* ==========================================================================
+   POP-UPS QUE APARECEM SOZINHOS
+   O golpe so e um golpe se der pra ler a letra miuda que entrega ele.
+   O texto do corpo vem por style="" no elemento — dai o !important.
+   ========================================================================== */
+.scampop .wbody .pad > div{font-size:calc(15px * var(--fs)) !important;line-height:1.55}
+.scampop .scam-foot{font-size:calc(20px * var(--fs))}
+.scampop .btn{font-size:calc(15px * var(--fs))}
+body.mob .scampop .btn,body.mob .scampop .btn.big{font-size:calc(15px * var(--fs))}
+.jesstxt{font-size:calc(20px * var(--fs));line-height:1.7}
+.jesspop .btn{font-size:calc(15px * var(--fs))}
+body.mob .jesspop .btn,body.mob .jesspop .btn.big{font-size:calc(15px * var(--fs))}
+#bomdia span{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   A CONEXAO CAIU
+   ========================================================================== */
+.drop-t{font-size:calc(20px * var(--fs));line-height:1.4}

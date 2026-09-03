@@ -1,0 +1,221 @@
+/* ============ ONBOARD — Mr. Kaiju Wallet Setup ============
+   Assistente que roda uma vez, entre o LOG ON e a area de trabalho.
+   Mesmo chao do resto do sistema: chapa cinza, bisel de box-shadow, CRT por
+   cima. Todo px passa por var(--ui); so os fios de bisel de 1px ficam fixos. */
+
+#wizveil{position:absolute;inset:0;z-index:8900;background:#0a3f3a;
+  background-image:radial-gradient(ellipse at 50% 40%,#12836f 0%,#0d6b5f 45%,#0a4f47 100%);
+  display:grid;place-items:center;padding:calc(8px * var(--ui));animation:fadein .25s}
+#wizveil.gone{animation:fadeout .25s forwards}
+/* o confete cai por cima do assistente, senao ele nasce escondido atras do veu */
+body.wizing #confetti{z-index:8950}
+
+.wizwin{width:min(calc(560px * var(--ui)),95vw);max-height:calc(100vh - calc(14px * var(--ui)));
+  display:flex;flex-direction:column;position:relative}
+
+/* ---------- trilha dos passos ----------
+   Quatro celulas biseladas em fila, igual a barra de etapas de um instalador:
+   a atual em azul de selecao, as vencidas com o tique verde, as que faltam
+   apagadas. Sem linha ligando nada — no tamanho pequeno a linha passava rente
+   ao texto e parecia rasura. */
+.wizsteps{display:flex;align-items:stretch;gap:calc(2px * var(--ui));
+  padding:calc(4px * var(--ui));margin:2px 0 0;flex:0 0 auto;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
+.wstep{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;
+  gap:calc(5px * var(--ui));padding:calc(3px * var(--ui)) calc(5px * var(--ui));
+  background:var(--face);color:#6a6a6a;overflow:hidden;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
+.wstep i{width:calc(20px * var(--ui));height:calc(20px * var(--ui));flex:0 0 calc(20px * var(--ui));
+  display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:bold;
+  font-size:calc(15px * var(--fs));line-height:1;background:var(--face-dk);color:#3b3b3b;
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
+.wstep b{font-size:calc(15px * var(--fs));font-weight:normal;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wstep.on{background:var(--navy);color:#fff;
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt)}
+.wstep.on i{background:#fff;color:var(--navy)}
+.wstep.on b{font-weight:bold}
+.wstep.done{color:#2f6b3a;
+  background-image:linear-gradient(45deg,#fff 25%,transparent 25%,transparent 75%,#fff 75%),
+    linear-gradient(45deg,#fff 25%,#cfd8c8 25%,#cfd8c8 75%,#fff 75%);
+  background-size:4px 4px;background-position:0 0,2px 2px}
+.wstep.done i{background:var(--moss);color:#fff;
+  box-shadow:inset -1px -1px 0 #1e4526,inset 1px 1px 0 #7fc48a}
+
+/* ---------- corpo: faixa do instalador + conteudo ---------- */
+.wiz-main{display:flex;flex:1;min-height:0;margin-top:calc(5px * var(--ui))}
+.wiz-band{flex:0 0 calc(92px * var(--ui));background:#0b1208;color:var(--lime);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:calc(7px * var(--ui));padding:calc(10px * var(--ui)) calc(4px * var(--ui));
+  background-image:repeating-linear-gradient(to bottom,rgba(168,232,50,.07) 0 1px,transparent 1px 4px);
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.wiz-band .wb-ico{width:calc(72px * var(--ui));height:calc(72px * var(--ui));
+  filter:drop-shadow(0 0 calc(6px * var(--ui)) rgba(168,232,50,.35))}
+.wiz-band .wb-t{display:flex;flex-direction:column;align-items:center;
+  font-family:var(--pix);font-size:calc(11px * var(--fs));line-height:1.9;
+  text-align:center;color:var(--lime-hi);letter-spacing:.5px}
+.wiz-band .wb-v{font-family:var(--term);font-size:calc(20px * var(--fs));color:var(--lime-deep)}
+.wiz-band.lit{animation:wbandlit .7s steps(2,end) 3}
+@keyframes wbandlit{50%{background:#16260c}}
+
+.wiz-body{flex:1;min-width:0;overflow:auto;padding:calc(11px * var(--ui)) calc(12px * var(--ui));
+  min-height:calc(210px * var(--ui))}
+.wiz-h{font-size:calc(23px * var(--fs));font-weight:bold;line-height:1.25}
+.wiz-sub{font-size:calc(15px * var(--fs));color:#5a5a5a;margin:calc(2px * var(--ui)) 0 calc(9px * var(--ui));
+  padding-bottom:calc(7px * var(--ui));
+  box-shadow:inset 0 -1px 0 #fff,inset 0 -2px 0 var(--shadow)}
+.wiz-p{margin:0 0 calc(11px * var(--ui));font-size:calc(17px * var(--fs));line-height:1.55}
+.wiz-fine{color:#4a4a4a;font-family:var(--uif);
+  font-size:calc(15px * var(--fs));line-height:1.5;margin-top:calc(9px * var(--ui))}
+.wiz-warn{font-size:calc(16px * var(--fs));line-height:1.45;margin-top:calc(9px * var(--ui));
+  padding-top:calc(8px * var(--ui))}
+
+/* barra falsa de geracao da carteira */
+.wiz-gen{margin-top:calc(9px * var(--ui))}
+.wiz-gen .prog{margin-bottom:calc(4px * var(--ui))}
+.wiz-gen span{font-family:var(--uif);font-size:calc(15px * var(--fs));color:#3a3a3a}
+
+/* ---------- a frase ---------- */
+.seedbox{position:relative;background:#0b1208;padding:calc(9px * var(--ui));
+  min-height:calc(74px * var(--ui));
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.seed-w{display:flex;flex-wrap:wrap;gap:calc(4px * var(--ui))}
+.seed-w i{display:flex;align-items:baseline;gap:calc(4px * var(--ui));font-style:normal;
+  background:#14210a;border:1px solid var(--lime-deep);padding:calc(2px * var(--ui)) calc(6px * var(--ui));
+  font-family:var(--term);font-size:calc(30px * var(--fs));line-height:1.15;color:var(--lime-hi);
+  animation:seedin .18s ease-out}
+.seed-w i b{font-family:var(--uif);font-size:calc(15px * var(--fs));color:var(--page-dim);font-weight:normal}
+/* ---------- A FRASE E VERDE DE TERMINAL, E TEM QUE CONTINUAR VERDE ----------
+   O assistente e uma .win. E 21c-contrast.css, que carrega DEPOIS deste
+   arquivo, tem um `.win i{color:inherit}` — mesma especificidade de
+   `.seed-w i`, entao ele ganhava por ordem e as palavras da frase saiam
+   PRETAS sobre o painel escuro. Uma classe a mais devolve a tinta certa sem
+   desfazer o conserto de contraste do outro arquivo.
+   O verde e o mesmo --lime-hi do HUD e do terminal: nada de verde novo. */
+.seedbox .seed-w i{color:var(--lime-hi)}
+.seedbox .seed-w i b{color:var(--page-dim)}
+@keyframes seedin{from{opacity:0;transform:translateY(calc(-3px * var(--ui)))}}
+.seed-cover{position:absolute;inset:0;border:0;cursor:pointer;color:#1b1b1b;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(3px * var(--ui));
+  background:var(--face);
+  background-image:repeating-linear-gradient(45deg,#b4b4b4 0 4px,#cacaca 4px 8px);
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt);
+  transition:opacity .22s ease-out,transform .22s ease-out}
+.seed-cover span{font-family:var(--pix);font-size:calc(15px * var(--fs));letter-spacing:.5px}
+.seed-cover em{font-size:calc(15px * var(--fs));font-style:normal;color:#4a4a4a}
+.seed-cover:active{box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow)}
+.seed-cover.off{opacity:0;transform:scaleY(.08);pointer-events:none}
+.seedbox.mini{min-height:0}
+
+/* A caixa de marcar ("eu anotei, juro") e o quebra-cabeca de recolocar as
+   palavras sairam do assistente: eram duas telas de atrito antes do jogo
+   comecar. O CSS deles saiu junto — regra sem dono e regra que confunde. */
+
+/* ---------- apelido ---------- */
+.nick-wrap{display:flex;align-items:center;gap:calc(7px * var(--ui))}
+.nick-in{flex:1;min-width:0;font-family:var(--term) !important;
+  font-size:calc(30px * var(--fs)) !important;letter-spacing:1px;
+  padding:calc(5px * var(--ui)) calc(7px * var(--ui)) !important}
+.nick-cnt{font-family:var(--uif);font-size:calc(15px * var(--fs));color:#5a5a5a;
+  min-width:calc(40px * var(--ui));text-align:right}
+.nick-rule{margin-top:calc(7px * var(--ui));font-size:calc(15px * var(--fs));color:#5a5a5a;line-height:1.4}
+.nick-rule.bad{color:#a01515;font-weight:bold;animation:nrshake .3s}
+@keyframes nrshake{25%{transform:translateX(calc(-2px * var(--ui)))}75%{transform:translateX(calc(2px * var(--ui)))}}
+
+/* ---------- fim ---------- */
+.wiz-done{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:calc(6px * var(--ui));text-align:center;padding:calc(14px * var(--ui)) 0}
+.wiz-done b{font-family:var(--pix);font-size:calc(15px * var(--fs));line-height:1.6;color:#0a4d24}
+.wiz-done span{font-family:var(--term);font-size:calc(30px * var(--fs));color:#1b1b1b}
+.wiz-done em{font-size:calc(15px * var(--fs));font-style:normal;color:#5a5a5a}
+
+/* ---------- rodape ---------- */
+.wiz-foot{flex:0 0 auto;display:flex;align-items:center;gap:calc(6px * var(--ui));
+  padding:calc(8px * var(--ui));margin-top:calc(4px * var(--ui));
+  box-shadow:inset 0 1px 0 #fff,inset 0 2px 0 var(--shadow)}
+.wiz-note{flex:1;min-width:0;font-size:calc(15px * var(--fs));color:#4a4a4a;line-height:1.35}
+
+/* ---------- Kaijukaki.net pedindo pra ser clicado ----------
+   Nada de CTA moderno: o icone da um pulinho de vez em quando, o rotulo ganha
+   a moldura pontilhada de item escolhido do 98, e embaixo dele fica uma
+   etiqueta amarela igual as dicas de sistema da epoca. Some pra sempre na
+   primeira visita ao site. */
+.dicon.nudge .glyph{animation:nudgehop 3.2s ease-in-out infinite}
+@keyframes nudgehop{
+  0%,76%,100%{transform:translateY(0)}
+  82%{transform:translateY(calc(-4px * var(--ui)))}
+  88%{transform:translateY(0)}
+  92%{transform:translateY(calc(-2px * var(--ui)))}
+  97%{transform:translateY(0)}
+}
+/* O icone com o COMECE AQUI fica por cima dos vizinhos: a etiqueta pendura
+   pra baixo e invadia o icone de baixo, que a cobria por ordem de DOM. */
+.dicon.nudge{z-index:20}
+.dicon.nudge .lbl{background:rgba(0,0,20,.45);border:1px dotted #ffffcc}
+/* A etiqueta COMECE AQUI sai pro LADO do icone, como um balao, em vez de
+   pendurar embaixo: embaixo ela invadia o icone seguinte da coluna. */
+.dicon .nudgetag{position:absolute;left:calc(100% - 6px);top:calc(18px * var(--ui));
+  background:#ffffcc;color:#000;white-space:nowrap;
+  font-size:calc(11px * var(--fs));line-height:1.5;padding:calc(1px * var(--ui)) calc(6px * var(--ui));
+  border:1px solid #000;box-shadow:1px 1px 0 rgba(0,0,0,.5);
+  animation:nudgetag 3.2s ease-in-out infinite}
+.dicon .nudgetag::before{content:'';position:absolute;left:-7px;top:50%;margin-top:-5px;
+  border:5px solid transparent;border-right-color:#000;border-left:0}
+@keyframes nudgetag{
+  0%,76%,100%{transform:translateX(0)}
+  84%{transform:translateX(calc(3px * var(--ui)))}
+  92%{transform:translateX(0)}
+}
+.dicon.sel .nudgetag{background:#fff}
+
+/* ---------- telas estreitas ----------
+   A faixa do instalador vira uma tarja horizontal e os passos viram so
+   numeros: numa tela de 393px o texto do passo nao cabe do lado. */
+body.mob .win.wizwin{padding:calc(3px * var(--ui));width:min(calc(440px * var(--ui)),96vw)}
+body.mob .win.wizwin .titlebar{height:calc(22px * var(--ui));flex:0 0 calc(22px * var(--ui));
+  font-size:calc(15px * var(--fs));gap:4px;padding:0 2px 0 3px}
+body.mob .win.wizwin .titlebar .tico{width:calc(14px * var(--ui));height:calc(14px * var(--ui));
+  flex:0 0 calc(14px * var(--ui))}
+body.mob .win.wizwin .tb{display:flex}
+body.mob .win.wizwin .btn{padding:calc(7px * var(--ui)) calc(12px * var(--ui));min-width:calc(56px * var(--ui))}
+body.mob .win.wizwin .btn.big{padding:calc(9px * var(--ui)) calc(13px * var(--ui))}
+body.mob .win.wizwin .nick-in{font-size:calc(24px * var(--fs)) !important}
+
+@media (max-width:620px){
+  .wstep b{display:none}
+  .wiz-main{flex-direction:column}
+  .wiz-band{flex:0 0 auto;flex-direction:row;justify-content:flex-start;
+    gap:calc(9px * var(--ui));padding:calc(6px * var(--ui)) calc(9px * var(--ui))}
+  .wiz-band .wb-ico{width:calc(30px * var(--ui));height:calc(30px * var(--ui))}
+  .wiz-band .wb-t{flex-direction:row;gap:calc(5px * var(--ui));
+    font-size:calc(9px * var(--fs));line-height:1.5}
+  .wiz-band .wb-v{margin-left:auto}
+  .wiz-body{padding:calc(10px * var(--ui));min-height:0}
+  .wiz-p{font-size:calc(16px * var(--fs))}
+  .wiz-h{font-size:calc(19px * var(--fs))}
+  .wiz-foot{flex-wrap:wrap}
+  .wiz-note{flex:1 0 100%;order:3;margin-top:calc(4px * var(--ui))}
+  .wiz-foot .btn{flex:1}
+}
+
+
+/* nada de letra pequena aqui dentro: os botoes tambem crescem */
+.wiz-foot .btn{font-size:calc(15px * var(--fs));
+  padding:calc(8px * var(--ui)) calc(16px * var(--ui))}
+/* ---------- O BOTAO QUE CONTINUA TEM QUE SER OBVIO ----------
+   O rodape igualava a letra e o espaco dos dois botoes, entao "Avancar" e
+   "Voltar" ficavam com o mesmo peso e a pessoa tinha que LER os dois pra
+   achar a saida da tela. Aqui ele vira o BOTAO PADRAO do dialogo, do jeito
+   do 98: o fio preto por fora do bisel, e mais respiro dos lados. */
+.wiz-foot .btn.big{padding:calc(8px * var(--ui)) calc(24px * var(--ui));
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,
+    inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt),
+    0 0 0 1px #0a0a0a}
+.wiz-foot .btn.big:active:not(:disabled){
+  box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 #0a0a0a,
+    inset -2px -2px 0 var(--face-lt),inset 2px 2px 0 var(--shadow),
+    0 0 0 1px #0a0a0a}
+.wiz-foot .btn.big:disabled{
+  box-shadow:inset -1px -1px 0 #0a0a0a,inset 1px 1px 0 #fff,
+    inset -2px -2px 0 var(--shadow),inset 2px 2px 0 var(--face-lt),
+    0 0 0 1px var(--shadow)}

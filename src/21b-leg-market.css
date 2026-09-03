@@ -1,0 +1,363 @@
+/* ==========================================================================
+   LEGIBILIDADE — MERCADO, CARTEIRA, BINDER e VAULT
+   A regra numero um: nada que uma pessoa PRECISA LER pode ficar abaixo de
+   calc(15px * var(--fs)). Aqui nao existe "isso e so decorativo".
+   Este arquivo carrega depois de 12-apps.css, 15-market.css e 21-legible.css,
+   entao ele manda sem precisar mexer em nenhum deles.
+   VT323 (--term) e Press Start 2P (--pix) desenham bem menores que o nominal:
+   nessas duas o piso vira 20px, nao 15px. Frase inteira nao usa nenhuma
+   das duas — vira Tahoma (--uif).
+   Os quatro apps vivem sempre dentro de .hubbody.sub-<id>, entao e por ai
+   que a gente prende cada regra sem vazar pros apps dos outros.
+   ========================================================================== */
+
+/* ---------- 1. as abas do proprio hub ----------
+   "Market / Staking Vault" e "Wallet / Binder / Ranks" sao o unico caminho
+   entre as telas: se elas nao dao pra ler, o jogador nao acha nada.
+   O :has() prende isso nas duas janelas certas e deixa o Kaki+ em paz. */
+.hubwrap:has(> .hubbody.sub-market)  .hubtabs .tab,
+.hubwrap:has(> .hubbody.sub-vault)   .hubtabs .tab,
+.hubwrap:has(> .hubbody.sub-wallet)  .hubtabs .tab,
+.hubwrap:has(> .hubbody.sub-binder)  .hubtabs .tab,
+.hubwrap:has(> .hubbody.sub-profile) .hubtabs .tab{font-size:calc(15px * var(--fs))}
+/* o cadeado da aba trancada faz parte do recado */
+.hubwrap:has(> .hubbody.sub-market) .hubtabs .tab.hubtab .hl,
+.hubwrap:has(> .hubbody.sub-vault)  .hubtabs .tab.hubtab .hl{font-size:calc(15px * var(--fs))}
+
+/* ---------- 2. o piso comum dos quatro apps ----------
+   Um so bloco pra tudo que os quatro compartilham: rotulo miudo, botao,
+   campo de filtro e o numerinho dentro da barra de progresso. */
+.hubbody.sub-market .tiny,
+.hubbody.sub-wallet .tiny,
+.hubbody.sub-binder .tiny,
+.hubbody.sub-vault  .tiny{font-size:calc(15px * var(--fs));line-height:1.5}
+
+.hubbody.sub-market .btn,
+.hubbody.sub-wallet .btn,
+.hubbody.sub-binder .btn,
+.hubbody.sub-vault  .btn{font-size:calc(15px * var(--fs))}
+
+.hubbody.sub-market select,.hubbody.sub-market input[type=text],.hubbody.sub-market input[type=number],
+.hubbody.sub-wallet select,.hubbody.sub-wallet input[type=text],.hubbody.sub-wallet input[type=number],
+.hubbody.sub-binder select,.hubbody.sub-binder input[type=text],.hubbody.sub-binder input[type=number],
+.hubbody.sub-vault  select,.hubbody.sub-vault  input[type=text],.hubbody.sub-vault  input[type=number]{
+  font-size:calc(15px * var(--fs))}
+
+/* a barra de progresso cresce junto, senao o texto encosta na borda */
+.hubbody.sub-market .prog,
+.hubbody.sub-wallet .prog,
+.hubbody.sub-binder .prog,
+.hubbody.sub-vault  .prog{height:calc(23px * var(--ui))}
+/* o numero dentro da barra vinha em mix-blend-mode:difference: em cima das
+   listras vermelhas da carteira cheia ele sumia. Aqui vira branco com
+   contorno preto, que se le tanto na parte cheia quanto na vazia. */
+.hubbody.sub-market .prog b,
+.hubbody.sub-wallet .prog b,
+.hubbody.sub-binder .prog b,
+.hubbody.sub-vault  .prog b{font-size:calc(15px * var(--fs));
+  mix-blend-mode:normal;color:#fff;font-weight:bold;
+  text-shadow:1px 1px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000}
+
+/* o rotulo pendurado na moldura ("Floor", "Hype", "Yield", "Lock") */
+.hubbody.sub-market .fieldset > .lg,
+.hubbody.sub-wallet .fieldset > .lg,
+.hubbody.sub-binder .fieldset > .lg,
+.hubbody.sub-vault  .fieldset > .lg{font-size:calc(15px * var(--fs));top:calc(-9px * var(--ui))}
+
+
+/* ==========================================================================
+   3. KAIJU MARKET
+   ========================================================================== */
+
+/* as abas de dentro: Buy / Offers / My listings / Stats */
+.hubbody.sub-market .mkroot .tabs .tab{font-size:calc(15px * var(--fs))}
+
+/* ---------- o banner de promocao ----------
+   "Kaijukaki MARKET" e "OPEN" sao Press Start 2P: no nominal de 13px e 10px
+   davam letra de formiga. Em --pix o piso e 20px. A chamada embaixo e frase
+   de verdade, entao ela fica em Tahoma mesmo, so que legivel. */
+.hubbody.sub-market .mkb-t{font-size:calc(20px * var(--fs));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hubbody.sub-market .mkb-s{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .mkb-blink{font-size:calc(20px * var(--fs))}
+.hubbody.sub-market .mkb-stars{font-size:calc(16px * var(--fs))}
+
+/* ---------- a carta do mercado ----------
+   #id em VT323 pede 20px. A tag do binder e o selo DEAL eram 9px: viraram
+   texto de verdade, e a faixa da tag ganhou altura pra caber a letra maior.
+   ATENCAO: a faixa continua NO FLUXO (position:static, herdado do
+   15-market.css) — foi tirando ela do fluxo que ela cobriu o BUY um dia.
+   A arte vem do JS com largura fixa em px; quando a coluna fica mais larga
+   que ela (celular, uma carta por linha) o desenho encostava na esquerda e
+   sobrava uma faixa cinza do lado. Centralizar NAO encolhe a arte. */
+.hubbody.sub-market .mk-art canvas{margin-left:auto;margin-right:auto}
+.hubbody.sub-market .mkcard .mk-id{font-size:calc(20px * var(--fs))}
+.hubbody.sub-market .mkcard .mk-buy{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .mkcard .mk-bflag{
+  font-size:calc(15px * var(--fs));
+  height:max(calc(24px * var(--ui)),calc(21px * var(--fs)));
+  line-height:max(calc(24px * var(--ui)),calc(21px * var(--fs)))}
+.hubbody.sub-market .mkcard .mk-flag{font-size:calc(15px * var(--fs));
+  padding:calc(2px * var(--ui)) calc(7px * var(--ui))}
+/* a coluna cresceu o tanto que "NOT IN BINDER" precisa pra caber inteira,
+   e nem um pixel a mais: a arte acompanha a largura da coluna, e carta alta
+   demais empurra o BUY pra fora da tela.
+   O max() existe porque o tamanho do TEXTO anda em --fs e o da CAIXA anda em
+   --ui: em "UI Huge + Text Large" o texto passa na frente e a faixa cortava
+   em "NOT IN BIND...". Quem manda e o maior dos dois. */
+.hubbody.sub-market .mkgrid{
+  grid-template-columns:repeat(auto-fill,
+    minmax(max(calc(146px * var(--ui)),calc(126px * var(--fs) + 20px * var(--ui))),1fr))}
+
+/* ---------- o sweep no rodape ----------
+   "Sweep the floor" e uma frase, e frase nao vive em Press Start 2P: virou
+   Tahoma em negrito. O total ao lado e VT323, entao pede 20px. */
+.hubbody.sub-market .fold.mksweep .fold-h{
+  font-family:var(--uif);font-size:calc(15px * var(--fs));font-weight:bold;letter-spacing:0}
+.hubbody.sub-market .fold.mksweep .fchev{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .fold.mksweep .sw-sum{font-size:calc(20px * var(--fs))}
+.hubbody.sub-market .swrow b{font-size:calc(20px * var(--fs));flex:0 0 calc(52px * var(--ui))}
+/* a nota fiscal do sweep: rotulo, valor e o "back to you".
+   Com a letra maior a nota ficou alta demais e escondia a grade toda, entao
+   as linhas perderam um pouco de folga e a gaveta um pouco de altura. */
+.hubbody.sub-market .bill .bl-row{font-size:calc(15px * var(--fs));
+  padding:calc(5px * var(--ui)) calc(10px * var(--ui))}
+.hubbody.sub-market .bill .bl-row b{font-size:calc(22px * var(--fs))}
+.hubbody.sub-market .bill .bl-row.total b{font-size:calc(26px * var(--fs))}
+.hubbody.sub-market .bill .bl-row i{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .fold.mksweep .fold-b{max-height:min(calc(300px * var(--ui)),40vh)}
+/* A carta legivel ficou alta, e a barra do sweep — que vivia grudada no
+   rodape da lista — passou a cair por cima do botao BUY da primeira fila
+   (pior ainda em UI Huge, onde a carta e o dobro). Fechada, ela agora fica
+   no fim da lista e nao cobre mais nada; ABERTA continua grudada, senao a
+   gaveta abriria fora da vista de quem acabou de clicar nela. */
+.hubbody.sub-market .fold.mksweep:not(.open){position:static}
+
+/* ---------- as ofertas ----------
+   O nick de quem manda, a ficha do Kaiju e a frase que a pessoa escreveu:
+   e tudo texto que decide se voce aceita ou nao. */
+.hubbody.sub-market .offer .who{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .offer .tiny{font-size:calc(15px * var(--fs));line-height:1.5}
+.hubbody.sub-market .offer .o-line{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .offer .oact .btn{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .og-best{font-size:calc(15px * var(--fs));
+  padding:0 calc(5px * var(--ui));letter-spacing:.5px}
+.hubbody.sub-market .ogroup .og-h{font-size:calc(15px * var(--fs))}
+/* o S/M/L da arte estava em fonte de terminal: numa palavra de uma letra
+   isso vira um risco na tela */
+.hubbody.sub-market .offhead .osz .btn{font-family:var(--uif);font-size:calc(15px * var(--fs))}
+
+/* ---------- a tabela das minhas listagens ---------- */
+.hubbody.sub-market .lst{font-size:calc(15px * var(--fs))}
+.hubbody.sub-market .lst th,
+.hubbody.sub-market .lst td{padding:calc(4px * var(--ui)) calc(7px * var(--ui))}
+
+
+/* ==========================================================================
+   4. KAIJU WALLET
+   ========================================================================== */
+
+/* ---------- o banner de cima ----------
+   "Kaiju WALLET" e Press Start 2P (piso 20px); VALUE/LISTED/STAKED e o
+   numero ao lado sao o resumo da carteira inteira e viviam em 8px e 16px. */
+.hubbody.sub-wallet .wb-t{font-size:calc(20px * var(--fs));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hubbody.sub-wallet .wb-s{font-size:calc(15px * var(--fs))}
+.hubbody.sub-wallet .wb-stats{flex-wrap:wrap;justify-content:flex-end}
+.hubbody.sub-wallet .wb-stats i{font-size:calc(15px * var(--fs))}
+.hubbody.sub-wallet .wb-stats b{font-size:calc(22px * var(--fs))}
+/* o termometro precisou engordar: a porcentagem mora DENTRO dele */
+.hubbody.sub-wallet .wb-gauge{flex:0 0 calc(46px * var(--ui));height:calc(48px * var(--ui))}
+.hubbody.sub-wallet .wb-gauge span{font-size:calc(15px * var(--fs))}
+
+/* ---------- a carta de NFT ----------
+   O numero e a raridade sao o que se le na grade. Como a carta e uma GRADE,
+   subir a letra sem subir a coluna estoura a palavra: por isso a coluna
+   cresceu junto (logo abaixo) e a raridade ganhou reticencias como ultima
+   rede de seguranca. A ARTE nao encolheu em nenhum caso — ela tem tamanho
+   proprio, vindo do JS, e agora fica centralizada na carta mais larga.
+   Os selos LISTED / BINDER / prazo do staking tambem sao recado pra ler. */
+.hubbody.sub-wallet .nftcard .nm{font-size:calc(15px * var(--fs))}
+.hubbody.sub-wallet .nftcard .rr,
+.hubbody.sub-vault  .nftcard .rr{font-size:calc(15px * var(--fs));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hubbody.sub-vault  .nftcard .nm{font-size:calc(15px * var(--fs))}
+.hubbody.sub-wallet .nftcard.locked::after,
+.hubbody.sub-wallet .nftcard.listed::after,
+.hubbody.sub-wallet .nftcard.inbinder::after,
+.hubbody.sub-vault  .nftcard.locked::after{
+  font-size:calc(15px * var(--fs));padding:calc(1px * var(--ui)) calc(5px * var(--ui))}
+
+/* a arte vem do JS com largura fixa em px (64/92/128) e a coluna agora e
+   maior que ela: sem isso o desenho ficava encostado na esquerda com um
+   vazio do lado direito. Centralizar NAO encolhe a arte. */
+.hubbody.sub-wallet .nftcard canvas,
+.hubbody.sub-vault  .nftcard canvas{margin-left:auto;margin-right:auto}
+
+/* S / M / L: os tres tamanhos vinham do JS em px pelados (74/104/142) e nao
+   cresciam com a interface. Aqui cada um vira medida em var(--ui) — os tres
+   continuam diferentes, so que agora o menor ja cabe a palavra "Legendary".
+   No celular a regra do 14-mobile.css continua valendo. */
+body:not(.mob) .hubbody.sub-wallet .wroot:has([data-wsize="s"].on) .nftgrid{
+  grid-template-columns:repeat(auto-fill,
+    minmax(max(calc(88px * var(--ui)),calc(84px * var(--fs) + 8px)),1fr)) !important}
+body:not(.mob) .hubbody.sub-wallet .wroot:has([data-wsize="m"].on) .nftgrid{
+  grid-template-columns:repeat(auto-fill,
+    minmax(max(calc(112px * var(--ui)),calc(84px * var(--fs) + 8px)),1fr)) !important}
+body:not(.mob) .hubbody.sub-wallet .wroot:has([data-wsize="l"].on) .nftgrid{
+  grid-template-columns:repeat(auto-fill,
+    minmax(max(calc(150px * var(--ui)),calc(84px * var(--fs) + 8px)),1fr)) !important}
+.hubbody.sub-vault .nftgrid{
+  grid-template-columns:repeat(auto-fill,
+    minmax(max(calc(112px * var(--ui)),calc(84px * var(--fs) + 8px)),1fr))}
+
+/* o "LOCKED" dos itens que o jogador ganhou */
+.itemlock{font-size:calc(15px * var(--fs));padding:calc(1px * var(--ui)) calc(5px * var(--ui))}
+
+
+/* ==========================================================================
+   5. BINDER
+   ========================================================================== */
+
+.hubbody.sub-binder .bhead{font-size:calc(15px * var(--fs))}
+.hubbody.sub-binder .bname{font-size:calc(15px * var(--fs))}
+/* a coluna da esquerda vinha em px pelado e apertava com a letra maior */
+.hubbody.sub-binder .bleft{flex:0 0 clamp(calc(170px * var(--ui)),27%,calc(280px * var(--ui)))}
+.hubbody.sub-binder .blist{
+  grid-template-columns:repeat(auto-fill,
+    minmax(max(calc(66px * var(--ui)),calc(42px * var(--fs) + 8px)),1fr))}
+.hubbody.sub-binder .bcard .bc-id{font-size:calc(15px * var(--fs))}
+
+/* a barra de progresso da pagina */
+.hubbody.sub-binder .bprog{font-size:calc(15px * var(--fs))}
+.hubbody.sub-binder .bprog b{font-size:calc(20px * var(--fs))}
+.hubbody.sub-binder .bprog .bp-goal{font-size:calc(15px * var(--fs))}
+
+/* ---------- o envelope de cada slot ----------
+   Aqui a arte NAO pode encolher pra caber a letra: por isso a linha do
+   fim quebra em duas quando #id + raca nao cabem lado a lado, e a pagina
+   ganhou altura minima de linha (com rolagem) em vez de espremer o desenho. */
+.hubbody.sub-binder .bslot .bc-id,
+.hubbody.sub-binder .bslot .sl-id{font-size:calc(15px * var(--fs))}
+.hubbody.sub-binder .bslot .sl-race{font-size:calc(15px * var(--fs))}
+.hubbody.sub-binder .bslot .sl-star{font-size:calc(15px * var(--fs))}
+.hubbody.sub-binder .bslot .sl-foot{flex-wrap:wrap;justify-content:center;
+  gap:0 calc(7px * var(--ui));line-height:1.25}
+/* a linha da pagina ganhou altura MINIMA (e a pagina rola) em vez de
+   espremer o desenho: com essa altura o Kaiju continua do tamanho que
+   sempre foi, so que agora o #id e a raca embaixo dele dao pra ler.
+   O max() de novo: a letra anda em --fs e a caixa em --ui. */
+.hubbody.sub-binder .binder{overflow:auto}
+.hubbody.sub-binder .bgrid{
+  grid-auto-rows:minmax(max(calc(120px * var(--ui)),calc(56px * var(--fs) + 60px * var(--ui))),1fr)}
+
+
+/* ==========================================================================
+   6. STAKING VAULT
+   O app monta varios textos com style="" direto no HTML, e style inline so
+   perde pra !important — por isso os !important daqui pra baixo.
+   ========================================================================== */
+
+/* "Vault sealed", "The vault is yours..." — o titulo das telas de aviso */
+.hubbody.sub-vault .center > div[style]{font-size:calc(17px * var(--fs)) !important}
+/* o "/day" grudado no rendimento e VT323 dentro do .mono: piso de 20px */
+.hubbody.sub-vault .mono span[style]{font-size:calc(20px * var(--fs)) !important}
+/* a caixa de comprar mais slots, emprestada da loja */
+.hubbody.sub-vault .shop-item h4{font-size:calc(16px * var(--fs))}
+.hubbody.sub-vault .shop-item p{font-size:calc(15px * var(--fs))}
+.hubbody.sub-vault .shop-item .mono[style]{font-size:calc(20px * var(--fs)) !important}
+
+
+/* ==========================================================================
+   7. A FICHA DE UM KAIJU
+   A mesma janelinha abre pela carteira (data-tdcv) e pelo mercado (data-mdcv).
+   Raca, rank de raridade, valor justo e os traits sao o motivo dela existir,
+   e viviam entre 9px e 11px.
+   ========================================================================== */
+/* a janelinha tinha 330px de largura pensando em letra de 11px: com 15px o
+   rotulo de um trait ("BACKGROUND · 0.4%") era cortado no meio. */
+.win:has(canvas[data-tdcv]) > .wbody,
+.win:has(canvas[data-mdcv]) > .wbody{width:min(calc(430px * var(--ui)),94vw) !important}
+.win:has(canvas[data-tdcv]) .pad > div[style],
+.win:has(canvas[data-mdcv]) .pad > div[style]{
+  font-size:calc(15px * var(--fs)) !important;line-height:1.7}
+.win:has(canvas[data-tdcv]) .pad .rr[style],
+.win:has(canvas[data-mdcv]) .pad .rr[style]{font-size:calc(15px * var(--fs)) !important}
+/* a tabela de traits com a porcentagem de cada um */
+.rv-traits.sheet{font-size:calc(15px * var(--fs))}
+.rv-traits.sheet div b{font-size:calc(15px * var(--fs))}
+/* o aviso de que o Kaiju esta no binder */
+.warnbar{font-size:calc(15px * var(--fs))}
+.warnbar .btn{font-size:calc(15px * var(--fs))}
+/* os botoes de vender / listar / mandar pro cofre */
+.tdacts .btn{font-size:calc(15px * var(--fs))}
+/* o painel de preco que desce quando se escolhe listar */
+.pricepane .pp-vs{font-size:calc(15px * var(--fs))}
+.pricepane .pp-m{font-size:calc(15px * var(--fs))}
+.pricepane .pp-fairbtn{font-size:calc(15px * var(--fs))}
+.pricepane .pp-foot .btn{font-size:calc(15px * var(--fs))}
+.win:has(canvas[data-tdcv]) .btn,
+.win:has(canvas[data-mdcv]) .btn{font-size:calc(15px * var(--fs))}
+
+
+/* ==========================================================================
+   8. CELULAR
+   14-mobile.css carrega DEPOIS deste arquivo e prende .btn, .tab e o grid
+   da carteira num tamanho menor. Como as regras daqui ja tem duas ou tres
+   classes, elas ganham — menos onde o mobile usou !important.
+   ========================================================================== */
+body.mob .hubbody.sub-market select,body.mob .hubbody.sub-market input[type=text],
+body.mob .hubbody.sub-wallet select,body.mob .hubbody.sub-wallet input[type=text],
+body.mob .hubbody.sub-binder select,body.mob .hubbody.sub-binder input[type=text],
+body.mob .hubbody.sub-vault  select{font-size:max(16px,calc(15px * var(--fs))) !important}
+body.mob .hubbody.sub-binder .bactions .btn{font-size:calc(15px * var(--fs))}
+body.mob .hubbody.sub-market .btn,
+body.mob .hubbody.sub-wallet .btn,
+body.mob .hubbody.sub-binder .btn,
+body.mob .hubbody.sub-vault  .btn{font-size:calc(15px * var(--fs))}
+body.mob .hubbody.sub-binder .bleft{flex:0 0 auto}
+/* no celular o banner nao tem largura pra "Kaijukaki MARKET" numa linha so em
+   Press Start 2P: em vez de cortar a palavra, deixa quebrar em duas linhas */
+body.mob .hubbody.sub-market .mkb-t,
+body.mob .hubbody.sub-wallet .wb-t{white-space:normal;overflow:visible;line-height:1.4}
+
+
+/* ==========================================================================
+   9. AS JANELINHAS DE LISTAR EM LOTE (.lsmodal)
+   leg2.js nao abre modal, entao estas duas caixas nunca foram medidas: elas
+   estavam com rotulo em 15,6px, botao em 14,3px e a conta do lote em verde
+   claro sobre cinza (1,37:1). Agora que o gas mora aqui, elas passam a valer
+   a mesma regra do resto: nada abaixo de calc(15px * var(--fs)) e AA.
+   ========================================================================== */
+.lsmodal .tiny{font-size:calc(15px * var(--fs));line-height:1.5}
+.lsmodal .btn{font-size:calc(15px * var(--fs))}
+.lsmodal .lsrow .ls-l{font-size:calc(15px * var(--fs))}
+.lsmodal .lagas{font-size:calc(15px * var(--fs))}
+.lsmodal select{font-size:calc(15px * var(--fs))}
+.lsmodal .bill .bl-row{font-size:calc(15px * var(--fs))}
+/* VT323 desenha bem menor que o nominal: o numero da conta leva +4px */
+.lsmodal .bill .bl-row b{font-size:calc(22px * var(--fs))}
+.lsmodal .bill .bl-row.total b{font-size:calc(26px * var(--fs))}
+.lsmodal .bill .bl-row i{font-size:calc(15px * var(--fs))}
+
+/* o gas na ficha do Kaiju: dentro do botao, no painel de preco e no rodape */
+.bgas,.pp-gas,.lagas{font-size:calc(15px * var(--fs))}
+.win:has(canvas[data-tdcv]) .bgas{font-size:calc(15px * var(--fs))}
+
+/* CELULAR: 14-mobile.css prende .btn em 12px e .tdacts .btn em 13px, e vem
+   depois deste arquivo — por isso estas repetem com body.mob na frente. */
+/* 14-mobile.css escreve `body.mob .btn.big` (0,3,1). Um seletor de tres
+   niveis daqui empata e PERDE, porque ele carrega depois. Mesma solucao que o
+   21b-leg-shop.css ja usa: escrever o .btn.big na mao pra somar uma classe. */
+body.mob .lsmodal .btn,body.mob .lsmodal .btn.big{font-size:calc(15px * var(--fs))}
+body.mob .lsmodal .tiny{font-size:calc(15px * var(--fs))}
+body.mob .lsmodal select{font-size:max(16px,calc(15px * var(--fs))) !important}
+body.mob .tdacts .btn,body.mob .tdacts .btn.big{font-size:calc(15px * var(--fs))}
+body.mob .pp-foot .btn,body.mob .pp-foot .btn.big{font-size:calc(15px * var(--fs))}
+body.mob .tdacts .bgas,body.mob .pp-gas,body.mob .lagas{font-size:calc(15px * var(--fs))}
+
+/* o "Valor justo: $40,56" verde da ficha ficava em 3,66:1 sobre o cinza da
+   janela — passava so na escala grande, onde a regra de texto grande e 3:1.
+   Este verde e o mesmo tom, dois passos mais escuro: 5,3:1 em toda escala. */
+.win:has(canvas[data-tdcv]) .pos,
+.win:has(canvas[data-mdcv]) .pos{color:#095018}

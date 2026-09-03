@@ -1,0 +1,84 @@
+/* ==========================================================================
+   KAIJU SPOTTER
+   Regra do projeto: nada que se LEIA abaixo de 15px * var(--fs). Aqui nao tem
+   uma linha decorativa — tudo nesta tela e pra ler.
+   ========================================================================== */
+.sproot{padding:calc(9px * var(--ui));display:flex;flex-direction:column;
+  gap:calc(9px * var(--ui));height:100%;box-sizing:border-box}
+
+/* ---------- cabecalho do turno ---------- */
+.sp-head{background:#000;box-shadow:inset 1px 1px 0 #4a4a4a,inset -1px -1px 0 #dfdfdf;
+  padding:calc(8px * var(--ui)) calc(9px * var(--ui));flex:0 0 auto}
+.sp-hl{display:flex;align-items:baseline;gap:calc(8px * var(--ui))}
+.sp-ttl{font-family:var(--term);font-size:calc(21px * var(--fs));
+  letter-spacing:1px;color:#a7e021;flex:1 1 auto;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-rep{font-family:var(--uif);font-size:calc(15px * var(--fs));color:#8fb98a;
+  white-space:nowrap}
+.sp-rep b{color:#d4ff6b}
+.sp-pips{display:flex;gap:calc(5px * var(--ui));margin:calc(7px * var(--ui)) 0 calc(6px * var(--ui))}
+.sp-pips i{flex:1 1 0;height:calc(9px * var(--ui));background:#1e2a16;
+  box-shadow:inset 0 0 0 1px #3b4a2e}
+.sp-pips i.hit{background:#7fc417;box-shadow:0 0 calc(5px * var(--ui)) rgba(167,224,33,.65)}
+.sp-pips i.miss{background:#4a4038;box-shadow:inset 0 0 0 1px #6b5c4c}
+.sp-pips i.now{background:#2d3d1e;box-shadow:inset 0 0 0 1px #a7e021;
+  animation:sppip 1.1s ease-in-out infinite}
+@keyframes sppip{0%,100%{opacity:1}50%{opacity:.45}}
+.sp-sub{font-family:var(--uif);font-size:calc(15px * var(--fs));color:#9db894;line-height:1.5}
+
+/* ---------- a ficha ---------- */
+.sp-card{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:calc(7px * var(--ui));min-height:0;overflow:auto}
+.sp-art{background:#0d1208;box-shadow:inset 1px 1px 0 #4a4a4a,inset -1px -1px 0 #dfdfdf;
+  padding:calc(6px * var(--ui));line-height:0;flex:0 0 auto}
+.sp-art canvas{display:block;image-rendering:auto;
+  width:calc(200px * var(--ui))!important;height:calc(200px * var(--ui))!important}
+.sp-slip{font-family:var(--term);font-size:calc(17px * var(--fs));color:#7d8f76;
+  letter-spacing:1px}
+.sp-slip i{color:#c8a24a;font-style:normal}
+.sp-slip i.okk{color:#7fc417}
+.sp-slip i.nok{color:#d08a7a}
+.sp-endbig.perf{color:#7fc417;text-shadow:0 0 calc(10px * var(--ui)) rgba(127,196,23,.45)}
+.sp-q{font-family:var(--uif);font-size:calc(18px * var(--fs));font-weight:bold;
+  text-align:center;line-height:1.35;padding:0 calc(4px * var(--ui))}
+
+.sp-opts{display:grid;grid-template-columns:1fr 1fr;gap:calc(6px * var(--ui));
+  width:100%;flex:0 0 auto}
+.sp-opts .sp-o{font-size:calc(16px * var(--fs));line-height:1.25;
+  min-height:calc(42px * var(--ui));padding:calc(7px * var(--ui)) calc(6px * var(--ui));
+  white-space:normal;text-align:center}
+.sp-o.right{background:#c7e79a!important;box-shadow:inset 0 0 0 2px #4f7a12,
+  inset 1px 1px 0 #ffffff,inset -1px -1px 0 #7d9a5a!important;font-weight:bold}
+.sp-o.wrong{background:#e3c0b8!important;box-shadow:inset 0 0 0 2px #9a3d2c,
+  inset 1px 1px 0 #ffffff,inset -1px -1px 0 #a8877f!important}
+.sp-o.mute{opacity:.45}
+.sp-o:disabled{color:#141414}
+
+.sp-say{width:100%;text-align:center;font-family:var(--uif);
+  font-size:calc(16px * var(--fs));line-height:1.5;min-height:calc(20px * var(--ui))}
+.sp-say.good b{color:#3f7a0f}
+.sp-say.bad b{color:#9a3d2c}
+.sp-say u{font-weight:bold}
+.sp-next{width:100%;font-size:calc(17px * var(--fs));min-height:calc(40px * var(--ui))}
+
+/* ---------- fim do turno ---------- */
+.sp-end{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;
+  padding:calc(6px * var(--ui)) calc(10px * var(--ui));overflow:auto}
+.sp-endbig{font-family:var(--term);font-size:calc(64px * var(--fs));line-height:1;
+  text-align:center;color:#3f7a0f;letter-spacing:3px}
+.sp-endl{text-align:center;font-family:var(--uif);font-size:calc(17px * var(--fs));
+  line-height:1.45;margin-top:calc(5px * var(--ui))}
+.sp-end .dr-row{font-size:calc(16px * var(--fs))}
+.sp-note{font-family:var(--uif);font-size:calc(15px * var(--fs));text-align:center;
+  color:#4a4a4a;line-height:1.5}
+
+/* mobile: uma coluna, arte menor, nada de scroll horizontal */
+body.mob .sp-opts{grid-template-columns:1fr}
+body.mob .sp-art canvas{width:calc(150px * var(--ui))!important;height:calc(150px * var(--ui))!important}
+body.mob .sp-endbig{font-size:calc(52px * var(--fs))}
+@media (prefers-reduced-motion: reduce){.sp-pips i.now{animation:none}}
+
+/* 14-mobile.css carrega depois e prende .btn em 12px no celular: dois níveis
+   de especificidade pra devolver as opções ao tamanho de leitura */
+html body.mob .sp-opts .btn.sp-o{font-size:calc(16px * var(--fs));line-height:1.3}
+html body.mob .sp-next{font-size:calc(17px * var(--fs))}

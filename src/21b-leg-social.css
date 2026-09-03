@@ -1,0 +1,162 @@
+/* ==========================================================================
+   LEGIBILIDADE — Kaki+, Inbox, Media Player, Perfil, Sobre, Data/Hora, Notas
+   A regra numero um: nada que uma pessoa LE fica abaixo de calc(15px*var(--fs)).
+   Este arquivo carrega depois de 12-apps, 13-fx, 16-social e 21-legible, entao
+   e aqui que a gente conserta o tamanho preso naqueles sem tocar neles.
+   Lembrete das fontes: VT323 (--term) e Press Start 2P (--pix) desenham bem
+   menores que o nominal — quando o texto precisa continuar nelas, vai a 20px;
+   quando e frase pra ler, troca a familia pra var(--uif).
+   14-mobile.css carrega DEPOIS: onde ele prende .btn em 12px, a regra aqui
+   aparece duplicada com body.mob pra nao perder no celular.
+   ========================================================================== */
+
+/* ==================== KAKI+ ====================
+   E a tela onde o jogador mais le: o corpo do post fica folgado (17px), nao
+   raspando o limite, e quem escreveu / ha quanto tempo vem logo atras. */
+.kn-txt{font-size:calc(17px * var(--fs));line-height:1.6}
+.kn-head{font-size:calc(16px * var(--fs))}
+/* o nome cresceu: a caixa cresce junto, senao o "..." come metade do apelido */
+.kn-who{font-size:calc(16px * var(--fs));max-width:calc(230px * var(--ui));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kn-when{font-size:calc(16px * var(--fs));white-space:nowrap}
+/* o avatar e desenho, nao texto: nunca encolhe pra caber a linha maior */
+.kn-av{flex:0 0 auto}
+.kn-av svg{display:block}
+
+/* os botoes de reacao: o numero ao lado da setinha e informacao, nao enfeite */
+.kn-act{font-size:calc(16px * var(--fs))}
+.kn-act b{font-size:calc(17px * var(--fs))}
+.kn-act span{font-size:calc(16px * var(--fs));min-width:calc(14px * var(--ui))}
+.kn-gift{font-size:calc(16px * var(--fs));line-height:1.55}
+
+/* a fita de navegacao do banner (HOME · MEMBERS · ... · 1.674 members) estava
+   em Press Start 2P, que desenha minusculo. Sao palavras pra ler: vira Tahoma. */
+.knban-nav{font-family:var(--uif);font-size:calc(15px * var(--fs));letter-spacing:.5px}
+.knban-me{font-family:var(--uif);font-size:calc(15px * var(--fs));font-weight:bold}
+/* no celular o 14-mobile esconde os itens do 7o em diante mas deixava os
+   pontinhos separadores orfaos no fim da linha ("... SEARCH ·") */
+body.mob .knban-nav em:nth-child(n+6){display:none}
+/* o "EXP" da barra tinha o mesmo problema */
+.kn-xp b{font-family:var(--uif);font-size:calc(15px * var(--fs));font-weight:bold;letter-spacing:.5px}
+
+/* ---------- Kaki+ / Mensagens (DM) ----------
+   Esta aba nunca teve CSS proprio: herdava os 12px do body e ficava a menor
+   leitura do jogo. Aqui ela ganha o mesmo conforto do feed. */
+.dmroot{font-size:calc(15px * var(--fs))}
+.dmroot .dm-n b{font-size:calc(16px * var(--fs))}
+/* a previa da conversa e uma linha so: cresce, mas continua cortando com "..." */
+.dmroot .dm-n i{font-size:calc(15px * var(--fs));font-style:normal;display:block;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dmroot .dm-head b{font-size:calc(16px * var(--fs))}
+.dmroot .dm-t{font-size:calc(16px * var(--fs));line-height:1.55}
+.dmroot .dm-off{font-size:calc(15px * var(--fs))}
+.dmroot .tiny{font-size:calc(15px * var(--fs));line-height:1.55}
+.dmroot .btn,body.mob .dmroot .btn{font-size:calc(15px * var(--fs))}
+
+/* ==================== KAIJU INBOX ====================
+   A lista da esquerda: remetente, assunto e versao sao as tres coisas que o
+   jogador le pra decidir o que abrir. */
+.ibrow{padding:calc(7px * var(--ui)) calc(8px * var(--ui))}
+.ibrow .ib-from{font-size:calc(15px * var(--fs))}
+.ibrow .ib-subj{font-size:calc(16px * var(--fs));
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* "v2.4" segue em VT323, que desenha pequeno: 20px pra bater com o resto */
+.ibrow .ib-ver{font-size:calc(20px * var(--fs));line-height:1.1}
+/* a coluna era 200px fixos: com a letra maior o assunto virava reticencias
+   logo no terceiro caractere. Agora acompanha a escala do sistema. */
+.iblist{flex:0 0 calc(225px * var(--ui))}
+
+/* o corpo da carta: e o texto mais longo do jogo inteiro */
+.ib-head{font-size:calc(16px * var(--fs))}
+.ib-head b{font-size:calc(17px * var(--fs));line-height:1.4}
+.ib-head .tiny{font-size:calc(15px * var(--fs))}
+.ib-body{font-size:calc(16px * var(--fs));line-height:1.7}
+.ib-tldr li{font-size:calc(16px * var(--fs))}
+.ibtools .btn,body.mob .ibtools .btn,
+.ibread .btn,body.mob .ibread .btn{font-size:calc(15px * var(--fs))}
+
+/* ==================== KAIJU MEDIA PLAYER ====================
+   Nao tem classe de raiz: os alvos sao ancorados na tela do player. */
+/* o titulo rola em VT323 dentro da telinha verde: 20px pra ficar do tamanho */
+.mp-title{font-size:calc(20px * var(--fs))}
+.mp-tr{font-size:calc(16px * var(--fs))}
+.mp-tr .mp-n{font-size:calc(20px * var(--fs));width:calc(16px * var(--ui))}
+.mp-tr .mp-l{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mp-screen + .row .btn,body.mob .mp-screen + .row .btn{font-size:calc(15px * var(--fs))}
+.mp-screen + .row .tiny{font-size:calc(15px * var(--fs))}
+[data-mpnote]{font-size:calc(15px * var(--fs));line-height:1.6}
+
+/* ==================== MEU PERFIL / RANKS & PERKS ==================== */
+/* o nome do rank vem com font-size no atributo style do JS; so !important
+   ganha dele daqui. Segue em Press Start 2P, que pede os 20px. */
+.proot .pixh{font-size:calc(20px * var(--fs))!important;line-height:1.5}
+.proot .tiny{font-size:calc(15px * var(--fs));line-height:1.5}
+.proot .lg{font-size:calc(15px * var(--fs))}
+.proot .dr-row{font-size:calc(15px * var(--fs))}
+.proot .dr-row.tot{font-size:calc(16px * var(--fs))}
+
+/* a arvore de ranks: numero, nome e quantos Kaiju faltam */
+.rnode{padding:calc(7px * var(--ui)) calc(3px * var(--ui)) calc(6px * var(--ui))}
+.rnode .rn-n{font-size:calc(15px * var(--fs));top:calc(2px * var(--ui));left:calc(4px * var(--ui))}
+.rnode .rn-name{font-size:calc(15px * var(--fs));line-height:1.2}
+/* "15", "8.888": VT323 de novo */
+.rnode .rn-req{font-size:calc(20px * var(--fs));line-height:1.1}
+/* com o numero no canto maior, o nome precisa comecar mais abaixo */
+.rtree{gap:calc(5px * var(--ui))}
+.rd-head{font-size:calc(16px * var(--fs))}
+.rd-item{font-size:calc(15px * var(--fs))}
+
+/* conquistas: o nome embaixo do icone era 8px, o menor texto do app */
+.proot .ach span{font-size:calc(15px * var(--fs));line-height:1.35}
+/* o quadradinho de 78px nao cabe mais a legenda: alarga a grade */
+.proot .achgrid{grid-template-columns:repeat(auto-fill,minmax(calc(104px * var(--ui)),1fr))}
+
+/* ==================== SOBRE ==================== */
+/* titulo (--pix) e subtitulo (--term) da capa: as duas desenham pequeno */
+.ab-title{font-size:calc(21px * var(--fs))}
+.ab-sub{font-size:calc(20px * var(--fs))}
+.ab-call-t{font-size:calc(17px * var(--fs))}
+.ab-call-m{font-size:calc(16px * var(--fs))}
+.ab-go{font-size:calc(20px * var(--fs))}
+.ab-url{font-size:calc(20px * var(--fs))}
+.ab-by{font-size:calc(15px * var(--fs))}
+.ab-by b{font-size:calc(16px * var(--fs))}
+/* "Oekaki Connect" e um nome pra ler, nao um enfeite: sai do Press Start */
+.ab-org{font-family:var(--uif);font-size:calc(15px * var(--fs));font-weight:bold;letter-spacing:.5px}
+.ab-ver{font-size:calc(15px * var(--fs))}
+
+/* ==================== DATA & HORA ==================== */
+.pad:has([data-dtm]) .lg{font-size:calc(15px * var(--fs))}
+.lst.cal td,.lst.cal th{font-size:calc(15px * var(--fs))}
+.pad:has([data-dtm]) select,.pad:has([data-dtm]) input[type=text]{font-size:calc(15px * var(--fs))}
+/* .btn no seletor porque o 14-mobile.css prende body.mob .btn em 12px e
+   carrega depois deste arquivo: sem a classe junto, o celular ganhava */
+.btn[data-dtok],.btn[data-dtcancel],.btn[data-dtapply],
+body.mob .btn[data-dtok],body.mob .btn[data-dtcancel],body.mob .btn[data-dtapply]{font-size:calc(15px * var(--fs))}
+
+/* ==================== BLOCO DE NOTAS ====================
+   O tamanho vem no atributo style do JS; daqui so !important alcanca. */
+textarea[data-note]{font-size:calc(15px * var(--fs))!important;line-height:1.5}
+
+/* ---------- sobras ---------- */
+/* "14 / 40" dentro da barra de progresso do rank: 10px era o menor numero da
+   tela. Com a letra maior a barra precisa de altura pra nao cortar o texto. */
+.proot .prog{height:calc(23px * var(--ui))}
+.proot .prog b{font-size:calc(15px * var(--fs))}
+/* as abas do Kaki+ (Feed / Mensagens). O :has prende a regra nesta janela:
+   as abas da Carteira e do Mercado sao de outra pessoa. */
+.hubwrap:has(.sub-kaijunet) .tab.hubtab,
+.hubwrap:has(.sub-dm) .tab.hubtab{font-size:calc(15px * var(--fs))}
+
+/* ---------- o player cabia em 330x250 com a letra velha ----------
+   Com o texto no tamanho certo o rodape ("Track 1 of 1 · looped forever...")
+   passava a sobrar pra fora da janelinha. A letra fica; quem cede espaco e o
+   desenho: o equalizador e enfeite e agora acompanha a escala do sistema em
+   vez de ficar preso em 76px. */
+.mp-screen{padding:calc(3px * var(--ui))}
+.mp-screen canvas{height:calc(28px * var(--ui))!important}
+.mp-title{margin-top:calc(2px * var(--ui))}
+.mp-list{margin-top:calc(4px * var(--ui))}
+.mp-tr{padding:calc(4px * var(--ui)) calc(8px * var(--ui))}
+.mp-screen + .row .btn{padding:calc(4px * var(--ui)) calc(11px * var(--ui))}
+[data-mpnote]{line-height:1.45}
