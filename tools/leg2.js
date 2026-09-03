@@ -4,10 +4,10 @@ const {chromium}=require('playwright');
 const W=+(process.argv[2]||1366),H=+(process.argv[3]||900);
 const UIC=process.argv[4]||'', TXC=process.argv[5]||'';
 (async()=>{
-const b=await chromium.launch({executablePath:(process.env.KK_CHROME||'/opt/pw-browsers/chromium-1194/chrome-linux/chrome')});
+const b=await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
 const p=await b.newPage({viewport:{width:W,height:H}});
 const errs=[];p.on('pageerror',e=>errs.push(String(e)));
-await p.goto('file://'+require('path').resolve(__dirname,'../dist/')+'/kaijukaki.html');
+await p.goto('file:///home/claude/kaiju/dist/kaijukaki.html');
 await p.waitForTimeout(2500);
 const sr=await p.$('.slotrow');
 if(sr){await sr.click();await p.waitForTimeout(400);

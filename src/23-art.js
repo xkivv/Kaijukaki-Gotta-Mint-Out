@@ -96,7 +96,20 @@ function tileOf(id,onReady){
 }
 
 const ART={dir:null,map:null,ready:false,cache:new Map(),MAX:700,tried:0};
-const ART_DIRS=['images/','kaijukaki-collection/images/'];
+/* Onde a build LOCAL procura os PNGs de 300px. Alem da pasta ao lado, sobe
+   alguns niveis: desde que o codigo virou repositorio, a build sai em
+   dist/ dentro do repo, que fica dentro da pasta da colecao — dai o
+   ../../ e o ../../../. Assim o jogo acha a arte sem ninguem ter que
+   arrastar arquivo pra lugar nenhum. */
+const ART_DIRS=['images/','Images/','kaijukaki-collection/images/',
+  '../images/','../Images/','../../images/','../../Images/',
+  '../../../images/','../../../Images/',
+  '../src/images/','../src/Images/',
+  '../../src/images/','../../src/Images/',
+  '../../../src/images/','../../../src/Images/',
+  '../../../kaijukaki-collection/images/',
+  '../../../kaijukaki-collection/src/images/',
+  '../../../kaijukaki-collection/src/Images/'];
 function artBadge(){
   const el=document.getElementById('m_art');
   if(!el)return;

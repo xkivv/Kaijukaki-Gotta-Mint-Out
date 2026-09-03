@@ -1,6 +1,4 @@
 #!/bin/bash
-# Monta o jogo. Sem bundler, sem npm: e cat de arquivos numa ordem fixa.
-# Roda de qualquer pasta — os caminhos sao relativos a este arquivo.
 set -e
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 S="$ROOT/src"
@@ -21,14 +19,11 @@ build(){  # $1 = arte, $2 = saida, $3 = mapa real
 } > "$2"
 echo "built: $2  $(( $(wc -c < "$2") / 1024 )) KB"
 }
-# a build publica: arte embutida, SEM o mapa real
-build 18a-sheets.js "$D/kaijukaki.html" 18c-noreal.js
-# a build de desktop: arte em arquivo, SEM o mapa real
-build 18a-files.js "$ROOT/desktop/app/index.html" 18c-noreal.js
-# a build "local" do dono: le os PNGs de 300px do disco, ao lado da colecao.
-# Neste pacote 18c-real.js esta vazio, entao ela sai igual a publica sem arte.
-# 18c-real.js NUNCA entra no repositorio (.gitignore). Sem ele, a build local
-# sai igual a publica sem arte — o que e o comportamento certo fora da maquina
-# do dono.
+# 18c-real.js nunca entra no repositorio (.gitignore). Sem ele a build
+# local sai igual a publica sem arte, que e o certo fora da maquina do dono.
 if [ -f "$S/18c-real.js" ]; then MAPA=18c-real.js; else MAPA=18c-noreal.js; fi
 build 18a-nosheets.js "$D/kaijukaki-local.html" $MAPA
+build 18a-sheets.js  "$D/kaijukaki.html"   18c-noreal.js
+
+# build de desktop: arte em arquivo, sem base64
+build 18a-files.js "$ROOT/desktop/app/index.html" 18c-noreal.js
