@@ -179,7 +179,7 @@ function loadArtMap(then){
       artBadge();
       if(!SHEETS.length)setTimeout(()=>{
         if(typeof UI!=='undefined'&&UI.dialog)UI.dialog('Kaiju art not found',
-          'This build reads the real 300&times;300 artwork from the <b>images</b> folder.<br><br>Keep <b>Kaijukaki Gotta Mint Out.html</b> inside <b>kaijukaki-collection</b>, right next to the <b>images</b> folder, and open it from there.','warn');
+          'This build reads the real 300&times;300 artwork from the collection&rsquo;s <b>images</b> folder.<br><br>It looks for that folder next to this file and a few levels above it. Keep this HTML inside the collection folder and open it from there.','warn');
       },2600);
       return;
     }

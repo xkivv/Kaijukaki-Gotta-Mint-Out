@@ -1,3 +1,11 @@
+/* ---------- MENSAGENS DIRETAS: DESLIGADO ----------
+   O dono tirou as DMs do jogo por enquanto: nao estavam boas o bastante.
+   Nada aqui foi apagado — todo o sistema continua inteiro atras deste
+   interruptor. Ligar de novo e trocar 0 por 1 e a feature volta como estava:
+   as threads, as respostas, o arquivo, a aba no Kaki+.
+   Enquanto estiver 0: nenhuma thread nasce, nenhum pop-up aparece, e a aba
+   nao existe no Kaki+. */
+const DM_ON=0;
 /* ================= KAIJU MESSENGER — motor =================
    Toda mensagem que chega tem um TIPO, e a resposta é escolhida pelo par
    (tipo × tom). Um tipo declara quais tons existem nele: numa oferta faz

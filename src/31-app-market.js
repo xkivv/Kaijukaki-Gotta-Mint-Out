@@ -10,6 +10,21 @@ function quickSellHaircut(n){return clamp(0.88-0.0018*n,0.55,0.88);}
 const OFF_ART={s:58,m:92,l:140};
 function offArtSize(){const v=pref('offSize');return OFF_ART[v]?v:'s';}
 function setOffArtSize(v){if(OFF_ART[v])setPref('offSize',v);}
+/* ---------- contagem das ofertas ----------
+   O numero na aba tem que ser exatamente o que o jogador vai VER quando abrir.
+   Os lances na colecao inteira so aparecem depois de m_collection_offers; ate
+   la, conta-los produzia "Offers (3)" com a tela vazia. E as ofertas em Kaiju
+   que ja sairam da carteira nao contam: a lista e sempre filtrada pelo que o
+   jogador ainda tem, mesmo quando so a barra de abas e redesenhada. */
+function cbidsShown(){
+  if(typeof unlocked==='function'&&!unlocked('m_collection_offers'))return [];
+  try{return cbids()||[];}catch(e){return [];}
+}
+function offersShown(){
+  const own=(G.tokens||[]);
+  return (G.offers||[]).filter(o=>own.some(t=>t.id===o.tk));
+}
+function offerCount(){return offersShown().length+cbidsShown().length;}
 APPS.market={
   title:'Kaiju Market', icon:'market', w:470, h:430, status:true,
   build(b,ent){b.innerHTML='<div class="mkroot" style="padding:7px;box-sizing:border-box"></div>';this.refresh(b,ent);},
@@ -26,7 +41,7 @@ APPS.market={
        Com uma aba so nao existe barra de abas: uma aba sozinha nao e aba. */
     const tabDef=[
       {i:0,lbl:t('Buy ({0})',mktList().length)},
-      {i:1,lbl:t('Offers ({0})',G.offers.length+cbids().length),un:'tab_mkt_offers'},
+      {i:1,lbl:t('Offers ({0})',offerCount()),un:'tab_mkt_offers'},
       {i:2,lbl:t('My listings'),un:'tab_mkt_mine'},
       {i:3,lbl:t('Stats'),un:'tab_mkt_stats'}
     ].filter(x=>!x.un||unlocked(x.un));
@@ -158,7 +173,10 @@ APPS.market={
     /* lances na COLECAO INTEIRA moram em cima: sao poucos, valem menos que o
        floor e nao apontam pra nenhum Kaiju — quem escolhe a peca e voce. */
     const cbHTML=cbidSection();
-    if(!G.offers.length){
+    /* a MESMA lista que alimenta o numero da aba: cabecalho, linhas e contagem
+       saem daqui, entao nunca podem discordar entre si */
+    const OFF=offersShown();
+    if(!OFF.length){
       body.innerHTML=cbHTML+`<div class="center dim" style="padding:26px 10px;line-height:1.7">
         ${pixSVG('coin',32)}<br>${t('No offers on a specific Kaiju right now.')}<br>
         <span class="tiny">${t('Offers arrive on their own as time passes and hype rises. Slots: {0}',offerSlots())}</span></div>`;
@@ -168,12 +186,12 @@ APPS.market={
     /* agrupado por Kaiju: um mitico pode juntar uma fila de interessados, e
        o melhor lance fica no topo. Aceitar um derruba os outros. */
     const grupos={};
-    G.offers.forEach(o=>{(grupos[o.tk]=grupos[o.tk]||[]).push(o);});
+    OFF.forEach(o=>{(grupos[o.tk]=grupos[o.tk]||[]).push(o);});
     /* S/M/L: no L a linha vira arte em cima e a ficha embaixo, senao a arte
        grande espremia o texto num canto */
     const sz=offArtSize();
     const head=`<div class="row offhead">
-      <span class="tiny dim">${t('{0} offers waiting',G.offers.length)}</span>
+      <span class="tiny dim">${t('{0} offers waiting',OFF.length)}</span>
       <div class="grow"></div>
       <span class="tiny dim">${t('Art')}</span>
       <div class="osz">${['s','m','l'].map(k=>
@@ -205,7 +223,7 @@ APPS.market={
             </div></div>`;}).join('')}
       </div>`;
     }).join('')+`</div>`;
-    G.offers.forEach(o=>delete o.fresh);
+    OFF.forEach(o=>delete o.fresh);
     wireCbids(body,b,ent);
     /* arte no tamanho REAL de tela x dpr — antes desenhava 46px e o CSS
        esticava pra 58+, e em --ui 1.7 virava borrao */

@@ -72,7 +72,8 @@ APPS.wallet={
     if(ws){ws.value=srt;ws.onchange=e=>{WV.sort=e.target.value;WV.page=0;SFX.click();APPS.wallet.refresh(b,ent);};}
     $$('[data-wsize]',root).forEach(x=>x.onclick=()=>{SFX.click();setGridSize(x.dataset.wsize);APPS.wallet.refresh(b,ent);});
     const wc=$('[data-wcap]',root);
-    if(wc)wc.onclick=()=>{SFX.click();UI.openApp('shop');};
+    /* so leva pra loja quando a loja ja existe pro jogador */
+    if(wc&&(typeof unlocked!=='function'||unlocked('shop')))wc.onclick=()=>{SFX.click();UI.openApp('shop');};
     const wla=$('[data-wlistall]',root);
     if(wla)wla.onclick=()=>listAllPrompt(b,ent);
     const wls=$('[data-wlistsome]',root);

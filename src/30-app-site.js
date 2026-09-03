@@ -239,7 +239,7 @@ APPS.site={
           ${bulkOn?`<div class="qtycol">
             <div class="qtyrow">
               ${opts.map(o=>`<button class="qbtn ${o===SV.qty?'on':''}${o>capLeft()?' nofit':''}" data-q="${o}">x${o}</button>`).join('')}
-              ${nextLock?`<button class="qbtn lock" data-shoplink="1" title="${t('Buy upgrades at the Kaiju Shop')}">x${nextLock} &#128274;</button>`:''}
+              ${/* um cadeado que leva pra uma loja que ainda nao existe e um beco sem saida */(nextLock&&(typeof unlocked!=='function'||unlocked('shop')))?`<button class="qbtn lock" data-shoplink="1" title="${t('Buy upgrades at the Kaiju Shop')}">x${nextLock} &#128274;</button>`:''}
             </div>
           </div>`:''}
           <div class="billcol">
@@ -583,13 +583,14 @@ function doMintFlow(q,btn,chained){
       const nx=nextCapUpgrade();
       UI.dialog(t('Wallet full'),
         t('Your wallet holds {0} Kaiju and it is full.<br><br>{1}',num(capacity()),
-          nx?t('Expanding it to <b>{0}</b> costs {1} in the Kaiju Shop. Or sell something first.',num(nx.cap),money(nx.cost)):t('Sell something first.')),'warn');
+          (nx&&(typeof unlocked!=='function'||unlocked('shop')))?t('Expanding it to <b>{0}</b> costs {1} in the Kaiju Shop. Or sell something first.',num(nx.cap),money(nx.cost)):t('Sell something first.')),'warn');
       return;
     }
     UI.dialog(t('Not enough room'),
       t('You asked for <b>{0}</b> but only <b>{1}</b> more fit in the wallet ({2}/{3}).<br><br>Nothing was minted and nothing was charged.',
         q,room,num(held()),num(capacity())),'warn',
-      {buttons:[{t:t('MINT {0}',room),v:1},{t:t('Kaiju Shop'),v:2},{t:t('Cancel'),v:0}],onDone(v){
+      /* so oferece a loja quando ela ja existe pro jogador */
+      {buttons:[{t:t('MINT {0}',room),v:1}].concat((typeof unlocked!=='function'||unlocked('shop'))?[{t:t('Kaiju Shop'),v:2}]:[]).concat([{t:t('Cancel'),v:0}]),onDone(v){
         if(v===1)setTimeout(()=>doMintFlow(room,btn,chained),150);
         else if(v===2)UI.openApp('shop');
       }});
@@ -602,7 +603,7 @@ function doMintFlow(q,btn,chained){
     const nx=nextCapUpgrade();
     UI.dialog(t('Wallet full'),
       t('Your wallet holds {0} Kaiju and it is full.<br><br>{1}',num(capacity()),
-        nx?t('Expanding it to <b>{0}</b> costs {1} in the Kaiju Shop. Or sell something first.',num(nx.cap),money(nx.cost)):t('Sell something first.')),'warn');
+        (nx&&(typeof unlocked!=='function'||unlocked('shop')))?t('Expanding it to <b>{0}</b> costs {1} in the Kaiju Shop. Or sell something first.',num(nx.cap),money(nx.cost)):t('Sell something first.')),'warn');
     return;
   }
   if(r.err==='money'){

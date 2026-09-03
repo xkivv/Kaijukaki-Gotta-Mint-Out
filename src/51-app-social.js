@@ -714,6 +714,10 @@ APPS.dm={
   build(b,ent){b.innerHTML='<div class="dmroot"></div>';this.refresh(b,ent);},
   refresh(b,ent){
     const root=$('.dmroot',b);if(!root)return;
+    /* interruptor mestre: com as DMs desligadas o app nao desenha nada. A
+       aba tambem nao e listada, entao ninguem chega aqui — isto e so a
+       ultima trava, pra nada quebrar se alguem abrir por outro caminho. */
+    if(!(typeof DM_ON!=='undefined'&&DM_ON)){root.innerHTML='';return;}
     const S=soc();
     const vis=dmVisible(), arq=dmArchived();
     if(!S.threads.length){
@@ -962,10 +966,24 @@ function dmFeedback(r,btn,th){
   }
 }
 
+/* ---------- a aba Messages fora do Kaki+ ----------
+   O hub declara as abas em 42-hubs.js e aquele arquivo nao e meu: em vez de
+   editar la, o hide() da aba dm ganha aqui uma condicao a mais. Com o
+   interruptor desligado a aba nao e listada e o app nao e alcancavel;
+   voltando DM_ON pra 1 a aba reaparece com a regra antiga (tab_dm). */
+if(typeof HUB_DEF!=='undefined'&&HUB_DEF.hubsocial&&Array.isArray(HUB_DEF.hubsocial.tabs)){
+  HUB_DEF.hubsocial.tabs.forEach(tb=>{
+    if(!tb||tb.id!=='dm')return;
+    const _hide=tb.hide;
+    tb.hide=()=>!(typeof DM_ON!=='undefined'&&DM_ON)||(typeof _hide==='function'&&!!_hide());
+  });
+}
+
 /* ---------- a janelinha de DM ----------
    Copia estrutural do scam: vive no #screen, nao escurece a tela, nao entra na
    fila de modal, e some sozinha. */
 function dmPop(who,msg){
+  if(!(typeof DM_ON!=='undefined'&&DM_ON))return;
   if(dmPopOpen)return;
   const S=soc();
   dmPopOpen=true;S.popsToday++;S.lastPopAt=G.day*24+G.hour;

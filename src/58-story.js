@@ -169,6 +169,33 @@ function stEver(k){return stT(k)||stL(k);}
    A ORDEM É A PRIORIDADE: o motor para no primeiro momento maduro que ainda
    não aconteceu. Por isso o que é reativo (quebrou, encheu, o imposto bateu)
    mora lá em cima — senão ele fica atrás da fila de ensino e chega tarde. */
+/* ---------- CALENDARIO DE DESBLOQUEIO ----------
+   O dono jogou e a reclamacao foi direta: MASSIVO E CHATO. Chegavam tres, as
+   vezes quatro coisas no mesmo dia, e nada tinha tempo de virar habito antes
+   da proxima novidade cobrir a anterior.
+
+   REGRA: UM desbloqueio por dia, nunca dois. Cada dia da semana tem UMA coisa
+   nova e so. Se voce for acrescentar um beat novo, escolha um dia VAZIO — nao
+   empilhe em cima de um dia que ja tem dono.
+
+     dia  2 -> b_inbox      (o correio)
+     dia  3 -> b_social     (o Kaki+)
+     dia  4 -> b_tax        (o imposto)
+     dia  5 -> b_boost      (update do Kaki+: reagir e postar)
+     dia  6 -> b_hacked     (o hack e a loja com o antivirus)
+     dia  7 -> b_free       (a Kakizone)  /  b_dump (so se o dia der queda)
+     dia  8 -> b_spotter    (o Kaiju Spotter)
+     dia  9 -> b_media      (o media player)
+     dia 10 -> b_quests     (update da Kakizone: tarefas e marcos)
+              b_security so cobra o antivirus a partir daqui
+     dia 11 -> b_shop_more  (prateleira 2 da loja)  /  b_sweep (varrer o floor)
+     dia 12 -> b_comfort    (notas na area de trabalho)
+     dia 13 -> b_shop_all   (a loja inteira)
+     dia 14 -> b_chart      (o grafico e as estatisticas)
+
+   Os beats REATIVOS (b_broke, b_cap, b_audit, b_gasburn, b_seize...) nao
+   entram nesse calendario: eles respondem a uma coisa que o jogador fez e
+   podem cair em qualquer dia. O calendario e so das ENTREGAS. */
 const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
 /* A carteira NAO abre no dia 1. O jogador nao tem o que ver dentro dela antes
    de ter Kaiju na mao, e um icone que so mostra vazio ensina errado. Ela chega
@@ -309,29 +336,27 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
    uma coisa de cada vez, como prateleira que enche. */
 {id:'b_hacked', urg:1, gap:0, when:()=>(+G.hackTut||0)>0&&G.day>=(+G.hackTut||6),
  un:['shop','shop_av'],
- say:[{c:'tobi',en:"damn, man. you got hacked. that sucks. I know exactly how that feels, I lost a whole wallet in march.",
-       pt:"caramba, cara. você foi hackeado. que droga. eu sei exatamente como é, perdi uma carteira inteira em março."},
-      {c:'tobi',en:"but there's something you can do. kiv rushed out a shop app and the only thing on the shelf right now is the antivirus. get it. buy it tonight.",
-       pt:"mas tem uma coisa que dá pra fazer. o kiv soltou às pressas um app de loja e a única coisa na prateleira agora é o antivírus. pega. compra hoje."},
+ say:[{c:'tobi',en:"damn, man. you got hacked. I lost a whole wallet in march, I know how that feels. but there's something you can do: kiv rushed out a shop app and the only thing on the shelf right now is the antivirus.",
+       pt:"caramba, cara. você foi hackeado. perdi uma carteira inteira em março, eu sei como é. mas tem uma coisa que dá pra fazer: o kiv soltou às pressas um app de loja e a única coisa na prateleira agora é o antivírus."},
       {dl:'shop'},
-      {c:'tobi',en:"it ain't a one-time thing, it runs out and you pay again. but while it's paid, they don't get in. you feel me?",
-       pt:"não é coisa de uma vez só, vence e você paga de novo. mas enquanto tá pago, eles não entram. tá ligado?"}]},
+      {c:'tobi',en:"buy it tonight, bro. it ain't a one-time thing, it runs out and you pay again. but while it's paid, they don't get in. you feel me?",
+       pt:"compra hoje, mano. não é coisa de uma vez só, vence e você paga de novo. mas enquanto tá pago, eles não entram. tá ligado?"}]},
 
-{id:'b_shop_more', when:()=>G.day>=7&&unlocked('shop'), un:['shop_more','tab_profile'],
+{id:'b_shop_more', when:()=>G.day>=11&&unlocked('shop'), un:['shop_more','tab_profile'],
  say:[{c:'ina',en:"Bom dia! The shop restocked overnight. Two things on the shelf now: wallet space, and contract speed.",
        pt:"Bom dia! A loja reabasteceu de madrugada. Duas coisas na prateleira agora: espaço na carteira, e velocidade de contrato.",
        point:'[data-icon="shop"]'},
       {c:'ina',en:"Space first. Always space first. It is the ceiling on everything you earn.",
        pt:"Espaço primeiro. Sempre espaço primeiro. É o teto de tudo que você ganha."}]},
 
-{id:'b_shop_all', when:()=>G.day>=9&&unlocked('shop_more'), un:['shop_all'],
+{id:'b_shop_all', when:()=>G.day>=13&&unlocked('shop_more'), un:['shop_all'],
  say:[{c:'ina',en:"The shop is fully stocked now. Batch minting, listing speed, gas optimizer, the queue scanner — all of it.",
        pt:"A loja está com a prateleira cheia agora. Mint em lote, velocidade de listagem, otimizador de gas, o scanner da fila — tudo.",
        point:'[data-icon="shop"]'},
       {c:'ina',en:"None of it is urgent. Space and the antivirus are. The rest is for when the money is real.",
        pt:"Nada disso é urgente. Espaço e antivírus são. O resto é pra quando o dinheiro for de verdade."}]},
 
-{id:'b_tax', urg:1, gap:0, when:()=>(+G.taxDue||0)>0||G.day>=3, un:['tax'],
+{id:'b_tax', urg:1, gap:0, when:()=>(+G.taxDue||0)>0||G.day>=4, un:['tax'],
  say:[{c:'kaiju',en:"You made money. I came for my share.",
        pt:"Você ganhou dinheiro. Eu vim buscar minha parte."},
       {c:'kaiju',en:"I am not in the collection. Nobody has seen my paperwork. I come back every three days and I always come back.",
@@ -351,7 +376,7 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
        pt:"é, o kiv acabou de me mandar mensagem sobre ele. eu passei pelos 8888 duas vezes, mano. ele não tá lá. não me pergunta pra onde vai o dinheiro."}]},
 
 /* ============ DIA 4-6: a rotina ============ */
-{id:'b_social', when:()=>(G.day>=2&&held()>=3)||G.day>=3, un:['hubsocial','m_hype','f_knsize'],
+{id:'b_social', when:()=>G.day>=3, un:['hubsocial','m_hype','f_knsize'],
  say:[{c:'ina',en:"You started minting — and so did other people. So while you were all minting, we built something: Kaki+, a social app just for the collection.",
        pt:"Você começou a mintar — e outras pessoas também. Então enquanto vocês mintavam, a gente fez uma coisa: o Kaki+, um app social só da coleção."},
       {dl:'hubsocial'},
@@ -361,7 +386,7 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
 
 /* Reagir e postar chegam como um UPDATE do Kaki+, anunciado por alguem, no
    dia 4 — nao como aula. Um forum que ganha recurso novo e um lugar vivo. */
-{id:'b_boost', when:()=>G.day>=4&&unlocked('hubsocial'), un:['f_boost','f_react'],
+{id:'b_boost', when:()=>G.day>=5&&unlocked('hubsocial'), un:['f_boost','f_react'],
  say:[{c:'ina',en:"Bom dia! Kaki+ just shipped an update. You can react to posts now, and you can post yourself.",
        pt:"Bom dia! O Kaki+ acabou de soltar um update. Agora dá pra reagir aos posts, e dá pra você postar.",
        point:'[data-icon="hubsocial"]'},
@@ -370,27 +395,26 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
       {c:'ina',en:"Posting costs money and buys hype. The second post of the day returns less than the first, and the fifth is almost nothing. That is not a bug, that is attention.",
        pt:"Postar custa dinheiro e compra hype. O segundo post do dia rende menos que o primeiro, e o quinto quase nada. Não é bug, é atenção."}]},
 
-{id:'b_spotter', when:()=>G.day>=6, un:['spot'],
+{id:'b_spotter', when:()=>G.day>=8, un:['spot'],
  say:[{c:'ina',en:"New app from us: the Kaiju Spotter. We're cataloguing the collection before it mints out and we pay per correct entry. Not much — but it's work you can do on any day.",
-       pt:"App novo nosso: o Kaiju Spotter. A gente tá catalogando a coleção antes do mintout e paga por ficha certa. Pouco — mas é trabalho que dá pra fazer em qualquer dia."},
-      {dl:'spot'},
-      {c:'tobi',en:"pay's insulting, bro. but after a week you'll read a bust faster than anybody in here.",
-       pt:"o pagamento é ofensivo, mano. mas depois de uma semana você lê um busto mais rápido que qualquer um aqui.",
-       point:'[data-icon="spot"]'}]},
+       pt:"App novo nosso: o Kaiju Spotter. A gente tá catalogando a coleção antes do mintout e paga por ficha certa. Pouco — mas é trabalho que dá pra fazer em qualquer dia.",
+       point:'[data-icon="spot"]'},
+      {dl:'spot'}]},
 
-{id:'b_free', when:()=>G.day>=4&&unlocked('hubsocial'), un:['free'],
- say:[{c:'ina',en:"We opened the Kakizone — one free mint every day for holders, and a few daily tasks. Sending you the app.",
-       pt:"A gente abriu a Kakizone — um free mint por dia pros holders, e umas tarefas diárias. Mandando o app pra você."},
+{id:'b_free', when:()=>G.day>=7&&unlocked('hubsocial'), un:['free'],
+ say:[{c:'ina',en:"Bom dia! The Kakizone is open. For now it gives you one free mint a day, for being one of our oldest holders — thank you for that, really.",
+       pt:"Bom dia! A Kakizone está aberta. Por enquanto ela te dá um free mint por dia, por você ser um dos nossos holders mais antigos — obrigada por isso, de verdade."},
       {dl:'free'},
-      {c:'tobi',en:"still costs gas though. nothing here is actually free, you feel me? but that's the closest it gets.",
-       pt:"mas ainda paga gas. nada aqui é de graça de verdade, tá ligado? mas é o mais perto que chega.",
+      {c:'ina',en:"We're working to make it even better than this. Enjoy it.",
+       pt:"A gente tá trabalhando pra deixar ela ainda melhor que isso. Aproveita.",
        point:'[data-icon="free"]'}]},
 
-{id:'b_quests', when:()=>G.day>=5&&unlocked('free'), un:['f_quests','f_milestones'],
- say:[{c:'tobi',en:"the kakizone hands out chores. they pay bad on purpose, bro — that's a compass, not a faucet. it's telling you where to look.",
-       pt:"a kakizone dá tarefa do dia. paga mal de propósito, mano — aquilo é bússola, não torneira. tá te dizendo onde olhar."},
-      {c:'tobi',en:"the milestones under them count the MOST you ever held at once. selling never walks that bar backwards. took me a month to figure that out, bro. a month.",
-       pt:"os marcos embaixo contam o MAIOR número que você já segurou de uma vez. vender não anda com a barra pra trás. levei um mês pra sacar isso, mano. um mês."}]},
+{id:'b_quests', when:()=>G.day>=10&&unlocked('free'), un:['f_quests','f_milestones'],
+ say:[{c:'ina',en:"Bom dia! The Kakizone just shipped an update — it has daily tasks and milestones in it now.",
+       pt:"Bom dia! A Kakizone acabou de soltar um update — agora tem tarefas diárias e marcos lá dentro.",
+       point:'[data-icon="free"]'},
+      {c:'ina',en:"The tasks pay little on purpose — they're a compass, not a faucet. And the milestones count the MOST you ever held at once, so selling never walks that bar backwards.",
+       pt:"As tarefas pagam pouco de propósito — elas são bússola, não torneira. E os marcos contam o MAIOR número que você já segurou de uma vez, então vender nunca anda com a barra pra trás."}]},
 
 {id:'b_contract', when:()=>unlocked('shop_more')&&stEver('mint')>=12,
  say:[{c:'ina',en:"You are spending your day inside the mint page. Minutes are the resource you cannot buy back.",
@@ -418,18 +442,10 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
       {c:'tobi',en:"seeing all of em is an achievement, and achievements in here ain't badges. they're proof you actually looked.",
        pt:"ver todas é uma conquista, e conquista aqui não é medalha. é prova de que você olhou de verdade."}]},
 
-{id:'b_media', when:()=>G.day>=5, un:['media','bin'],
+{id:'b_media', when:()=>G.day>=9, un:['media','bin'],
  say:[{c:'tobi',en:"yo, somebody from the community made a media player with a lo-fi loop. kiv put it on the server. grabbing it for you — you're gonna be here a while.",
        pt:"ó, alguém da comunidade fez um media player com um loop de lo-fi. o kiv botou no server. pegando pra você — você vai ficar aqui um tempo."},
       {dl:'media'}]},
-
-{id:'b_scam_warn', urg:1, when:()=>G.day>=7,
- say:[{c:'tobi',en:"one more thing, since we're on the subject of getting robbed, bro.",
-       pt:"mais uma coisa, já que a gente tá falando de ser roubado, mano."},
-      {c:'tobi',en:"nobody real ever asks for a seed phrase. no support, no mod, no giveaway, nobody. ever. you close that with the X.",
-       pt:"ninguém de verdade pede seed phrase. nem suporte, nem mod, nem sorteio, ninguém. nunca. fecha aquilo no X."},
-      {c:'tobi',en:"the antivirus stops the ones who break in. it don't stop you handing them the keys. you feel me?",
-       pt:"o antivírus para quem arromba. ele não para você de entregar a chave. tá ligado?"}]},
 
 {id:'b_event', when:()=>stMark('event',G.day>=4&&!!G.event&&G.event!=='calm'),
  say:[{c:'oni',en:"Every day wakes up in a mood. Today is not yesterday and none of it is up to you.",
@@ -437,7 +453,7 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
       {c:'oni',en:"Bull run, cold market, gas spike, a whale dumping. Read the card in the morning before you decide what the day is for.",
        pt:"Bull run, mercado frio, pico de gas, baleia dumpando. Lê o card de manhã antes de decidir pra que serve o dia."}]},
 
-{id:'b_chart', when:()=>G.bestLevel>=3||G.day>=6, un:['wgt_chart','tab_mkt_stats','m_mkt_stats'],
+{id:'b_chart', when:()=>G.bestLevel>=3||G.day>=14, un:['wgt_chart','tab_mkt_stats','m_mkt_stats'],
  say:[{c:'oni',en:"You are around enough now to want a chart.",
        pt:"Você já tá aqui o bastante pra querer um gráfico."},
       {c:'oni',en:"Floor is not the price of your Kaiju. It is the price of the CHEAPEST one. Yours is worth floor times its rank.",
@@ -452,12 +468,6 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
 {id:'b_sort', when:()=>held()>=10, un:['m_wallet_sort','f_wgrid'],
  say:[{c:'ina',en:"Ten of them. You cannot eyeball that any more — the wallet has a filter, a sort and a grid size. Use them.",
        pt:"Dez. Não dá mais pra olhar no olho — a carteira tem filtro, ordenação e tamanho de grade. Usa."}]},
-
-{id:'b_dm', urg:1, when:()=>unlocked('hubsocial')&&((typeof soc==='function'&&soc().threads)||[]).length>0, un:['tab_dm'],
- say:[{c:'ina',en:"Somebody wrote to you privately. The forum has a tab for that.",
-       pt:"Alguém te escreveu no privado. O fórum tem uma aba pra isso."},
-      {c:'ina',en:"How you answer changes what people offer you later. Trust is a currency here and it does not show up in your wallet.",
-       pt:"Como você responde muda o que te oferecem depois. Confiança é moeda aqui e não aparece na carteira."}]},
 
 {id:'b_offers', when:()=>stEver('sold')>=1, un:['m_collection_offers','tab_mkt_mine'],
  say:[{c:'hakase',en:"You sold one. Good.",
@@ -480,7 +490,7 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
       {c:'oni',en:"A wall sells slower and drags your own floor down with it. And at the end of the day the room reads it as dumping.",
        pt:"Parede vende mais devagar e derruba o seu próprio floor junto. E de noite a sala lê aquilo como despejo."}]},
 
-{id:'b_sweep', when:()=>G.day>=6&&npcHeld()>=60&&unlocked('hubmarket'),
+{id:'b_sweep', when:()=>G.day>=11&&npcHeld()>=60&&unlocked('hubmarket'),
  say:[{c:'oni',en:"You can buy back off the floor. Sweeping, we call it.",
        pt:"Dá pra comprar de volta do floor. Varrer, a gente chama."},
       {c:'oni',en:"Each one you take costs a little more than the one before, plus the network fee. Sweeping two hundred is not sweeping one two hundred times.",
@@ -505,11 +515,11 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
        pt:"pula umas horas pelo painel da carteira, ou vai ler o fórum. desce. sempre desce, mano.",
        point:'#hud'}]},
 
-{id:'b_dump', when:()=>stMark('dump',G.day>=6&&(G.event==='dump'||G.event==='fud'||G.event==='cold'||G.event==='rug')),
+{id:'b_dump', when:()=>stMark('dump',G.day>=7&&(G.event==='dump'||G.event==='fud'||G.event==='cold'||G.event==='rug')),
  say:[{c:'sera',en:"chart looks like a cliff, huh. close it. it passes in a day or two — the people who sell at the bottom are the ones who kept staring. -_-'",
        pt:"o gráfico virou penhasco, né. fecha ele. passa em um ou dois dias — quem vende no fundo é quem ficou encarando. -_-'"}]},
 
-{id:'b_security', when:()=>stMark('unsafe',((+G.scamLoss||0)>0&&G.day>=4)||(G.day>=9&&!securityActive()&&(held()>=8||(+G.money||0)>=600))),
+{id:'b_security', when:()=>stMark('unsafe',((+G.scamLoss||0)>0&&G.day>=4)||(G.day>=10&&!securityActive()&&(held()>=8||(+G.money||0)>=600))),
  say:[{c:'sera',en:"you've been sleeping with the door open for days, unc. antivirus. it's rent, not a flex. ¬¬",
        pt:"você tá dormindo de porta aberta faz dias, tio. antivírus. é aluguel, não é ostentação. ¬¬"}]},
 
@@ -526,7 +536,7 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
       {c:'oni',en:"Dumping walls of listings drags it down. Showing up and not disappearing lifts it. That is the whole mechanic.",
        pt:"Despejar parede de listagem derruba. Aparecer e não sumir levanta. É essa a mecânica inteira."}]},
 
-{id:'b_comfort', when:()=>G.day>=8, un:['f_notes'],
+{id:'b_comfort', when:()=>G.day>=12, un:['f_notes'],
  say:[{c:'tobi',en:"you live here now, bro. right-click the desktop — you can leave notes on it. doesn't change the game. just makes it yours.",
        pt:"você mora aqui agora, mano. botão direito na mesa — dá pra deixar nota nela. não muda o jogo. só deixa ele seu."}]},
 

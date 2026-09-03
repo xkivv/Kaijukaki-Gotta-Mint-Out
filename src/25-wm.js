@@ -63,6 +63,12 @@ const UI=(()=>{
   function openApp(id,arg){
     if(typeof HUB_OF!=='undefined'&&HUB_OF[id])return openApp(HUB_OF[id],id);
     const A=APPS[id];if(!A)return;
+    /* Um app trancado nao abre, venha o clique de onde vier. A historia e quem
+       apresenta cada app; qualquer atalho que fure isso quebra a simulacao. */
+    if(!open[id]&&typeof iconLive==='function'&&!iconLive(id)){
+      if(typeof SFX!=='undefined'&&SFX.error)SFX.error();
+      return;
+    }
     if(open[id]){
       if(open[id].min){restore(id);}
       focus(id);SFX.click();

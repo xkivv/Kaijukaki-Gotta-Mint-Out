@@ -19,6 +19,9 @@ function soc(){
   S.clubs=Array.isArray(S.clubs)?S.clubs:[];
   S.votes=+S.votes||0;S.popsToday=+S.popsToday||0;S.lastPopAt=+S.lastPopAt||0;
   S.unread=+S.unread||0;S.tips=+S.tips||0;S.tipsToday=+S.tipsToday||0;
+  /* com as DMs desligadas o contador some tambem em save antigo: nenhuma
+     bolinha de "tem mensagem" fica acesa na bandeja. */
+  if(!(typeof DM_ON!=='undefined'&&DM_ON))S.unread=0;
   S.act=S.act&&typeof S.act==='object'?S.act:{};
   return S;
 }
@@ -296,6 +299,9 @@ function thread(who){
   return th;
 }
 function socialDM(who,text,urg,extra){
+  /* interruptor mestre: com as DMs desligadas nada nasce — nem thread, nem
+     pop-up, nem bolinha na bandeja. */
+  if(!(typeof DM_ON!=='undefined'&&DM_ON))return false;
   const S=soc(), th=thread(who);
   const now=G.day*24+G.hour;
   /* nunca duas do mesmo personagem em menos de 8h */
