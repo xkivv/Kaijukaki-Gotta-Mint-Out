@@ -1,16 +1,16 @@
 # Kaijukaki — Gotta Mint Out!
 
-Simulador de desktop Win98/CRT onde você minta a coleção Kaijukaki (8888 bustos
-desenhados à mão). Jogo web single-file, sem framework, sem bundler.
+Win98/CRT desktop simulator where you mint the Kaijukaki collection (8888 hand-
+drawn busts). Single-file web game, no framework, no bundler.
 
 ```bash
-bash build.sh                        # gera dist/kaijukaki.html (abre com duplo clique)
-node tools/extrair-arte.js           # só na 1ª vez: arte pro app de desktop
-cd desktop && npm install --include=dev && npm start   # versão Electron
+bash build.sh                        # generates dist/kaijukaki.html (open with a double click)
+node tools/extrair-arte.js           # only the 1st time: art for the desktop app
+cd desktop && npm install --include=dev && npm start   # Electron version
 ```
 
-**Leia `LEIA-PRIMEIRO.md` antes de mexer.** E `CONFIDENCIAL.md` antes de
-compartilhar qualquer coisa: a coleção ainda não foi mintada.
+**Read `START-HERE.md` before touching anything.** And `CONFIDENTIAL.md` before
+sharing anything at all: the collection hasn't been minted yet.
 
-`src/18c-real.js` é um placeholder de propósito e está no `.gitignore` — o
-arquivo real nunca entra neste repositório.
+`src/18c-real.js` is a placeholder on purpose and is in `.gitignore` — the
+real file never enters this repository.
