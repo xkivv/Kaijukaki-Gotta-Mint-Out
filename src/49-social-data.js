@@ -42,8 +42,8 @@ function lowballLine(){const l=pick(LOWBALL_LINES);return l[LANG]||l.en;}
 const CAST=[
  {id:'first_day_holder', ico:'kaiju',  arq:'novato'},
  {id:'Anonymous Wallet',  ico:'crt',    arq:'mod'},
- {id:'oni_of_the_floor', ico:'chart',  arq:'vigia'},
- {id:'hakase', ico:'coin',   arq:'baleia'},
+ {id:'annoying guy', ico:'chart',  arq:'vigia'},
+ {id:'tubi', ico:'coin',   arq:'baleia'},
  {id:'centavo',     ico:'market', arq:'lowball'},
  {id:'Leaner (Unc)',ico:'info', arq:'terapeuta'},
  {id:'rugmuseum_curator',ico:'warn',   arq:'arquivista'},

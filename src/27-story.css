@@ -152,3 +152,37 @@ html body.mob.storytalk #toasts{bottom:calc(178px * var(--ui))}
 .dl-prog i{background:var(--navy);display:block;height:100%;transition:width .12s linear}
 .dl-meta{font-size:calc(15px * var(--fs));margin-top:calc(6px * var(--ui));color:#141414}
 .dl-foot{margin-top:calc(6px * var(--ui));font-size:calc(15px * var(--fs));color:#3d3d3d}
+
+/* ---------- UMA CAIXA, A CONVERSA INTEIRA ----------
+   O dono: "que os dialogos continuos tenham um > pra ir pro proximo, ao inves
+   de ficar dando varios pop-ups na tela". A caixa nao fecha mais entre uma
+   fala e outra; ela VIRA. O piscar curto abaixo e o que diz ao olho que a
+   pagina mudou — sem ele o jogador clica e nao tem certeza de nada. */
+.storybox .sb-next.sb-more{min-width:52px;font-weight:bold;letter-spacing:1px}
+@keyframes sbTurn{
+  0%{opacity:.55;transform:translateY(3px)}
+  100%{opacity:1;transform:none}
+}
+.storybox.sb-turn .sb-main{animation:sbTurn .22s ease-out}
+@media (prefers-reduced-motion: reduce){
+  .storybox.sb-turn .sb-main{animation:none}
+}
+
+/* ---------- A CHEGADA, DEVAGAR ----------
+   O painel (ou o icone) que acabou de ser baixado cresce do nada e da dois
+   pulsos de luz. Dura o suficiente pra ser um ACONTECIMENTO e nao um corte. */
+@keyframes kkArrive{
+  0%  {opacity:0;transform:scale(.86)}
+  38% {opacity:1;transform:scale(1.04)}
+  55% {transform:scale(1)}
+  70% {box-shadow:0 0 0 3px rgba(255,255,255,.85),0 0 22px rgba(120,220,255,.9)}
+  85% {box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 12px rgba(120,220,255,.5)}
+  100%{opacity:1;transform:none;box-shadow:none}
+}
+.wgt.arriving,.dicon.arriving,#hud_skip.arriving{
+  animation:kkArrive 1.9s cubic-bezier(.2,.9,.3,1) both;
+  z-index:60;
+}
+@media (prefers-reduced-motion: reduce){
+  .wgt.arriving,.dicon.arriving,#hud_skip.arriving{animation:none}
+}

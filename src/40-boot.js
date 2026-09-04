@@ -11,7 +11,10 @@ const DESK_ICONS=[
  {id:'tax',       ico:'kaiju',  lbl:'Mr. Kaiju', dot:'alert'},
  {id:'inbox',     ico:'mail',   lbl:'Kaiju Inbox', badge:'mail'},
  {id:'readme',    ico:'notepad',lbl:'readme.txt'},
- {id:'story_log', ico:'chat',   lbl:'Kaiju Log', dot:'log'},
+ /* APP DE FABRICA: o Kaiju Log ja vem com o computador. Ninguem apresenta,
+    ninguem fala dele, nao tem bolinha e nao ocupa lugar na mesa — quem quiser
+    reler as conversas abre pelo menu Iniciar. `stock` e o que o tira da mesa. */
+ {id:'story_log', ico:'chat',   lbl:'Kaiju Log', stock:1},
  {id:'bin',       ico:'bin',    lbl:'Recycle Bin'},
  {id:'shutdown',  ico:'power',  lbl:'End the day'}
 ];
@@ -163,7 +166,9 @@ if(typeof dotState==='function'&&typeof unlocked==='function'){
   };
 }
 function desktopItems(){
-  return deskAppList().filter(i=>!iconHidden(i.id))
+  /* os apps de fabrica (stock) nunca vao pra mesa: existem, abrem pelo menu
+     Iniciar, e nao pedem apresentacao nenhuma. */
+  return deskAppList().filter(i=>!i.stock&&!iconHidden(i.id))
     .concat(userNotes().map(n=>({id:'note:'+n.name,ico:'notepad',lbl:n.name,note:true})));
 }
 /* ================= MODO HISTORIA: A HORA DE APARECER =================

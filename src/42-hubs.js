@@ -3,7 +3,9 @@
 const HUB_DEF={
   hubwallet:{title:'Kaiju Wallet', icon:'wallet', w:660, h:540, tabs:[
     {id:'wallet', lbl:'Wallet',  ico:'wallet'},
-    {id:'binder', lbl:'Binder',  ico:'binder', hide:()=>!unlocked('tab_binder')},
+    /* a aba so nasce quando a instalacao termina: enquanto a barra de progresso
+       esta na tela o fichario ainda nao existe. */
+    {id:'binder', lbl:'Binder',  ico:'binder', hide:()=>!unlocked('tab_binder')||(typeof dlPending==='function'&&dlPending('tab_binder'))},
     {id:'profile',lbl:'Ranks', ico:'chart', hide:()=>!unlocked('tab_profile')}
   ]},
   /* 640 nao cabia o rotulo da resposta em portugues: "Avisar que ela foi

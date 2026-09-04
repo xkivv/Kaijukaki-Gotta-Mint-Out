@@ -199,6 +199,9 @@ function wgtOn(id){
      A preferencia do jogador (ligado/desligado) continua valendo DEPOIS disso
      — quem desligou o gas tracker no dia 9 nao o ve voltar sozinho no dia 10. */
   if(typeof unlocked==='function'&&!unlocked('wgt_'+id))return false;
+  /* e nao aparece enquanto ainda esta BAIXANDO: o painel nasce quando a barra
+     de progresso termina, nunca antes dela. */
+  if(typeof dlPending==='function'&&dlPending('wgt_'+id))return false;
   return !!prefMap('wgt')[id];
 }
 function wgtToggle(id){

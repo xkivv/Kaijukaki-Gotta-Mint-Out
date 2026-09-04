@@ -63,9 +63,10 @@
    o nome atual de cada chave, abra a aba "Gente" do proprio Kaiju Log: e a
    mesma ordem desta lista. */
 const RETRATOS={
-  ina:    '',   /* a moderadora, ja viu colecao morrer          */
-  oni:    '',   /* o vigia do floor, ainda nao gosta de voce    */
-  hakase: '',   /* o que compra calado                          */
+  kiv:    '',   /* o dev — o dono do jogo em pessoa             */
+  ina:    '',   /* a que da as coisas de graca                  */
+  oni:    '',   /* o vigia do floor                             */
+  hakase: '',   /* o que compra calado e entorta as palavras    */
   sera:   '',   /* a que tira gente do parapeito                */
   tobi:   '',   /* o que ja errou tudo antes, por voce          */
   kaiju:  ''    /* o cobrador — o unico que nao e da comunidade */
@@ -87,8 +88,7 @@ Object.keys(RETRATOS).forEach(k=>{
 const LOG_TOPIC={
  b_open:       {en:'What this place actually is',       pt:'O que este lugar é de verdade'},
  b_first_mint: {en:'Your first one, the price and the gas', pt:'O primeiro, o preço e o gas'},
- b_wallet:     {en:'Traits and rank',                   pt:'Traits e rank'},
- b_broke:      {en:'Hitting zero',                      pt:'Chegar no zero'},
+  b_broke:      {en:'Hitting zero',                      pt:'Chegar no zero'},
  b_cap:        {en:'The wallet is full',                pt:'A carteira encheu'},
  b_audit:      {en:'An audit with no warning',          pt:'Auditoria sem aviso'},
  b_seize:      {en:'What he takes when you do not pay', pt:'O que ele leva quando você não paga'},
@@ -227,9 +227,17 @@ function logByDay(){
    seguro: uma linha, sem tocar no motor, e o resto do jogo (icone, menu
    Iniciar, area de trabalho) ja pergunta unlocked() sozinho.
    ========================================================================== */
-if(typeof LOCKABLE!=='undefined')LOCKABLE.story_log=1;
+/* MUDOU: o Kaiju Log virou APP DE FABRICA. Ele nao e mais progressao — vem
+   com o computador, sem apresentacao e sem NPC falando dele. Por isso NAO
+   entra mais no LOCKABLE: nasce destravado, aparece so no menu Iniciar
+   (DESK_ICONS marca ele com `stock`) e nunca ocupa lugar na area de trabalho.
+   A chegada roteirizada continua aqui embaixo, desligada, caso um dia ele
+   volte a ser uma entrega da historia. */
+const LOG_ENTREGA=0;
+if(LOG_ENTREGA&&typeof LOCKABLE!=='undefined')LOCKABLE.story_log=1;
 
 function logGate(quieto){
+  if(!LOG_ENTREGA)return false;                     /* app de fabrica: nao tem chegada */
   if(typeof G==='undefined'||!G||typeof story!=='function')return false;
   if(typeof unlocked==='function'&&unlocked('story_log'))return false;
   const S=story();

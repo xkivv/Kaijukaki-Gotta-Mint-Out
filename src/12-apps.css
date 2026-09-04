@@ -304,7 +304,12 @@
 .mintbig .mb-price::before{content:'·';margin-right:8px;opacity:.5}
 .mintcalc{font-size:calc(10px * var(--fs));color:var(--page-dim);text-align:center;margin-top:calc(4px * var(--ui))}
 /* ---------- clima do dia ---------- */
-.evcard{display:flex;gap:11px;align-items:flex-start;padding:10px;margin-bottom:9px;
+/* O :not(.win) NAO E ENFEITE. A janela do clima do dia e aberta com
+   UI.modal(html,'evcard') — ou seja, a MOLDURA tambem ganha a classe
+   .evcard, alem do cartao la dentro. Sem o :not(.win) esta regra caia na
+   janela e o `align-items:flex-start` tirava o esticamento do titulo: a
+   barra azul parava no meio da janela, cortada, com o resto cinza. */
+.evcard:not(.win){display:flex;gap:11px;align-items:flex-start;padding:10px;margin-bottom:9px;
   box-shadow:inset -1px -1px 0 #fff,inset 1px 1px 0 var(--shadow)}
 .evcard .evtxt{flex:1;line-height:1.55;font-size:calc(12px * var(--fs))}
 .evrows{display:flex;flex-direction:column;gap:1px}

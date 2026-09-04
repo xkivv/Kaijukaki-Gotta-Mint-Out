@@ -323,7 +323,7 @@ function reactTick(){
   const S=soc(), A=S.act;
   const listed=G.tokens.filter(x=>x.listed!=null).length;
   if(listed>=14&&!A.overlist){A.overlist=1;
-    socialDM('oni_of_the_floor',txOf(pick(DM_LINES.dump)),2,{kind:'scold'});}
+    socialDM('annoying guy',txOf(pick(DM_LINES.dump)),2,{kind:'scold'});}
   if((G.log.bought||0)>=3&&!A.fair){A.fair=1;
     socialDM('artschool_dropout',txOf(pick(DM_LINES.fair)),1,{kind:'praise'});}
   if(G.day>=4&&!A.hello){A.hello=1;

@@ -1,6 +1,8 @@
 /* ================= APP: My Wallet ================= */
 /* pagina, filtro e ordenacao sao do JOGADOR: ficam no registrador (G.prefs),
    entao fechar a janela — ou o jogo — nao devolve tudo pro padrao */
+/* ultimo valor desenhado na barra de capacidade — ver o comentario no refresh */
+let WCAP_ANT=null;
 const WV=prefView({page:'walletPage',filter:'walletFilter',sort:'walletSort'});
 const GRID_SIZES={s:[74,64],m:[104,92],l:[142,128]};
 function gridSize(){return pref('walletGrid');}
@@ -61,7 +63,7 @@ APPS.wallet={
     const ferramentas=partes.length
       ?`<div class="row wtoolbar" style="padding:6px 7px;gap:5px;flex-wrap:wrap">${partes.join('')}</div>`:'';
     root.innerHTML=`${walletBanner()}<div class="capbar ${capPct>=100?'full':capPct>85?'hot':''}">
-        <div class="prog ${capPct>=100?'hot':'moss'}"><i style="width:0%"></i><b>${t('Wallet {0}/{1}',num(held()),num(capacity()))}</b></div>
+        <div class="prog ${capPct>=100?'hot':'moss'}"><i style="width:${capPct.toFixed(1)}%"></i><b>${t('Wallet {0}/{1}',num(held()),num(capacity()))}</b></div>
         ${nextCapUpgrade()?`<button class="btn tight" data-wcap="1">${t('Expand')}</button>`:''}
       </div>
       ${ferramentas}
@@ -78,7 +80,15 @@ APPS.wallet={
     if(wla)wla.onclick=()=>listAllPrompt(b,ent);
     const wls=$('[data-wlistsome]',root);
     if(wls)wls.onclick=()=>listSomePrompt(b,ent);
-    UI.setProg($('.capbar .prog i',root),capPct);
+    /* A BARRA SO ANIMA QUANDO O NUMERO MUDA.
+       O dono: "a barrinha de Wallet 8/10 fica carregando de novo toda santa
+       vez que vou listar um NFT". Listar nao tira nada da carteira, entao a
+       barra estava recomecando do zero pra chegar no MESMO lugar — o refresh
+       redesenha o HTML e o setProg animava sempre. Agora ela ja nasce cheia
+       (width no proprio HTML) e so anda de verdade quando o valor mudou. */
+    const barra=$('.capbar .prog i',root);
+    if(WCAP_ANT!==null&&Math.abs(WCAP_ANT-capPct)>0.05)UI.setProg(barra,capPct,WCAP_ANT);
+    WCAP_ANT=capPct;
     const wp=$('[data-wprev]',root),wn=$('[data-wnext]',root);
     if(wp)wp.onclick=()=>{SFX.click();WV.page=Math.max(0,WV.page-1);APPS.wallet.refresh(b,ent);};
     if(wn)wn.onclick=()=>{SFX.click();WV.page=Math.min(pages-1,WV.page+1);APPS.wallet.refresh(b,ent);};

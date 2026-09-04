@@ -110,10 +110,11 @@ APPS.vault={
    A LOJA CHEGA AOS POUCOS. Despejar quinze upgrades em cima de quem acabou de
    ser hackeado e barulho; a loja obedece tres ids de destravamento que a
    historia (58-story.js) libera na ordem:
-     shop_av   — so o Antivirus. E o que o jogador ve no dia 6, logo depois
+     shop_av   — so o Antivirus. E o que o jogador ve no dia 7, logo depois
                  do hack roteirizado (hackTutorial em 24-state.js).
-     shop_more — + Espaco na Carteira e Velocidade de Contrato (dia 7).
-     shop_all  — todo o resto: lote, listing bot, gas, os perks avulsos.
+     shop_more — + Espaco na Carteira e Velocidade de Contrato (dia 11).
+     shop_4    — + lote, velocidade de listagem, otimizador de gas e um perk (dia 16).
+     shop_all  — todo o resto do catalogo de perks (dia 20).
    O que esta trancado NAO aparece — nem cinza, nem com cadeado. Uma loja de
    um item so tem que parecer uma loja de um item so, nao uma loja quebrada.
    unlocked() devolve true pra id que ela nao conhece, entao enquanto a
@@ -121,15 +122,22 @@ APPS.vault={
 /* 1 = so antivirus, 2 = + carteira e contrato, 3 = tudo. O antivirus e o
    chao da loja: shop_av so existe pra historia ter um nome pro momento, uma
    loja aberta nunca mostra menos do que ele. */
+/* QUATRO PRATELEIRAS, nao tres. O dono espalhou a loja pelo calendario:
+   dia 7 so o antivirus, dia 11 espaco e contrato, dia 16 mais quatro coisas,
+   dia 20 o estoque inteiro. Uma prateleira que enche devagar e uma loja viva;
+   uma que abre tudo de uma vez e um menu. */
 function shopTier(){
-  return unlocked('shop_all')?3:unlocked('shop_more')?2:1;
+  return unlocked('shop_all')?4:unlocked('shop_4')?3:unlocked('shop_more')?2:1;
 }
+/* os quatro que entram no dia 16 sao: lote, velocidade de listagem, otimizador
+   de gas e UM perk barato — o resto do catalogo so no dia 20. */
+const SHOP_T3_PERKS=['prio'];
 APPS.shop={
   title:'Kaiju Shop', icon:'market', w:520, status:true,
   /* a altura da janela acompanha o estoque: com um item so, uma janela de
      470px seria um card em cima de um deserto cinza. A getter e lida no
      openApp; quem redimensionou na mao continua mandando (winRemember). */
-  get h(){const k=shopTier();return k>=3?470:k===2?560:240;},
+  get h(){const k=shopTier();return k>=4?470:k===3?520:k===2?560:240;},
   build(b,ent){b.innerHTML='<div class="sroot pad"></div>';this.refresh(b,ent);},
   refresh(b,ent){
     const root=$('.sroot',b);if(!root)return;
@@ -151,8 +159,8 @@ APPS.shop={
     +(tier>=3?bulkItem()+listItem()+gasItem():'')
     /* enquanto falta estoque, uma linha diz que a prateleira cresce — senao
        uma loja de um item parece bug, nao roteiro */
-    +(tier<3?`<div class="shop-soon tiny dim">${t('The shelves fill up as the days go by.')}</div>`:'')
-    +(tier<3?[]:UPGRADES).map(u=>{
+    +(tier<4?`<div class="shop-soon tiny dim">${t('The shelves fill up as the days go by.')}</div>`:'')
+    +(tier<3?[]:tier===3?UPGRADES.filter(u=>SHOP_T3_PERKS.indexOf(u.id)>=0):UPGRADES).map(u=>{
       const owned=has(u.id),lock=G.bestLevel<u.lvl,afford=G.money>=u.cost;
       return `<div class="shop-item perk-${u.id} ${owned?'owned':''}${lock?' locked':''}">
         <div class="si-bg"></div>

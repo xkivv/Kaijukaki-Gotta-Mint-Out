@@ -1544,7 +1544,7 @@ function dmVowTick(){
    Chamado de socialTick(). Cada tipo tem sua própria porta: nada aparece antes
    de fazer sentido, e nada aparece toda hora. A ordem importa — o que é mais
    urgente e mais raro é testado primeiro. */
-const DM_STORY_WHO=['kiv','oni_of_the_floor','hakase','Leaner (Unc)','Stux','Mr. Kaiju'];
+const DM_STORY_WHO=['kiv','annoying guy','tubi','Leaner (Unc)','Stux','Mr. Kaiju'];
 function dmSituationTick(){
   const S=soc();
   S.sit=S.sit&&typeof S.sit==='object'?S.sit:{};
@@ -1586,13 +1586,13 @@ function dmSituationTick(){
       const c=dmCtx(null,{});
       const livres=dmFreeTokens();
       let kind='hello';
-      if(who==='hakase'&&livres.length){
+      if(who==='tubi'&&livres.length){
         const tk=dmWantedToken(who,livres);
         if(socialDM(who,dmOpenLine('offer',{who,tk:tk.id,amount:tokenValue(tk)*dmOfferMult(who)*rf(1.1,1.5)}),2,
            {kind:'offer',tk:tk.id,price:tokenValue(tk)*dmOfferMult(who)*rf(1.1,1.5)}))dmMark('story');
         return;
       }
-      if(who==='oni_of_the_floor'&&c.listedWall)kind='scold';
+      if(who==='annoying guy'&&c.listedWall)kind='scold';
       if(who==='Mr. Kaiju')kind='ask';
       if(socialDM(who,dmOpenLine('hello',{who}),2,{kind}))dmMark('story');
       return;

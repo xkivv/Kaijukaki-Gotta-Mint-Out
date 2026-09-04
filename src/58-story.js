@@ -29,19 +29,44 @@
    coisa demais, um bicho pra quem sempre erra primeiro, uma vela pra quem
    aparece quando o jogo machuca. */
 const CHARS={
-  ina:      {who:'kiv',              ico:'crt',   art:null,
-             en:'moderator · has watched four collections die',
-             pt:'moderadora · já viu quatro coleções morrerem'},
-  oni:      {who:'oni_of_the_floor', ico:'chart',  art:null,
-             en:'floor watcher · does not like you yet',
-             pt:'vigia do floor · ainda não gosta de você'},
-  hakase:   {who:'hakase',           ico:'gem',   art:null,
-             en:'buys in silence · appears when there is money',
-             pt:'compra calado · aparece quando tem dinheiro'},
+  /* O KIV. O dev — o dono do jogo, em pessoa. Fala como brasileiro que abriu o
+     computador pra te mostrar uma coisa: caloroso, direto, "Bom dia!" no
+     comeco do dia. Ele apresenta o que a equipe fez; nunca da bronca. */
+  kiv:      {who:'kiv',              ico:'crt',   art:null,
+             en:'the dev · builds this with you watching',
+             pt:'o dev · constrói isso com você olhando'},
+  /* A INA. Fofa, boa amiga, muito engracada, e adora recompensar os outros —
+     e ela quem traz o que e de graca. Usa kaomoji DE VEZ EM QUANDO, nunca em
+     toda frase: (｡•̀ᴗ-)✧ , (っ˘ω˘ς) , ٩(◕‿◕)۶ , (´｡• ᵕ •｡`) . Nunca poe ela
+     dando aula ou repreendendo: se ela abre a boca e pra dar alguma coisa. */
+  ina:      {who:'ina',              ico:'gift',  art:null,
+             en:'gives things away · keeps track of who was here first',
+             pt:'dá as coisas · sabe quem chegou primeiro'},
+  /* O ANNOYING GUY. O cara que existe em TODA colecao: vive de olho no floor,
+     esta sempre certo sobre o mercado, e nao cala a boca sobre isso. A
+     informacao dele e boa — e por isso que o jogador aguenta. O jeito e que
+     cansa: ele repete, ele lembra que ja tinha falado, ele explica o obvio
+     com paciencia de quem acha que voce nao entendeu.
+     Marcas da voz: "as I've been saying", "again:", "like I told you",
+     "everyone always learns this the hard way". Nunca e agressivo nem
+     ameacador — e chato, que e outra coisa. E NUNCA esta errado sobre numero:
+     tirar a razao dele tiraria o motivo de ele estar no jogo. */
+  oni:      {who:'annoying guy',     ico:'chart', art:null,
+             en:'always right about the floor · will not stop telling you',
+             pt:'sempre certo sobre o floor · e não para de te contar'},
+  /* O TUBI. Engracado, divertido, e faz piada com o proprio ingles o tempo
+     todo — troca o final das palavras de proposito: "chaine" no lugar de
+     "chain", "yeag" no lugar de "yes", "moneys", "walleto". Ele SABE que fala
+     errado e acha graca nisso. E o que compra calado quando tem dinheiro na
+     mesa, entao o que ele diz de mercado esta certo mesmo com a palavra
+     torta. Em portugues a piada e a mesma: ele erra o INGLES, nao o portugues. */
+  hakase:   {who:'tubi',             ico:'gem',   art:null,
+             en:'buys in silence · mangles every word on purpose',
+             pt:'compra calado · entorta toda palavra de propósito'},
   /* O LEANER (Unc). O tio da sala. Engracado, muito retraido, fala pouco e
      quando fala e piada seca — e de vez em quando escapa um emoticon velho
      tipo -_-' ou ¬¬. Aparece quando o jogo machuca. Duas frases no maximo:
-     o Kiv reclamou que ele falava demais, e ele e justamente o cara que nao
+     o kiv reclamou que ele falava demais, e ele e justamente o cara que nao
      fala demais. */
   sera:     {who:'Leaner (Unc)',     ico:'candle',   art:null,
              en:'talks people off the ledge',
@@ -56,7 +81,7 @@ const CHARS={
              en:'self-appointed tax collector',
              pt:'cobrador de impostos autonomeado'}
 };
-function charOf(id){return CHARS[id]||CHARS.ina;}
+function charOf(id){return CHARS[id]||CHARS.kiv;}
 /* Os subtitulos ("moderadora - ja viu quatro colecoes morrerem") sairam da
    tela: cracha embaixo do nome e coisa de apresentacao de palestra, e o Kiv
    tem razao — quem e a pessoa tem que aparecer no que ela FALA, nao numa
@@ -80,10 +105,12 @@ function story(){
 const LOCKABLE={
   /* ícones da área de trabalho */
   site:1, hubmarket:1, hubwallet:1, shutdown:1,
-  hubsocial:1, shop:1, free:1, spot:1, media:1, tax:1, inbox:1, readme:1, bin:1,
+  /* a LIXEIRA saiu da lista: ela e movel de fabrica do Windows, igual ao
+     Kaiju Log. Ninguem apresenta uma lixeira. */
+  hubsocial:1, shop:1, free:1, spot:1, media:1, tax:1, inbox:1, readme:1,
   /* a loja abre em tres prateleiras: so o antivirus (dia 6, depois do hack),
      depois espaco e contrato (dia 7), depois tudo. Ver 33-app-vault.js. */
-  shop_av:1, shop_more:1, shop_all:1,
+  shop_av:1, shop_more:1, shop_4:1, shop_all:1,
   /* abas dentro das janelas */
   tab_binder:1, tab_profile:1, tab_dm:1, tab_vault:1,
   tab_mkt_offers:1, tab_mkt_mine:1, tab_mkt_stats:1,
@@ -108,6 +135,7 @@ const LOCKABLE={
   f_notes:1,       /* criar bloco de notas */
   f_binder_fill:1, /* encher página do fichário de uma vez */
   f_quests:1,      /* as missões diárias */
+  f_track_unc:1,   /* a primeira musica extra do player, feita pelo Leaner */
   f_milestones:1   /* os marcos */
 };
 /* ---------- A REDE DE SEGURANCA ----------
@@ -194,29 +222,34 @@ function stEver(k){return stT(k)||stL(k);}
      dia 14 -> b_chart      (o grafico e as estatisticas)
 
    Os beats REATIVOS (b_broke, b_cap, b_audit, b_gasburn, b_seize...) nao
+   Todo momento DO CALENDARIO leva `urg:1`. Nao e porque ele e urgente: e
+   porque a cota diaria de falas comuns e 2, e num dia em que o jogador
+   quebrou e tomou um pico de gas os dois avisos reativos comiam a cota e
+   EMPURRAVAM a entrega do dia pra frente — o media player caiu no dia 6 no
+   lugar do dia 4. O calendario e contrato: ele fura a cota, mas continua
+   respeitando o intervalo de horas entre uma fala e outra.
+
+   Os beats REATIVOS (b_broke, b_cap, b_audit, b_gasburn, b_seize...) nao
    entram nesse calendario: eles respondem a uma coisa que o jogador fez e
    podem cair em qualquer dia. O calendario e so das ENTREGAS. */
 const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
-/* A carteira NAO abre no dia 1. O jogador nao tem o que ver dentro dela antes
-   de ter Kaiju na mao, e um icone que so mostra vazio ensina errado. Ela chega
-   em b_wallet, com cinco na mao, junto com o motivo de abrir. */
 {id:'b_open', core:1, when:()=>G.walletMade,
  un:['site','hubmarket','shutdown','wgt_clock'],
- say:[{c:'ina',en:"Bom dia! So you found it too.",
+ say:[{c:'kiv',en:"Bom dia! So you found it too.",
        pt:"Bom dia! Então você também achou."},
-      {c:'ina',en:"8888 hand-drawn Kaiju and almost nobody has noticed yet. Go mint one — you'll get it faster than I could explain.",
+      {c:'kiv',en:"8888 hand-drawn Kaiju and almost nobody has noticed yet. Go mint one — you'll get it faster than I could explain.",
        pt:"8888 Kaiju desenhados à mão e quase ninguém reparou ainda. Vai mintar um — você vai entender mais rápido do que eu explicaria.",
        point:'[data-icon="site"]'}]},
 
 {id:'b_first_mint', core:1, when:()=>stEver('mint')>=1||held()>=1, un:['f_pagesize','hubwallet'],
- say:[{c:'ina',en:"There it is. That one is yours and nobody else will ever have it.",
+ say:[{c:'kiv',en:"There it is. That one is yours and nobody else will ever have it.",
        pt:"Pronto. Esse é seu e mais ninguém vai ter."},
-      {c:'ina',en:"Heads up: you paid the mint price AND gas. Gas is the network fee for signing, and it moves — check it before every mint or it eats you alive.",
+      {c:'kiv',en:"Heads up: you paid the mint price AND gas. Gas is the network fee for signing, and it moves — check it before every mint or it eats you alive.",
        pt:"Fica ligado: você pagou o preço do mint E o gas. Gas é a taxa da rede pela assinatura, e ele muda — confere antes de cada mint ou ele te come vivo."},
-      {c:'ina',en:"He is in your wallet now. That icon is where everything you own lives — open it whenever you want to look at them.",
+      {c:'kiv',en:"He is in your wallet now. That icon is where everything you own lives — open it whenever you want to look at them.",
        pt:"Ele tá na sua carteira agora. Aquele ícone é onde mora tudo que é seu — abre quando quiser olhar eles.",
        point:'[data-icon="hubwallet"]'},
-      {c:'ina',en:"There is a readme.txt on that desktop too. It was there before you got here. It is short and it is honest.",
+      {c:'kiv',en:"There is a readme.txt on that desktop too. It was there before you got here. It is short and it is honest.",
        pt:"E tem um readme.txt nessa área de trabalho. Já tava aí antes de você chegar. É curto e é honesto.",
        point:'[data-icon="readme"]'}]},
 
@@ -224,21 +257,50 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
    dia 2 com gas a 400% e literalmente nada pra fazer — ficou parado olhando a
    tela. Gas e onda: a resposta pra onda alta e esperar, e esperar tem que ser
    um botao, nao um relogio de verdade. */
-{id:'b_gas', core:1, when:()=>stEver('mint')>=1||held()>=1, un:['wgt_gas','f_hudskip'],
- say:[{c:'tobi',en:"yo. gas ain't a price, it's a wave — cheap in the morning, brutal at night. stick the gas meter on your desktop and mint when it's low. you feel me?",
-       pt:"e aí. gas não é preço, é onda — barato de manhã, brutal de noite. prega o medidor de gas na sua mesa e minta quando tiver baixo. tá ligado?"},
-      {c:'tobi',en:"and when it's high, don't sit there staring. the wallet panel has a SKIP 1 HOUR button. skip ahead, it comes back down.",
-       pt:"e quando tiver alto, não fica parado encarando. o painel da carteira tem um botão de PULAR 1 HORA. pula, que ele desce de volta.",
+{id:'b_list', core:1, until:1, when:()=>held()>=2,
+ say:[{c:'kiv',en:"Two. There is always one you care less about — that one is money. List it from the wallet, set a price, and it sells while you keep minting.",
+       pt:"Dois. Sempre tem um que você liga menos — esse aí é dinheiro. Lista ele pela carteira, põe um preço, e ele vende enquanto você continua mintando.",
+       point:'[data-icon="hubwallet"]'}]},
+
+{id:'b_gas', core:1, when:()=>held()>=3||stEver('mint')>=3, un:['wgt_gas','f_hudskip'],
+ say:[{c:'kiv',en:"One more thing about gas, because it is the thing that gets people: it is not a price, it is a wave. Cheap in the morning, brutal at night.",
+       pt:"Mais uma coisa sobre o gas, porque é isso que pega as pessoas: ele não é preço, é onda. Barato de manhã, brutal de noite."},
+      {c:'kiv',en:"We made a little meter for it so you never have to guess. Sending it to your desktop now.",
+       pt:"A gente fez um medidor pra ele pra você nunca ter que adivinhar. Mandando pra sua área de trabalho agora."},
+      {dl:'wgt_gas'},
+      {c:'kiv',en:"Keep it where you can see it and mint when it is low. And when it is high, do not sit there staring at it.",
+       pt:"Deixa ele onde você consiga ver e minta quando estiver baixo. E quando estiver alto, não fica parado encarando."},
+      {c:'kiv',en:"We pushed a small update to the Kaiju Wallet for exactly that. Installing it for you.",
+       pt:"A gente soltou um update pequeno do Kaiju Wallet exatamente pra isso. Instalando pra você."},
+      {dl:'f_hudskip'},
+      {c:'kiv',en:"There is a SKIP 1 HOUR button in the wallet panel now. Skip ahead and the gas comes back down on its own.",
+       pt:"Agora tem um botão de PULAR 1 HORA no painel da carteira. Pula, que o gas desce de volta sozinho.",
        point:'#hud'}]},
 
-{id:'b_endday', core:1, until:1, when:()=>G.hour>=12||stEver('mint')>=2,
- say:[{c:'ina',en:"Your day is not infinite. Every mint eats hours, and when the hours are gone you sleep.",
-       pt:"Seu dia não é infinito. Cada mint come horas, e quando as horas acabam você dorme."},
-      {c:'ina',en:"End the day when you are done. Nothing is lost.",
-       pt:"Encerra o dia quando terminar. Nada se perde.",
+/* O AVISO DE FIM DE DIA chega quando FALTA UMA HORA — nao no meio da tarde.
+   No meio da tarde ele e informacao solta; com uma hora no relogio ele e a
+   coisa que o jogador tem que fazer a seguir. */
+/* `urg` E OBRIGATORIO AQUI: no dia 1 a cota do tutorial (6) ja esta cheia
+   quando falta uma hora. Sem furar a cota este aviso simplesmente nunca
+   apareceria — e ele e o unico que diz como o dia termina. */
+{id:'b_endday', core:1, until:1, urg:1, gap:0,
+ when:()=>{
+   try{
+     if(typeof dayEndHour!=='function')return (G.hour||0)>=12;
+     const falta=(dayEndHour()-(G.hour||0))*60-(G.min||0);
+     return falta<=60;
+   }catch(e){return (G.hour||0)>=12;}
+ },
+ say:[{c:'kiv',en:"You have about an hour of today left. Your day is not infinite — every mint eats hours.",
+       pt:"Você tem mais ou menos uma hora de hoje. Seu dia não é infinito — cada mint come horas."},
+      {c:'kiv',en:"You can end the day by turning off your PC. Nothing is lost.",
+       pt:"Você pode encerrar o dia desligando o PC. Nada se perde.",
        point:'[data-icon="shutdown"]'}]},
 
-{id:'b_bulk', core:1, when:()=>stEver('mint')>=2, un:['f_bulk'],
+/* A carteira NAO abre no dia 1 antes do primeiro mint. O jogador nao tem o que
+   ver dentro dela sem Kaiju na mao, e um icone que so mostra vazio ensina
+   errado. Ela chega em b_first_mint, junto com o motivo de abrir. */
+{id:'b_bulk', urg:1, core:1, when:()=>G.day>=8, un:['f_bulk'],
  say:[{c:'tobi',en:"bro, you can sign up to ten in one go. gas is still per Kaiju but it saves you hours. I minted one at a time for four days before anyone told me.",
        pt:"mano, dá pra assinar até dez de uma vez. o gas continua por Kaiju mas economiza horas. eu mintei de um em um por quatro dias antes de alguém me falar."}]},
 
@@ -246,26 +308,17 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
    ela CHEGA (o icone nasce agora) e o motivo de abrir vem junto — traits, rank
    e a primeira listagem. Antes isso era dois beats separados, e o segundo
    chegava tarde demais. */
-/* `urg` porque a carteira nunca pode chegar atrasada: com cinco Kaiju na mao e
-   nenhum lugar pra olhar eles, o jogador acha que o jogo esqueceu dele. Fura a
-   cota do dia, nunca o intervalo. */
-{id:'b_wallet', core:1, until:1, when:()=>held()>=3,
- say:[{c:'ina',en:"Three already. Open the wallet and compare them — the rank is what decides what each one is worth.",
-       pt:"Três já. Abre a carteira e compara — o rank é o que decide quanto cada um vale.",
-       point:'[data-icon="hubwallet"]'}]},
-
-{id:'b_list', core:1, until:1, when:()=>held()>=5,
- say:[{c:'ina',en:"Five. There's always one you don't care about — that one is money. List it from the wallet, set a price, and it sells while you keep minting.",
-       pt:"Cinco. Sempre tem um que você não liga — esse aí é dinheiro. Lista ele pela carteira, põe um preço, e ele vende enquanto você continua mintando.",
-       point:'[data-icon="hubwallet"]'}]},
-{id:'b_market', core:1, when:()=>held()>=6,
+/* b_wallet SAIU: "tres ja, abre a carteira e compara" incomodava o dono e nao
+   ensinava nada que b_first_mint ja nao tivesse dito. A carteira continua
+   chegando em b_first_mint e o SEMPRE garante o icone assim que ha um Kaiju. */
+{id:'b_market', core:1, when:()=>held()>=6&&G.day>=2,
  un:['tab_mkt_offers','m_sweep'],
- say:[{c:'oni',en:"You are the one minting. I watch the floor here.",
-       pt:"Você é o que tá mintando. Eu vigio o floor por aqui."},
-      {c:'oni',en:"Two ways out of a Kaiju. List it and wait, or take an offer someone puts on your desk. Listing pays more and takes longer.",
-       pt:"Duas saídas pra um Kaiju. Listar e esperar, ou aceitar uma oferta que põem na sua mesa. Listar paga mais e demora."},
-      {c:'oni',en:"Do not dump on the floor. I will know, and so will everyone else.",
-       pt:"Não despeja no floor. Eu vou saber, e todo mundo também.",
+ say:[{c:'oni',en:"You mint them, I watch the floor. I've said that before, and it is still the arrangement.",
+       pt:"Você minta, eu vigio o floor. Eu já falei isso antes, e continua sendo o combinado."},
+      {c:'oni',en:"Nobody asked, but there are two ways out of a Kaiju: list it and wait, or take an offer someone puts on your desk. Listing pays more and takes longer.",
+       pt:"Ninguém perguntou, mas tem duas saídas pra um Kaiju: listar e esperar, ou aceitar uma oferta que põem na sua mesa. Listar paga mais e demora mais."},
+      {c:'oni',en:"And again: do not dump on the floor. It shows in the numbers, and everyone here reads the same numbers I do.",
+       pt:"E de novo: não despeja no floor. Isso aparece nos números, e todo mundo aqui lê os mesmos números que eu.",
        point:'[data-icon="hubmarket"]'}]},
 
 /* ATENÇÃO SAVE ANTIGO: G.log.mint zera toda noite. Um save de dia 30 com 200
@@ -298,10 +351,10 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
 
 {id:'b_cap', urg:1, gap:0,
  when:()=>stMark('cap',held()>=capacity()),
- say:[{c:'hakase',en:"Your wallet is full. Not one more mint goes in.",
-       pt:"Sua carteira encheu. Não entra mais nenhum mint."},
-      {c:'hakase',en:"Space is the ceiling on everything you earn. Sell one, or file one away. And when space is for sale, buy it before anything else.",
-       pt:"Espaço é o teto de tudo que você ganha. Vende um, ou arquiva um. E quando espaço estiver à venda, compra antes de qualquer outra coisa."}]},
+ say:[{c:'hakase',en:"Your walleto is full! Not one more mint goes inside.",
+       pt:"Seu walleto encheu! Não entra mais nem um mint."},
+      {c:'hakase',en:"Space is the roof on all your moneys. Sell one, or file one away. And when space is for sale, you buy it firsty — before anything.",
+       pt:"Espaço é o teto de todos os seus moneys. Vende um, ou arquiva um. E quando tiver espaço à venda, compra ele firsty — antes de tudo."}]},
 
 {id:'b_audit', urg:1,
  when:()=>stMark('audit',(+G.lastAuditDay||0)>0),
@@ -320,11 +373,11 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
        pt:"dica: ele não alcança o que tá no cofre ou no fichário. não pergunta como eu sei. ¬¬"}]},
 
 /* ============ DIA 2: o relógio, o correio, o gas, o mercado ============ */
-{id:'b_inbox', when:()=>G.day>=2, un:['inbox'],
- say:[{c:'ina',en:"Bom dia! Quick one: we built a small inbox app so I can reach holders directly — patch notes, news, that kind of thing. Downloading it to you now.",
+{id:'b_inbox', urg:1, when:()=>G.day>=2, un:['inbox'],
+ say:[{c:'kiv',en:"Bom dia! Quick one: we built a small inbox app so I can reach holders directly — patch notes, news, that kind of thing. Downloading it to you now.",
        pt:"Bom dia! Rapidinho: a gente fez um app de correio pra eu falar direto com os holders — notas de atualização, novidades, essas coisas. Baixando pra você agora."},
       {dl:'inbox'},
-      {c:'ina',en:"There's already something in it. Each note has a little thank-you inside.",
+      {c:'kiv',en:"There's already something in it. Each note has a little thank-you inside.",
        pt:"Já tem coisa dentro. Cada nota tem um agradecimento pequeno dentro.",
        point:'[data-icon="inbox"]'}]},
 
@@ -334,7 +387,7 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
    tela de invasao, e ai alguem que JA PASSOU POR ISSO manda mensagem: tem
    algo que da pra fazer. So o antivirus na prateleira. O resto chega depois,
    uma coisa de cada vez, como prateleira que enche. */
-{id:'b_hacked', urg:1, gap:0, when:()=>(+G.hackTut||0)>0&&G.day>=(+G.hackTut||6),
+{id:'b_hacked', urg:1, gap:0, when:()=>(+G.hackTut||0)>0&&G.day>=(+G.hackTut||7),
  un:['shop','shop_av'],
  say:[{c:'tobi',en:"damn, man. you got hacked. I lost a whole wallet in march, I know how that feels. but there's something you can do: kiv rushed out a shop app and the only thing on the shelf right now is the antivirus.",
        pt:"caramba, cara. você foi hackeado. perdi uma carteira inteira em março, eu sei como é. mas tem uma coisa que dá pra fazer: o kiv soltou às pressas um app de loja e a única coisa na prateleira agora é o antivírus."},
@@ -342,21 +395,28 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
       {c:'tobi',en:"buy it tonight, bro. it ain't a one-time thing, it runs out and you pay again. but while it's paid, they don't get in. you feel me?",
        pt:"compra hoje, mano. não é coisa de uma vez só, vence e você paga de novo. mas enquanto tá pago, eles não entram. tá ligado?"}]},
 
-{id:'b_shop_more', when:()=>G.day>=11&&unlocked('shop'), un:['shop_more','tab_profile'],
- say:[{c:'ina',en:"Bom dia! The shop restocked overnight. Two things on the shelf now: wallet space, and contract speed.",
-       pt:"Bom dia! A loja reabasteceu de madrugada. Duas coisas na prateleira agora: espaço na carteira, e velocidade de contrato.",
+{id:'b_shop_more', urg:1, when:()=>G.day>=11&&unlocked('shop'), un:['shop_more','tab_profile'],
+ say:[{c:'kiv',en:"Bom dia! We updated the site overnight — the shop has new things on the shelf: wallet space, and contract speed.",
+       pt:"Bom dia! A gente atualizou o site de madrugada — a loja tem coisas novas na prateleira: espaço na carteira, e velocidade de contrato.",
        point:'[data-icon="shop"]'},
-      {c:'ina',en:"Space first. Always space first. It is the ceiling on everything you earn.",
+      {c:'kiv',en:"Space first. Always space first. It is the ceiling on everything you earn.",
        pt:"Espaço primeiro. Sempre espaço primeiro. É o teto de tudo que você ganha."}]},
 
-{id:'b_shop_all', when:()=>G.day>=13&&unlocked('shop_more'), un:['shop_all'],
- say:[{c:'ina',en:"The shop is fully stocked now. Batch minting, listing speed, gas optimizer, the queue scanner — all of it.",
+{id:'b_shop_4', urg:1, when:()=>G.day>=16&&unlocked('shop_more'), un:['shop_4'],
+ say:[{c:'kiv',en:"Site update: four new things went up on the shop overnight. Batch minting, listing speed, a gas optimiser, and one small perk.",
+       pt:"Update do site: quatro coisas novas subiram na loja de madrugada. Mint em lote, velocidade de listagem, um otimizador de gas, e um perk pequeno.",
+       point:'[data-icon="shop"]'},
+      {c:'kiv',en:"None of it is urgent. Buy it when the money is real, not before.",
+       pt:"Nada disso é urgente. Compra quando o dinheiro for de verdade, não antes."}]},
+
+{id:'b_shop_all', urg:1, when:()=>G.day>=20&&unlocked('shop_4'), un:['shop_all'],
+ say:[{c:'kiv',en:"The shop is fully stocked now. Batch minting, listing speed, gas optimizer, the queue scanner — all of it.",
        pt:"A loja está com a prateleira cheia agora. Mint em lote, velocidade de listagem, otimizador de gas, o scanner da fila — tudo.",
        point:'[data-icon="shop"]'},
-      {c:'ina',en:"None of it is urgent. Space and the antivirus are. The rest is for when the money is real.",
+      {c:'kiv',en:"None of it is urgent. Space and the antivirus are. The rest is for when the money is real.",
        pt:"Nada disso é urgente. Espaço e antivírus são. O resto é pra quando o dinheiro for de verdade."}]},
 
-{id:'b_tax', urg:1, gap:0, when:()=>(+G.taxDue||0)>0||G.day>=4, un:['tax'],
+{id:'b_tax', urg:1, gap:0, when:()=>(+G.taxDue||0)>0||G.day>=3, un:['tax'],
  say:[{c:'kaiju',en:"You made money. I came for my share.",
        pt:"Você ganhou dinheiro. Eu vim buscar minha parte."},
       {c:'kaiju',en:"I am not in the collection. Nobody has seen my paperwork. I come back every three days and I always come back.",
@@ -367,113 +427,127 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
 
 /* O deboche vem DEPOIS de pagar — quando o jogador ja sentiu o preco. E nao
    entrega nada: desconfianca, nao resposta. O misterio e o personagem. */
+/* O DEBOCHE VEM DEPOIS DE PAGAR — quando o jogador ja sentiu o preco. E o
+   Stux nao entrega so conversa: ele manda 30% do que foi cobrado de volta,
+   do proprio bolso. E a segunda unica coisa no jogo que acontece a favor do
+   jogador sem ele ter feito por merecer (a outra e o presente do Stux), e
+   vale uma vez so — dinheiro que chega toda vez vira renda, nao gesto. */
 {id:'b_tax_paid', when:()=>stT('tax')>0,
- say:[{c:'ina',en:"They told me Mr. Kaiju came to collect from you. Is that true? Unbelievable.",
+ say:[{c:'kiv',en:"They told me Mr. Kaiju came to collect from you. Is that true? Unbelievable.",
        pt:"Me contaram que o Mr. Kaiju veio te cobrar. É verdade? Inacreditável."},
-      {c:'ina',en:"I don't know what kind of Kaiju that is or why he does it. But honestly — word around here is that it's better to pay. I'll talk to Stux about it.",
+      {c:'kiv',en:"I don't know what kind of Kaiju that is or why he does it. But honestly — word around here is that it's better to pay. I'll talk to Stux about it.",
        pt:"Não sei que tipo de Kaiju é aquele nem por que ele faz aquilo. Mas de verdade — fiquei sabendo por aí que é melhor pagar. Vou falar com o Stux sobre isso."},
-      {c:'tobi',en:"yeah, kiv just messaged me about him. I went through all 8888 twice, bro. he ain't in there. don't ask me where the money goes.",
-       pt:"é, o kiv acabou de me mandar mensagem sobre ele. eu passei pelos 8888 duas vezes, mano. ele não tá lá. não me pergunta pra onde vai o dinheiro."}]},
+      {c:'tobi',en:"yeah, kiv messaged me. I went through all 8888 twice, bro. he ain't in there. don't ask me where the money goes.",
+       pt:"é, o kiv me mandou mensagem. eu passei pelos 8888 duas vezes, mano. ele não tá lá. não me pergunta pra onde vai o dinheiro."},
+      {gift:'tax30'},
+      {c:'tobi',en:"here, take it. it's 30% of what he taken from you, out of my own pocket, and don't argue with me about it.",
+       pt:"toma, pega. é 30% do que ele tirou de você, do meu bolso, e não discute comigo sobre isso."},
+      {c:'tobi',en:"and mark this down, bro: he come back every three days. every three. count them, because he counts.",
+       pt:"e anota isso, mano: ele volta a cada três dias. a cada três. conta os dias, porque ele conta."}]},
 
-/* ============ DIA 4-6: a rotina ============ */
-{id:'b_social', when:()=>G.day>=3, un:['hubsocial','m_hype','f_knsize'],
- say:[{c:'ina',en:"You started minting — and so did other people. So while you were all minting, we built something: Kaki+, a social app just for the collection.",
-       pt:"Você começou a mintar — e outras pessoas também. Então enquanto vocês mintavam, a gente fez uma coisa: o Kaki+, um app social só da coleção."},
+{id:'b_social', urg:1, when:()=>G.day>=4, un:['hubsocial','m_hype','f_knsize'],
+ say:[{c:'kiv',en:"Since you started minting a lot of Kaijus, other people started too. So while you were all minting, we built something: Kaki+, a social app just for the collection.",
+       pt:"Desde que você começou a mintar um monte de Kaiju, outras pessoas começaram também. Então enquanto vocês mintavam, a gente fez uma coisa: o Kaki+, um app social só da coleção."},
       {dl:'hubsocial'},
-      {c:'ina',en:"It's small and it's ours. Post there and you build HYPE — hype is what makes strangers mint, and their mints pay you. It leaks every hour, so keep it alive.",
+      {c:'kiv',en:"It's small and it's ours. Post there and you build HYPE — hype is what makes strangers mint, and their mints pay you. It leaks every hour, so keep it alive.",
        pt:"É pequeno e é nosso. Poste lá e você constrói HYPE — hype é o que faz estranho mintar, e os mints deles te pagam. Ele vaza toda hora, então mantém vivo.",
        point:'[data-icon="hubsocial"]'}]},
 
 /* Reagir e postar chegam como um UPDATE do Kaki+, anunciado por alguem, no
    dia 4 — nao como aula. Um forum que ganha recurso novo e um lugar vivo. */
-{id:'b_boost', when:()=>G.day>=5&&unlocked('hubsocial'), un:['f_boost','f_react'],
- say:[{c:'ina',en:"Bom dia! Kaki+ just shipped an update. You can react to posts now, and you can post yourself.",
+{id:'b_boost', urg:1, when:()=>G.day>=5&&unlocked('hubsocial'), un:['f_boost','f_react'],
+ say:[{c:'kiv',en:"Bom dia! Kaki+ just shipped an update. You can react to posts now, and you can post yourself.",
        pt:"Bom dia! O Kaki+ acabou de soltar um update. Agora dá pra reagir aos posts, e dá pra você postar.",
        point:'[data-icon="hubsocial"]'},
-      {c:'ina',en:"Reacting is free and it gives you EXP, and EXP counts toward your rank the same as a Kaiju does.",
+      {c:'kiv',en:"Reacting is free and it gives you EXP, and EXP counts toward your rank the same as a Kaiju does.",
        pt:"Reagir é de graça e dá EXP, e EXP conta pro seu rank igual a um Kaiju na carteira."},
-      {c:'ina',en:"Posting costs money and buys hype. The second post of the day returns less than the first, and the fifth is almost nothing. That is not a bug, that is attention.",
+      {c:'kiv',en:"Posting costs money and buys hype. The second post of the day returns less than the first, and the fifth is almost nothing. That is not a bug, that is attention.",
        pt:"Postar custa dinheiro e compra hype. O segundo post do dia rende menos que o primeiro, e o quinto quase nada. Não é bug, é atenção."}]},
 
-{id:'b_spotter', when:()=>G.day>=8, un:['spot'],
- say:[{c:'ina',en:"New app from us: the Kaiju Spotter. We're cataloguing the collection before it mints out and we pay per correct entry. Not much — but it's work you can do on any day.",
+{id:'b_spotter', urg:1, when:()=>G.day>=6, un:['spot'],
+ say:[{c:'kiv',en:"New app from us: the Kaiju Spotter. We're cataloguing the collection before it mints out and we pay per correct entry. Not much — but it's work you can do on any day.",
        pt:"App novo nosso: o Kaiju Spotter. A gente tá catalogando a coleção antes do mintout e paga por ficha certa. Pouco — mas é trabalho que dá pra fazer em qualquer dia.",
        point:'[data-icon="spot"]'},
       {dl:'spot'}]},
 
-{id:'b_free', when:()=>G.day>=7&&unlocked('hubsocial'), un:['free'],
- say:[{c:'ina',en:"Bom dia! The Kakizone is open. For now it gives you one free mint a day, for being one of our oldest holders — thank you for that, really.",
-       pt:"Bom dia! A Kakizone está aberta. Por enquanto ela te dá um free mint por dia, por você ser um dos nossos holders mais antigos — obrigada por isso, de verdade."},
+{id:'b_free', urg:1, when:()=>G.day>=9&&unlocked('hubsocial'), un:['free'],
+ say:[{c:'ina',en:"The Kakizone is open! For now it hands you one free mint a day, for being one of the oldest holders we have — thank you for that, really.",
+       pt:"A Kakizone está aberta! Por enquanto ela te dá um free mint por dia, por você ser um dos holders mais antigos que a gente tem — obrigada por isso, de verdade."},
       {dl:'free'},
-      {c:'ina',en:"We're working to make it even better than this. Enjoy it.",
-       pt:"A gente tá trabalhando pra deixar ela ainda melhor que isso. Aproveita.",
-       point:'[data-icon="free"]'}]},
+      {c:'ina',en:"And we're working to make it even better than this. Enjoy it — the mint still eats gas, nothing here is free free, but the Kaiju is on me (｡•̀ᴗ-)✧",
+       pt:"E a gente tá trabalhando pra deixar ela ainda melhor que isso. Aproveita — o mint ainda come gas, nada aqui é de graça de graça, mas o Kaiju é por minha conta (｡•̀ᴗ-)✧"}]},
 
-{id:'b_quests', when:()=>G.day>=10&&unlocked('free'), un:['f_quests','f_milestones'],
- say:[{c:'ina',en:"Bom dia! The Kakizone just shipped an update — it has daily tasks and milestones in it now.",
-       pt:"Bom dia! A Kakizone acabou de soltar um update — agora tem tarefas diárias e marcos lá dentro.",
+{id:'b_quests', urg:1, when:()=>G.day>=12&&unlocked('free'), un:['f_quests','f_milestones'],
+ say:[{c:'ina',en:"My Kakizone got an update! It has daily tasks and milestones in it now, go look.",
+       pt:"A minha Kakizone ganhou um update! Agora tem tarefas diárias e marcos lá dentro, vai ver.",
        point:'[data-icon="free"]'},
-      {c:'ina',en:"The tasks pay little on purpose — they're a compass, not a faucet. And the milestones count the MOST you ever held at once, so selling never walks that bar backwards.",
-       pt:"As tarefas pagam pouco de propósito — elas são bússola, não torneira. E os marcos contam o MAIOR número que você já segurou de uma vez, então vender nunca anda com a barra pra trás."}]},
+      {c:'ina',en:"The tasks pay little on purpose — I'm the one paying, hehe — they're a compass, not a faucet: they tell you where to look. And the milestones count the MOST you ever held at once, so selling never walks that bar backwards.",
+       pt:"As tarefas pagam pouquinho de propósito — quem paga sou eu, hehe — elas são bússola, não torneira: dizem onde olhar. E os marcos contam o MAIOR número que você já segurou de uma vez, então vender nunca anda com a barra pra trás."}]},
 
 {id:'b_contract', when:()=>unlocked('shop_more')&&stEver('mint')>=12,
- say:[{c:'ina',en:"You are spending your day inside the mint page. Minutes are the resource you cannot buy back.",
+ say:[{c:'kiv',en:"You are spending your day inside the mint page. Minutes are the resource you cannot buy back.",
        pt:"Você tá passando o dia dentro da página de mint. Minuto é o recurso que não volta."},
-      {c:'ina',en:"Contract Speed in the shop cuts that in half over ten steps. It pays for itself in mints, not in money.",
+      {c:'kiv',en:"Contract Speed in the shop cuts that in half over ten steps. It pays for itself in mints, not in money.",
        pt:"A Velocidade de Contrato na loja corta isso pela metade em dez degraus. Se paga em mints, não em dinheiro."}]},
 
-{id:'b_binder', when:()=>held()>=6, un:['tab_binder'],
- say:[{c:'ina',en:"Six of them. Time to file.",
-       pt:"Seis. Hora de arquivar."},
-      {c:'ina',en:"The binder is a real album. A Kaiju filed there cannot be taken from you — not by Mr. Kaiju, not by anyone.",
-       pt:"O fichário é um álbum de verdade. Um Kaiju arquivado ali não pode ser tomado de você — nem pelo Mr. Kaiju."}]},
+/* O FICHARIO CHEGA COMO UPDATE DA CARTEIRA, nao como sermao.
+   "Seis. Hora de arquivar" mandava o jogador fazer uma coisa que ele nao tinha
+   pedido. Agora e uma ferramenta que o dev entrega, instalando, e o jogador
+   usa SE quiser. */
+{id:'b_binder', urg:1, when:()=>G.day>=2, un:['tab_binder'],
+ say:[{c:'kiv',en:"You have six of them now, so here is something we built for the Kaiju Wallet: a binder. A real album, if you like having things in order.",
+       pt:"Você já tem seis, então tem uma coisa que a gente fez pro Kaiju Wallet: um fichário. Um álbum de verdade, se você gosta de ter as coisas organizadas."},
+      {dl:'tab_binder'},
+      {c:'kiv',en:"Nobody has to use it. But a Kaiju filed in there cannot be taken from you — not by Mr. Kaiju, not by anyone.",
+       pt:"Ninguém é obrigado a usar. Mas um Kaiju arquivado ali não pode ser tomado de você — nem pelo Mr. Kaiju, nem por ninguém.",
+       point:'[data-icon="hubwallet"]'}]},
 
 {id:'b_rarity', when:()=>stMark('rare',G.tokens.some(t=>t.rarity>=2)),
- say:[{c:'oni',en:"I saw what came out of your machine. That one is not common.",
-       pt:"Eu vi o que saiu da sua máquina. Esse aí não é comum."},
-      {c:'oni',en:"Rank multiplies the floor. A rare is worth two of them, a legendary seven, a mythic twenty. Same floor, different Kaiju.",
-       pt:"Rank multiplica o floor. Um raro vale dois, um lendário sete, um mítico vinte. Mesmo floor, outro Kaiju."},
-      {c:'oni',en:"And races run hot and cold. A race everyone wants today is worth almost double the same race last week.",
-       pt:"E raça esquenta e esfria. Uma raça que todo mundo quer hoje vale quase o dobro dela mesma semana passada."}]},
+ say:[{c:'oni',en:"I saw what came out of your machine. That one's not common — I do watch, in case that was not clear.",
+       pt:"Eu vi o que saiu da sua máquina. Esse aí não é comum — eu acompanho, caso não tenha ficado claro."},
+      {c:'oni',en:"Like I told you: rank multiplies the floor. A rare is worth two of them, a legendary seven, a mythic twenty. Same floor, different Kaiju.",
+       pt:"Como eu já tinha falado: rank multiplica o floor. Um raro vale dois, um lendário sete, um mítico vinte. Mesmo floor, outro Kaiju."},
+      {c:'oni',en:"And races run hot and cold — I'll say it again, because people forget: a race everyone wants today is worth almost double what it was last week.",
+       pt:"E raça esquenta e esfria — vou repetir, porque todo mundo esquece: uma raça que todo mundo quer hoje vale quase o dobro do que valia semana passada."}]},
 
-{id:'b_races', when:()=>(G.seenRaces||[]).length>=5,
- say:[{c:'tobi',en:"you pulled five different races already. the machine's keeping a list of every one you've seen, bro.",
-       pt:"você já tirou cinco raças diferentes. a máquina tá guardando a lista de todas que você viu, mano."},
-      {c:'tobi',en:"seeing all of em is an achievement, and achievements in here ain't badges. they're proof you actually looked.",
-       pt:"ver todas é uma conquista, e conquista aqui não é medalha. é prova de que você olhou de verdade."}]},
-
-{id:'b_media', when:()=>G.day>=9, un:['media','bin'],
- say:[{c:'tobi',en:"yo, somebody from the community made a media player with a lo-fi loop. kiv put it on the server. grabbing it for you — you're gonna be here a while.",
-       pt:"ó, alguém da comunidade fez um media player com um loop de lo-fi. o kiv botou no server. pegando pra você — você vai ficar aqui um tempo."},
-      {dl:'media'}]},
+/* b_races SAIU: "voce tirou cinco racas" chegava fora de hora e nao servia pra
+   nada — o jogador ja tinha visto as cinco, e a conquista se anuncia sozinha. */
+{id:'b_media', urg:1, when:()=>G.day>=4, un:['media','f_track_unc'],
+ say:[{c:'kiv',en:"It's a bit quiet in here, isn't it? How about some music. Leaner made a track and let us put it on the server — here, take the player and the tape.",
+       pt:"Tá meio quieto por aqui, né? Que tal uma música. Leaner fez uma faixa e deixou a gente botar no server — toma, o player e a fita."},
+      {dl:'media'},
+      {c:'kiv',en:"Two tracks in there now. Leave it running while you mint — you're going to be here a while.",
+       pt:"Duas faixas aí dentro agora. Deixa rodando enquanto você minta — você vai ficar aqui um tempo.",
+       point:'[data-icon="media"]'}]},
 
 {id:'b_event', when:()=>stMark('event',G.day>=4&&!!G.event&&G.event!=='calm'),
- say:[{c:'oni',en:"Every day wakes up in a mood. Today is not yesterday and none of it is up to you.",
-       pt:"Todo dia acorda com um clima. Hoje não é ontem e nada disso depende de você."},
-      {c:'oni',en:"Bull run, cold market, gas spike, a whale dumping. Read the card in the morning before you decide what the day is for.",
-       pt:"Bull run, mercado frio, pico de gas, baleia dumpando. Lê o card de manhã antes de decidir pra que serve o dia."}]},
+ say:[{c:'oni',en:"As I've been saying: every day wakes up in a mood. Today isn't yesterday, and none of it is up to you.",
+       pt:"Como eu venho dizendo: todo dia acorda com um clima. Hoje não é ontem, e nada disso depende de você."},
+      {c:'oni',en:"Bull run, cold market, gas spike, a whale dumping. Read the card in the morning, then decide what the day is for. Everyone learns this the hard way.",
+       pt:"Bull run, mercado frio, pico de gas, baleia dumpando. Lê o card de manhã e aí decide pra que serve o dia. Todo mundo aprende isso do jeito difícil."}]},
 
-{id:'b_chart', when:()=>G.bestLevel>=3||G.day>=14, un:['wgt_chart','tab_mkt_stats','m_mkt_stats'],
- say:[{c:'oni',en:"You are around enough now to want a chart.",
-       pt:"Você já tá aqui o bastante pra querer um gráfico."},
-      {c:'oni',en:"Floor is not the price of your Kaiju. It is the price of the CHEAPEST one. Yours is worth floor times its rank.",
-       pt:"Floor não é o preço do seu Kaiju. É o preço do MAIS BARATO. O seu vale o floor vezes o rank dele."}]},
+{id:'b_chart', urg:1, /* dia 14 e dia 14: o dono fixou o calendario e o atalho por nivel furava ele */
+ when:()=>G.day>=14, un:['wgt_chart','tab_mkt_stats','m_mkt_stats'],
+ say:[{c:'oni',en:"You've been around long enough to want a chart. Here it is. I was wondering when you would get there.",
+       pt:"Você já tá aqui tempo o bastante pra querer um gráfico. Toma. Eu tava esperando você chegar nisso."},
+      {c:'oni',en:"Again: floor isn't the price of your Kaiju. It's the price of the CHEAPEST one. Yours is worth floor times its rank.",
+       pt:"De novo: floor não é o preço do seu Kaiju. É o preço do MAIS BARATO. O seu vale o floor vezes o rank dele."}]},
 
 {id:'b_listing', when:()=>stEver('listed')>=1,
- say:[{c:'oni',en:"A listing is a signature too, so it burns gas — a fraction of a mint, but not zero.",
-       pt:"Listar também é assinatura, então queima gas — uma fração do mint, mas não é zero."},
-      {c:'oni',en:"Listing several at once is one signature for the batch. And the shop sells listing speed, which is the difference between a chore and an evening.",
-       pt:"Listar vários de uma vez é uma assinatura só. E a loja vende velocidade de listagem, que é a diferença entre tarefa e noite perdida."}]},
+ say:[{c:'oni',en:"A listing is a signature too, so it burns gas — a fraction of a mint, but never zero. Not that anyone listens the first time.",
+       pt:"Listar também é assinatura, então queima gas — uma fração do mint, mas nunca zero. Não que alguém escute na primeira vez."},
+      {c:'oni',en:"I'll say it again: listing several at once is one signature for the whole batch. And the shop sells listing speed — the difference between a chore and a whole evening.",
+       pt:"Vou repetir: listar vários de uma vez é uma assinatura só pro lote inteiro. E a loja vende velocidade de listagem — a diferença entre uma tarefa e uma noite perdida."}]},
 
 {id:'b_sort', when:()=>held()>=10, un:['m_wallet_sort','f_wgrid'],
- say:[{c:'ina',en:"Ten of them. You cannot eyeball that any more — the wallet has a filter, a sort and a grid size. Use them.",
+ say:[{c:'kiv',en:"Ten of them. You cannot eyeball that any more — the wallet has a filter, a sort and a grid size. Use them.",
        pt:"Dez. Não dá mais pra olhar no olho — a carteira tem filtro, ordenação e tamanho de grade. Usa."}]},
 
 {id:'b_offers', when:()=>stEver('sold')>=1, un:['m_collection_offers','tab_mkt_mine'],
- say:[{c:'hakase',en:"You sold one. Good.",
-       pt:"Você vendeu um. Bom."},
-      {c:'hakase',en:"When the collection gets deeper, people bid on ALL of it at once. Below floor, always. It is liquidity with a haircut and sometimes you need it.",
-       pt:"Quando a coleção ficar mais funda, tem quem dê lance na coleção INTEIRA. Sempre abaixo do floor. É liquidez com desconto."}]},
+ say:[{c:'hakase',en:"You sell one! Very nice-o.",
+       pt:"Você vendeu um! Very nice-o."},
+      {c:'hakase',en:"When the collectione gets deep, people bid on ALL of it at one time. Below floor, always. Is liquidity with a haircut, and sometimes you need it.",
+       pt:"Quando a coleção ficar mais funda, tem gente que dá lance na collectione INTEIRA. Sempre abaixo do floor. É liquidez com desconto, e às vezes você precisa."}]},
 
 /* ============ o que o jogador faz contra si mesmo ============ */
 {id:'b_saturation', when:()=>stMark('sat',stL('mint')>=25),
@@ -485,21 +559,21 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
        pt:"divide em dois dias e o preço desce de volta na hora. a coleção não liga de um jeito nem de outro. sua carteira liga."}]},
 
 {id:'b_listpress', when:()=>stMark('lp',stEver('listed')>=8),
- say:[{c:'oni',en:"You have a wall of listings open at once. I can see it from here and so can the book.",
-       pt:"Você tá com uma parede de listagem aberta. Eu vejo daqui e o book vê também."},
-      {c:'oni',en:"A wall sells slower and drags your own floor down with it. And at the end of the day the room reads it as dumping.",
-       pt:"Parede vende mais devagar e derruba o seu próprio floor junto. E de noite a sala lê aquilo como despejo."}]},
+ say:[{c:'oni',en:"You've got a wall of listings open at once. I can see it from here, and so can the order book. I did warn you about this.",
+       pt:"Você tá com uma parede de listagem aberta. Eu vejo daqui, e o book também. Eu tinha avisado sobre isso."},
+      {c:'oni',en:"A wall sells slower and drags your own floor down with it. And by the end of the day the room reads it as dumping. Everyone learns this the hard way.",
+       pt:"Parede vende mais devagar e derruba o seu próprio floor junto. E no fim do dia a sala lê aquilo como despejo. Todo mundo aprende isso do jeito difícil."}]},
 
-{id:'b_sweep', when:()=>G.day>=11&&npcHeld()>=60&&unlocked('hubmarket'),
- say:[{c:'oni',en:"You can buy back off the floor. Sweeping, we call it.",
-       pt:"Dá pra comprar de volta do floor. Varrer, a gente chama."},
-      {c:'oni',en:"Each one you take costs a little more than the one before, plus the network fee. Sweeping two hundred is not sweeping one two hundred times.",
-       pt:"Cada um que você tira custa um pouco mais que o anterior, mais a taxa. Varrer duzentos não é varrer um duzentas vezes."}]},
+{id:'b_sweep', when:()=>G.day>=14&&npcHeld()>=60&&unlocked('hubmarket'),
+ say:[{c:'oni',en:"You can buy back off the floor. We call it sweeping — I have explained this before, so I will keep it short.",
+       pt:"Dá pra comprar de volta do floor. A gente chama de varrer — eu já expliquei isso antes, então vou ser breve."},
+      {c:'oni',en:"Each one you take costs a little more than the one before, plus the network fee. Sweeping two hundred isn't sweeping one two hundred times. Read that twice.",
+       pt:"Cada um que você tira custa um pouco mais que o anterior, mais a taxa de rede. Varrer duzentos não é varrer um duzentas vezes. Lê isso duas vezes."}]},
 
 {id:'b_binder_set', when:()=>held()>=14&&unlocked('tab_binder'), un:['f_binder_fill'],
- say:[{c:'ina',en:"A binder page filled with a single Race is a set. The album knows the difference and so does everyone who sees it.",
+ say:[{c:'kiv',en:"A binder page filled with a single Race is a set. The album knows the difference and so does everyone who sees it.",
        pt:"Uma página do fichário cheia de uma raça só é um set. O álbum sabe a diferença e quem vê também."},
-      {c:'ina',en:"Doing that by hand is punishment. There is a button that fills the page with what you already own.",
+      {c:'kiv',en:"Doing that by hand is punishment. There is a button that fills the page with what you already own.",
        pt:"Fazer isso na mão é castigo. Tem um botão que enche a página com o que você já tem."}]},
 
 {id:'b_spot_rank', when:()=>((G.spot&&+G.spot.shifts)||0)>=3,
@@ -531,49 +605,49 @@ const BEATS=[/* ============ DIA 1: as três coisas que importam ============ */
        pt:"ele te dá a CHANCE de vir coisa boa nos próximos dez. vantagem, nunca garantia. ainda foi o melhor dinheiro que gastei aqui."}]},
 
 {id:'b_rep', when:()=>stMark('rep',G.day>=10&&typeof repScore==='function'&&(repScore()>=78||repScore()<48)),
- say:[{c:'oni',en:"The room has an opinion about you now. It is not in your wallet and it changes what people offer.",
-       pt:"A sala tem uma opinião sobre você agora. Ela não tá na carteira e muda o que te oferecem."},
-      {c:'oni',en:"Dumping walls of listings drags it down. Showing up and not disappearing lifts it. That is the whole mechanic.",
-       pt:"Despejar parede de listagem derruba. Aparecer e não sumir levanta. É essa a mecânica inteira."}]},
+ say:[{c:'oni',en:"The room has an opinion about you now. It isn't in your wallet, and it changes what people offer you. Yes, it is real.",
+       pt:"A sala tem uma opinião sobre você agora. Ela não tá na carteira, e muda o que te oferecem. Sim, é de verdade."},
+      {c:'oni',en:"Again: dumping walls of listings drags it down. Showing up and not disappearing lifts it. That's the whole mechanic.",
+       pt:"De novo: despejar parede de listagem derruba. Aparecer e não sumir levanta. É essa a mecânica inteira."}]},
 
-{id:'b_comfort', when:()=>G.day>=12, un:['f_notes'],
+{id:'b_comfort', urg:1, when:()=>G.day>=15, un:['f_notes'],
  say:[{c:'tobi',en:"you live here now, bro. right-click the desktop — you can leave notes on it. doesn't change the game. just makes it yours.",
        pt:"você mora aqui agora, mano. botão direito na mesa — dá pra deixar nota nela. não muda o jogo. só deixa ele seu."}]},
 
 {id:'b_referral', when:()=>G.bestLevel>=5, un:['f_referral'],
- say:[{c:'hakase',en:"Tuna. Your referral link is open.",
-       pt:"Tuna. Seu link de indicação abriu."},
-      {c:'hakase',en:"It takes your cut on every mint that is not yours from thirty per cent to forty. That is not a small number.",
-       pt:"Ele leva o seu corte em todo mint que não é seu de trinta pra quarenta por cento. Não é número pequeno."},
-      {c:'hakase',en:"It also puts your name where people look for names. The ones looking are not all buyers. Keep the antivirus paid.",
-       pt:"E põe seu nome onde procuram nome. Nem todo mundo que procura é comprador. Mantém o antivírus pago."}]},
+ say:[{c:'hakase',en:"Tuna! Your referral linky is open now.",
+       pt:"Tuna! Seu referral linky abriu agora."},
+      {c:'hakase',en:"It take your cut on every mint that is not yours from thirty per cent to forty. That is not a small numbers.",
+       pt:"Ele leva o seu corte em todo mint que não é seu de trinta pra quarenta por cento. Isso não é um number pequeno."},
+      {c:'hakase',en:"Also it puts your name where people look for names. And not everybody looking is a buyer, yeag. Keep the antivirus paid!",
+       pt:"E põe seu nome onde procuram nome. E nem todo mundo que procura é buyer, yeag. Mantém o antivírus pago!"}]},
 
 {id:'b_vault', when:()=>G.bestLevel>=6, un:['tab_vault','f_stake'],
- say:[{c:'hakase',en:"Swordfish. Now we can talk.",
-       pt:"Swordfish. Agora dá pra conversar."},
-      {c:'hakase',en:"The vault pays you per day for locking a Kaiju away. Locked means locked — you cannot sell it, and neither can he.",
-       pt:"O cofre te paga por dia pra trancar um Kaiju. Trancado é trancado — você não vende, e ele também não."}]},
+ say:[{c:'hakase',en:"Swordfish! Now we can talky.",
+       pt:"Swordfish! Agora dá pra talky."},
+      {c:'hakase',en:"The vaulto pays you every day for locking a Kaiju inside. Locked is locked — you cannot sell it, and he cannot take it too.",
+       pt:"O vaulto te paga por dia pra trancar um Kaiju lá dentro. Trancado é trancado — você não vende, e ele também não tira."}]},
 
 {id:'b_stake', when:()=>stMark('stake',!!G.stakeOn||G.tokens.some(t=>t.staked)),
- say:[{c:'hakase',en:"The vault has a counted number of shelves. More shelves cost money, and then a great deal more money.",
-       pt:"O cofre tem prateleira contada. Mais prateleira custa dinheiro, e depois muito mais dinheiro."},
-      {c:'hakase',en:"Ten days is the minimum. Locking away the one you were going to sell this week is the same as losing it.",
-       pt:"Dez dias é o mínimo. Trancar o que você ia vender essa semana é a mesma coisa que perder."}]},
+ say:[{c:'hakase',en:"The vaulto has a counted number of shelfs. More shelfs cost moneys, and then very much more moneys.",
+       pt:"O vaulto tem prateleira contada. Mais prateleira custa moneys, e depois muito mais moneys."},
+      {c:'hakase',en:"Ten days is the minimum, yeag. Lock away the one you was going to sell this week and is the same as losing it.",
+       pt:"Dez dias é o mínimo, yeag. Trancar o que você ia vender essa semana é a mesma coisa que perder."}]},
 
 /* ============ o fim ============ */
 {id:'b_late', when:()=>G.minted>=SUPPLY*0.5,
- say:[{c:'ina',en:"Half the collection is gone. The people arriving now pay double what you paid and they think they are early.",
+ say:[{c:'kiv',en:"Half the collection is gone. The people arriving now pay double what you paid and they think they are early.",
        pt:"Metade da coleção já saiu. Quem chega agora paga o dobro do que você pagou e acha que chegou cedo."},
-      {c:'ina',en:"You were actually early. Do not give it away cheap.",
+      {c:'kiv',en:"You were actually early. Do not give it away cheap.",
        pt:"Você chegou cedo de verdade. Não entrega barato."}]},
 
 {id:'b_mintout', when:()=>!!G.mintout,
- say:[{c:'ina',en:"That is it. Eight thousand eight hundred and eighty eight, none left over.",
+ say:[{c:'kiv',en:"That is it. Eight thousand eight hundred and eighty eight, none left over.",
        pt:"Acabou. Oito mil oitocentos e oitenta e oito, nenhum sobrando."},
-      {c:'ina',en:"Nobody will ever mint one again. From here on, everything that changes hands comes from someone who already has one.",
+      {c:'kiv',en:"Nobody will ever mint one again. From here on, everything that changes hands comes from someone who already has one.",
        pt:"Ninguém vai mintar mais nenhum. Daqui pra frente tudo que muda de mão vem de quem já tem."},
-      {c:'hakase',en:"Now the part I like begins.",
-       pt:"Agora começa a parte que eu gosto."}]}
+      {c:'hakase',en:"Now begins the parte I likes.",
+       pt:"Agora começa a parte que eu gosto. The good parte."}]}
 ];
 
 /* ---------- o relógio da história ----------
@@ -736,6 +810,32 @@ function stuxGift(){
     return tk;
   }catch(e){return null;}
 }
+/* ---------- OS PRESENTES DENTRO DE UMA CONVERSA ----------
+   `{gift:'tax30'}` no meio do `say` de um momento. Nao abre janela: cai o
+   dinheiro na carteira com o aviso de sempre, no meio da conversa, e a fala
+   seguinte comenta. Cada presente acontece UMA VEZ (S.gifted guarda). */
+function storyGift(tipo){
+  const S=story();
+  S.gifted=S.gifted&&typeof S.gifted==='object'?S.gifted:{};
+  if(S.gifted[tipo])return;
+  if(tipo==='tax30'){
+    const base=+G.lastTaxPaid||0;
+    const v=Math.max(1,Math.round(base*0.30));
+    if(!base)return;
+    S.gifted[tipo]=G.day||1;
+    /* NAO passa por earn(): earn() joga o valor no lucro do periodo e o
+       Mr. Kaiju cobraria imposto em cima do dinheiro que o Stux mandou pra
+       pagar o imposto. Presente nao e lucro. */
+    G.money=(+G.money||0)+v;
+    G.log.earned+=v;G.totals.earned+=v;
+    if(G.money>G.best)G.best=G.money;
+    if(typeof UI==='object'&&UI&&UI.toast)
+      UI.toast('gift',t('{0} sent you {1}',charOf('tobi').who,money(v)));
+    if(typeof SFX==='object'&&SFX&&SFX.cash)SFX.cash();
+    save();
+  }
+}
+
 /* usado pelo golpe, pelo balão e por quem mais quiser interromper */
 function storyTalking(){
   return typeof document!=='undefined'&&document.body.classList.contains('storytalk');
@@ -767,6 +867,16 @@ function storyPump(){
   if(!b||!b.say||item.i>=b.say.length){S.q.shift();save();return storyPump();}
   storyBusy=true;
   const linha=b.say[item.i];
+  /* uma linha de PRESENTE nao fala: ela faz a coisa acontecer e sai da frente.
+     E assim que o Stux devolve 30% do imposto sem virar mais um pop-up. */
+  if(linha&&linha.gift){
+    storyBusy=false;
+    try{storyGift(linha.gift);}catch(e){}
+    item.i++;
+    if(item.i>=b.say.length)S.q.shift();
+    save();setTimeout(storyPump,260);
+    return;
+  }
   if(linha&&linha.dl){
     appDownload(linha.dl,()=>{
       storyBusy=false;item.i++;
@@ -775,6 +885,19 @@ function storyPump(){
     });
     return;
   }
+  /* a caixa anda sozinha pelas falas seguidas do mesmo momento; ela para
+     antes de uma linha de download, que precisa da propria janela. */
+  /* O BUG DA CAIXA VAZIA: nem toda linha do `say` e uma FALA. `{dl:...}` abre
+     a janela de download e `{gift:...}` cai dinheiro na carteira — as duas sao
+     acoes, nao texto. A caixa andava pra cima delas assim mesmo e desenhava um
+     balao sem nome e sem frase. Agora ela so anda pra linha que tem `c`; o que
+     nao e fala volta pro storyPump, que sabe o que fazer com cada uma. */
+  const falada=n=>!!(n&&n.c);
+  const nav={
+    more(){return !!b.say[item.i+1];},
+    peek(){const n=b.say[item.i+1];return falada(n)?n:null;},
+    take(){const n=b.say[item.i+1];if(!falada(n))return null;item.i++;save();return n;}
+  };
   storyShow(linha,()=>{
     storyBusy=false;
     item.i++;
@@ -786,7 +909,7 @@ function storyPump(){
     }
     save();
     setTimeout(storyPump,120);
-  });
+  },nav);
 }
 /* ---------- O VIGIA DA FILA ----------
    storyPump() desiste quando tem modal na tela — e tem que desistir mesmo,
@@ -834,32 +957,51 @@ const DL_NOME={hubsocial:'kakiplus.exe', shop:'kaijushop.exe', free:'kakizone.ex
   hubmarket:'kmarket.exe', story_log:'klog.exe', bin:'recycle.dll', site:'kaijukaki.url'};
 const DL_KB={hubsocial:3412, shop:1180, free:640, spot:2296, media:4870, inbox:512,
   hubwallet:1024, hubmarket:1536, story_log:388, bin:96, site:12};
+/* ---------- O QUE NAO E UM ICONE TAMBEM CHEGA BAIXANDO ----------
+   Um painel que nasce sozinho no canto da tela e tao sintetico quanto um icone
+   que nasce sozinho na mesa. O medidor de gas e um WIDGET, o botao de pular
+   uma hora e um UPDATE da carteira — nenhum dos dois esta em DESK_ICONS, entao
+   eles se descrevem aqui. `kind` so muda a moldura da janela: 'app' baixa,
+   'widget' baixa, 'update' INSTALA. */
+const DL_META={
+  wgt_gas:   {lbl:'Gas Tracker',  ico:'gas',    file:'gastracker.wgt',    kb:214, kind:'widget', wgt:'gas'},
+  wgt_chart: {lbl:'Kaiju Charts', ico:'chart',  file:'kaijucharts.wgt',   kb:392, kind:'widget', wgt:'chart'},
+  f_hudskip: {lbl:'Kaiju Wallet', ico:'wallet', file:'kwallet-patch.exe', kb:96,  kind:'update'},
+  tab_binder:{lbl:'Kaiju Wallet', ico:'binder', file:'kbinder-patch.exe',  kb:344, kind:'update'}
+};
 function dlPending(id){const S=story();return Array.isArray(S.dlq)&&S.dlq.indexOf(id)>=0;}
 function dlMark(id){const S=story();if(!Array.isArray(S.dlq))S.dlq=[];if(S.dlq.indexOf(id)<0)S.dlq.push(id);}
 function dlDone(id){const S=story();if(Array.isArray(S.dlq))S.dlq=S.dlq.filter(x=>x!==id);}
 function appDownload(id,done){
   const scr=document.querySelector('#screen');
   if(!scr){dlDone(id);done();return;}
-  const ic=(typeof DESK_ICONS!=='undefined'?DESK_ICONS:[]).find(x=>x.id===id)||{lbl:id,ico:'pc'};
-  const nome=DL_NOME[id]||(id+'.exe'), kb=DL_KB[id]||900;
+  const M=DL_META[id];
+  const ic=M||((typeof DESK_ICONS!=='undefined'?DESK_ICONS:[]).find(x=>x.id===id))||{lbl:id,ico:'pc'};
+  const kind=(M&&M.kind)||'app';
+  const nome=(M&&M.file)||DL_NOME[id]||(id+'.exe'), kb=(M&&M.kb)||DL_KB[id]||900;
+  const pasta=kind==='widget'?'kakizone.net/widgets/':kind==='update'?'kakizone.net/updates/':'kakizone.net/apps/';
+  const titulo=kind==='update'?t('Installing {0}',nome):t('Downloading {0}',nome);
+  const destino=kind==='widget'?'C:\\KAIJU\\PANELS\\':kind==='update'?'C:\\KAIJU\\APPS\\':'C:\\KAIJU\\APPS\\';
   const K=(typeof uiScale==='function')?uiScale():1;
-  const box=el('div','win dlwin opening');
+  const box=el('div','win dlwin opening dl-'+kind);
   box.innerHTML=`
-    <div class="titlebar">${pixSVG('globe',14,'tico')}<span class="ttl">${t('Downloading {0}',nome)}</span></div>
+    <div class="titlebar">${pixSVG('globe',14,'tico')}<span class="ttl">${titulo}</span></div>
     <div class="wbody dl-body">
       <div class="dl-row">${pixSVG(ic.ico||'pc',40,'dl-ico')}
-        <div class="dl-txt"><b>${t(ic.lbl)}</b><div class="dl-from">${t('from')} kakizone.net/apps/${nome}</div></div></div>
+        <div class="dl-txt"><b>${t(ic.lbl)}</b><div class="dl-from">${t('from')} ${pasta}${nome}</div></div></div>
       <div class="dl-anim"><i></i><i></i><i></i></div>
       <div class="prog dl-prog"><i style="width:0%"></i></div>
       <div class="dl-meta"><span data-dlb>0 KB</span> ${t('of')} ${kb.toLocaleString()} KB <span data-dlt></span></div>
-      <div class="dl-foot">${t('Save to')} C:\\KAIJU\\APPS\\</div>
+      <div class="dl-foot">${t('Save to')} ${destino}</div>
     </div>`;
   scr.appendChild(box);
   requestAnimationFrame(()=>box.classList.remove('opening'));
   document.body.classList.add('storytalk');
   SFX.notify&&SFX.notify();
   const bar=box.querySelector('.dl-prog i'), b=box.querySelector('[data-dlb]'), tt=box.querySelector('[data-dlt]');
-  const dur=2400+Math.min(1800,kb/3);
+  /* O dono achou a chegada rapida demais: um download que termina antes de o
+     olho pousar nele nao e uma coisa que aconteceu, e uma transicao. */
+  const dur=3600+Math.min(2400,kb/2.2);
   const t0=performance.now();
   let ultimoTick=0;
   const tick=now=>{
@@ -880,12 +1022,35 @@ function appDownload(id,done){
         box.classList.add('closing');
         setTimeout(()=>{box.remove();document.body.classList.remove('storytalk');
           if(typeof buildDesktop==='function')buildDesktop();
+          if(typeof buildWidgets==='function')buildWidgets();
           if(typeof buildStart==='function')buildStart();
+          if(typeof UI==='object'&&UI&&UI.refresh)UI.refresh();
+          dlArrive(id);
           done();},200);
       },520);
     }
   };
   requestAnimationFrame(tick);
+}
+
+/* ---------- A CHEGADA, DEVAGAR ----------
+   Depois que o download fecha, a coisa nova entra na tela com calma: o painel
+   cresce do nada e pisca uma vez, o icone da mesa faz o mesmo. Sem isso o
+   jogador ve o resultado, nunca o acontecimento — foi exatamente a queixa do
+   dono ("ta muito rapido"). A classe cai sozinha; nada depende dela. */
+function dlArrive(id){
+  try{
+    const M=DL_META[id];
+    let alvo=null;
+    if(M&&M.wgt)alvo=document.getElementById('wgt_'+M.wgt);
+    if(!alvo)alvo=document.querySelector('[data-icon="'+id+'"]');
+    if(!alvo&&id==='f_hudskip')alvo=document.getElementById('hud_skip');
+    if(!alvo)return;
+    alvo.classList.remove('arriving');
+    void alvo.offsetWidth;                       /* reinicia a animacao */
+    alvo.classList.add('arriving');
+    setTimeout(()=>{try{alvo.classList.remove('arriving');}catch(e){}},2200);
+  }catch(e){}
 }
 
 /* pula o resto da conversa atual */
@@ -898,16 +1063,15 @@ function storySkip(){
 /* ---------- a caixa de fala ----------
    Vive no #screen, não é modal e não escurece a tela inteira: o jogador tem
    que conseguir OLHAR pro ícone que está sendo apontado enquanto lê. */
-function storyShow(line,done){
+function storyShow(line,done,nav){
   const scr=document.querySelector('#screen');
   if(!scr){done();return;}
-  const c=charOf(line.c);
   const K=(typeof uiScale==='function')?uiScale():1;
   const box=el('div','storybox opening');
   box.innerHTML=`
-    <div class="sb-por">${storyPortrait(line.c,Math.round(72*K))}</div>
+    <div class="sb-por" data-sbp="1"></div>
     <div class="sb-main">
-      <div class="sb-who"><b>${c.who}</b></div>
+      <div class="sb-who"><b data-sbw="1"></b></div>
       <div class="sb-txt" data-sbt="1"></div>
       <div class="sb-act">
         <button class="btn sb-next" data-sbn="1">${t('OK')}</button>
@@ -922,25 +1086,55 @@ function storyShow(line,done){
   document.body.classList.add('storytalk');
   requestAnimationFrame(()=>box.classList.remove('opening'));
 
-  /* o alvo pisca enquanto a fala está na tela */
-  let alvo=null;
-  if(line.point){
-    try{alvo=document.querySelector(line.point);}catch(e){}
-    if(alvo)alvo.classList.add('story-point');
-  }
+  const por=$('[data-sbp]',box), quem=$('[data-sbw]',box),
+        txt=$('[data-sbt]',box), btn=$('[data-sbn]',box);
 
-  /* a máquina de escrever: só o suficiente pra dar ritmo de fala.
-     Clicar corta e mostra o texto inteiro — ninguém deve esperar por letra. */
-  const txt=$('[data-sbt]',box);
-  const full=(LANG==='pt'?line.pt:line.en)||line.en||'';
-  let i=0, tid=null, pronto=false;
-  const acaba=()=>{pronto=true;if(tid)clearInterval(tid);txt.textContent=full;};
-  txt.textContent='';
-  if(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches)acaba();
-  else tid=setInterval(()=>{
-    i+=2;txt.textContent=full.slice(0,i);
-    if(i>=full.length)acaba();
-  },16);
+  /* ---------- UMA CAIXA, A CONVERSA INTEIRA ----------
+     Antes cada linha do mesmo personagem abria e fechava uma caixa nova: tres
+     falas seguidas eram tres pop-ups piscando na tela. Agora a caixa fica, o
+     botao vira ">" enquanto houver proxima linha e so vira OK na ultima.
+     Quem sabe o que vem depois e a fila (storyPump), entao ela passa `nav`;
+     sem `nav` a caixa se comporta exatamente como antes. */
+  let atual=null, alvo=null, tid=null, pronto=false;
+
+  const soltaAlvo=()=>{if(alvo){alvo.classList.remove('story-point');alvo=null;}};
+  const acaba=()=>{pronto=true;if(tid){clearInterval(tid);tid=null;}
+    txt.textContent=(LANG==='pt'?atual.pt:atual.en)||atual.en||'';};
+
+  function render(l,primeira){
+    atual=l;
+    const c=charOf(l.c);
+    por.innerHTML=storyPortrait(l.c,Math.round(72*K));
+    quem.textContent=c.who;
+    soltaAlvo();
+    if(l.point){
+      try{alvo=document.querySelector(l.point);}catch(e){alvo=null;}
+      if(alvo)alvo.classList.add('story-point');
+    }
+    /* o rotulo olha se vem QUALQUER coisa depois — inclusive um download.
+       Um "OK" na fala que antecede a barra de progresso mente: da a entender
+       que a conversa acabou ali. */
+    const temMais=!!(nav&&(nav.more?nav.more():(nav.peek&&nav.peek())));
+    btn.textContent=temMais?'>':t('OK');
+    btn.classList.toggle('sb-more',temMais);
+    /* a máquina de escrever: só o suficiente pra dar ritmo de fala.
+       Clicar corta e mostra o texto inteiro — ninguém deve esperar por letra. */
+    const full=(LANG==='pt'?l.pt:l.en)||l.en||'';
+    pronto=false;
+    if(tid){clearInterval(tid);tid=null;}
+    txt.textContent='';
+    if(typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion: reduce)').matches)acaba();
+    else{let i=0;tid=setInterval(()=>{
+      i+=2;txt.textContent=full.slice(0,i);
+      if(i>=full.length)acaba();
+    },16);}
+    if(!primeira){
+      /* a troca de fala tem que ser VISIVEL: sem isso o jogador clica e nao
+         tem certeza de que alguma coisa mudou. */
+      box.classList.remove('sb-turn');void box.offsetWidth;box.classList.add('sb-turn');
+      SFX.click&&SFX.click();
+    }
+  }
 
   /* Um modal pode abrir DEPOIS de a fala já estar na tela (o Mr. Kaiju
      batendo, um golpe). O véu fica em z-index 6000 e engolia a caixa. Enquanto
@@ -949,20 +1143,34 @@ function storyShow(line,done){
     if(!box.isConnected){clearInterval(veiaTick);return;}
     box.classList.toggle('behind',!!document.querySelector('#modalveil.on'));
   },220);
+  /* FECHAR DUAS VEZES NAO PODE ACONTECER. Dois cliques rapidos no mesmo botao
+     (ou um clique com o dedo tremendo no celular) chamavam `done()` duas
+     vezes, e cada `done()` anda uma linha na fila: a conversa PULAVA a linha
+     seguinte. Foi assim que o presente do Stux (a linha {gift:'tax30'}) foi
+     saltado e o dinheiro nunca caiu. */
+  let fechando=false;
   const fecha=()=>{
+    if(fechando)return;
+    fechando=true;
     clearInterval(veiaTick);
     document.body.classList.remove('storytalk');
     if(tid)clearInterval(tid);
-    if(alvo)alvo.classList.remove('story-point');
+    soltaAlvo();
     box.classList.add('closing');
     setTimeout(()=>{box.remove();done();},170);
   };
-  $('[data-sbn]',box).onclick=()=>{
+  btn.onclick=()=>{
+    if(fechando)return;
     if(!pronto){acaba();return;}
+    if(nav&&nav.peek&&nav.peek()){
+      const prox=nav.take();
+      if(prox){render(prox,false);return;}
+    }
     SFX.click();fecha();
   };
-  $('[data-sbs]',box).onclick=()=>{SFX.close();storySkip();fecha();};
+  $('[data-sbs]',box).onclick=()=>{if(fechando)return;SFX.close();storySkip();fecha();};
   box.onclick=e=>{if(e.target===box||e.target===txt){if(!pronto)acaba();}};
+  render(line,true);
   SFX.notify&&SFX.notify();
 }
 

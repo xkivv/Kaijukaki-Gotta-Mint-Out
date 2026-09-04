@@ -16,6 +16,20 @@ const MUSIC=(()=>{
             [32,86,2],[36,84,1],[38,81,2],[42,79,3],
             [48,77,2],[52,79,1],[54,81,4],[60,-1,0]]
     },
+    /* A MUSICA DO LEANER (Unc). Chega no dia 4, junto com o media player: o
+       tio da sala fez uma faixa e o kiv botou no server. Menor, mais lenta e
+       mais triste que a lo-fi — quatro acordes menores, swing preguicoso e
+       uma melodia que sobe uma vez so e desiste. Escrita do zero. */
+    unc:{
+      id:'unc', name:'unc_tape_01.mod', label:'UNC TAPE 01', bpm:72, swing:0.12, hatv:0.045,
+      /* Am - Fmaj7 - Cmaj7 - Em, dois compassos cada */
+      prog:[{root:45,arp:[69,72,76,81]},{root:53,arp:[69,72,77,81]},
+            {root:48,arp:[67,71,76,79]},{root:52,arp:[67,71,74,79]}],
+      lead:[[0,76,3],[6,74,1],[8,72,4],[14,71,2],
+            [16,69,3],[22,71,1],[24,74,4],[30,72,2],
+            [32,79,2],[35,77,1],[36,76,3],[42,74,2],
+            [48,72,2],[52,71,1],[54,69,5],[60,-1,0]]
+    },
     /* Homenagem original ao som de ilha dos anos 80: acordes maiores preguicosos,
        swing leve e uma melodia escrita do zero. Nao e a musica de verdade. */
     kokomo:{
@@ -165,7 +179,12 @@ APPS.media={
     const cv=$('[data-viz]',b);
     mountViz(cv);
     const pb=$('[data-mpplay]',b);
-    const owned=()=>['lofi'].concat((G.tracks||[]).filter(x=>x!=='lofi'));
+    /* a faixa do Unc so entra na lista depois que a historia a entregou
+       (b_media, dia 4) — ate la o player tem uma faixa so, e isso e o ponto
+       da fala do kiv: "ta meio quieto por aqui". */
+    const owned=()=>['lofi']
+      .concat((typeof unlocked!=='function'||unlocked('f_track_unc'))?['unc']:[])
+      .concat((G.tracks||[]).filter(x=>x!=='lofi'&&x!=='unc'));
     const sync=()=>{
       pb.innerHTML=MUSIC.playing?('&#10074;&#10074; '+t('PAUSE')):('&#9654; '+t('PLAY'));
       const T=MUSIC.tracks(),list=owned();

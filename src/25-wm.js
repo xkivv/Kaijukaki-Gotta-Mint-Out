@@ -709,7 +709,10 @@ const UI=(()=>{
   function hudSkip(){
     const body=$('#hud .hud-body');
     if(!body)return;
-    const on=(typeof unlocked!=='function')||unlocked('f_hudskip');
+    /* o update da carteira tambem chega instalando: enquanto a janelinha de
+       instalacao esta na tela o botao ainda nao existe. */
+    const baixando=(typeof dlPending==='function')&&dlPending('f_hudskip');
+    const on=((typeof unlocked!=='function')||unlocked('f_hudskip'))&&!baixando;
     let b=$('#hud_skip');
     if(!on){if(b)b.remove();return;}
     if(!b){

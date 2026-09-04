@@ -1470,7 +1470,7 @@ function dailyCandle(){
    e a historia (58-story.js) le G.hackTut pra saber que pode falar disso.
    Antes dessa noite NAO existe hack aleatorio: o roteirizado tem que ser o
    primeiro, senao a fala "voce foi hackeado!" chega atrasada. */
-const HACK_TUT_DAY=6;   /* o dia em que o jogador ACORDA hackeado */
+const HACK_TUT_DAY=7;   /* o dia em que o jogador ACORDA hackeado — o hack mudou pro dia 7 quando o dono espalhou o calendario */
 const HACK_TUT_MIN=4;   /* piso da mordida, em $ */
 function hackTutorial(){
   /* rollHack roda depois de G.day++, entao G.day ja e a manha seguinte. Um
@@ -1564,6 +1564,9 @@ function payTax(){
   if(G.money<G.taxDue)return false;
   const owed=G.taxDue;
   spend(owed);G.log.tax+=owed;G.totals.tax+=owed;
+  /* quanto foi a ULTIMA cobranca — o Stux devolve 30% dela na primeira vez
+     (ver b_tax_paid e stuxTaxHelp em 58-story.js) */
+  G.lastTaxPaid=owed;
   G.taxDue=0;save();return true;
 }
 /* Um Kaiju trancado no cofre ou arquivado no album nao pode ser tomado — a
